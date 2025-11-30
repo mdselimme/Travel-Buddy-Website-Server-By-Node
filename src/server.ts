@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable no-console */
 import { Server } from "http";
 import app from "./app";
 import { envVars } from "./config/envVariable.config";
@@ -48,6 +50,6 @@ process.on("uncaughtException", (error) => {
 });
 
 //when promise rejection occurs
-process.on("unhandledRejection", (reason) => {
-    serverShutdown("Unhandled Rejection occurred", reason);
+process.on("unhandledRejection", (error) => {
+    serverShutdown("Unhandled Rejection occurred", error);
 });
