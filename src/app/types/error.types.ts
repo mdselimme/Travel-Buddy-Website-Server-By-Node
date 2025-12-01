@@ -7,5 +7,5 @@ export interface IErrorSource {
 export interface IGenericErrorResponse {
     statusCode: number;
     message: string;
-    errorSources: IErrorSource[];
+    errorSources?: IErrorSource[];
 };
