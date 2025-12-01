@@ -3,6 +3,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import notFoundRoute from './app/middlewares/notFoundRoute';
 import router from './app/routes';
+import { globalErrorHandler } from './app/middlewares/globalErrorHandlers';
 const app: Application = express();
 
 // Middleware
@@ -26,6 +27,9 @@ app.get('/', (req: Request, res: Response) => {
 
 // initialize all router 
 app.use('/api/v1', router);
+
+// Global error handler middleware
+app.use(globalErrorHandler);
 
 // add not found route middleware
 app.use(notFoundRoute);
