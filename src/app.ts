@@ -1,6 +1,7 @@
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import notFoundRoute from './app/middlewares/notFoundRoute';
+import router from './app/routes';
 const app: Application = express();
 
 // Middleware
@@ -20,7 +21,10 @@ app.get('/', (req: Request, res: Response) => {
     });
 });
 
+// initialize all router 
+app.use('/api/v1', router);
+
 // add not found route middleware
-app.use(notFoundRoute)
+app.use(notFoundRoute);
 
 export default app;

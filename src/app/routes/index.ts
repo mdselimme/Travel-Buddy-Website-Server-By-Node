@@ -1,0 +1,22 @@
+import { Router } from "express";
+import { UserRouter } from "../modules/users/user.route";
+
+interface IRoute {
+    path: string;
+    route: Router;
+}
+
+const router = Router();
+
+const allRoutes: IRoute[] = [
+    {
+        path: "/user",
+        route: UserRouter
+    }
+];
+
+
+allRoutes.forEach(({ path, route }) => {
+    router.use(path, route);
+});
+export default router;
