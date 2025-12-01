@@ -29,6 +29,7 @@ export interface IUser {
     travelInterests?: string[];
     travelsPlans?: Types.ObjectId[];
     isActive: IActiveStatus;
+    isVerified: boolean;
     createdAt?: Date;
     updatedAt?: Date;
 }
