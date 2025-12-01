@@ -3,12 +3,21 @@
 import { Server } from "http";
 import app from "./app";
 import { envVars } from "./config/envVariable.config";
+import mongoose from "mongoose";
 
 let server: Server;
 
 // Bootstrap function to initialize the server
 const bootstrap = async () => {
     try {
+        // Database config 
+        await mongoose.connect(envVars.DB_URL)
+            .then(() => {
+                console.log("Database is connected.")
+            })
+            .catch((error) => {
+                console.log(`Database error is : ${error.message}`);
+            });
         server = app.listen(envVars.PORT, () => {
             console.log(`Server running on port http://localhost:${envVars.PORT}`)
         })
