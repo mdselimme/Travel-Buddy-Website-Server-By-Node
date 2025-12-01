@@ -1,5 +1,6 @@
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import notFoundRoute from './app/middlewares/notFoundRoute';
 import router from './app/routes';
 const app: Application = express();
@@ -10,6 +11,8 @@ app.use(cors({
     credentials: true
 }));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // default router after server is running
 app.get('/', (req: Request, res: Response) => {
