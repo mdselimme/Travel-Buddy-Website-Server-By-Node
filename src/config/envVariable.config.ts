@@ -5,12 +5,13 @@ interface IEnvVariables {
     PORT: string;
     NODE_ENV: 'development' | 'production' | 'test';
     DB_URL: string;
+    BCRYPT_SALT_ROUNDS: string;
 };
 
 // Load and validate environment variables
 const loadEnvVariables = (): IEnvVariables => {
 
-    const requiredEnvVars = ['PORT', 'NODE_ENV', 'DB_URL'];
+    const requiredEnvVars = ['PORT', 'NODE_ENV', 'DB_URL', 'BCRYPT_SALT_ROUNDS'];
 
     requiredEnvVars.forEach((varName) => {
         if (!process.env[varName]) {
@@ -22,6 +23,7 @@ const loadEnvVariables = (): IEnvVariables => {
         PORT: process.env.PORT as string,
         NODE_ENV: process.env.NODE_ENV as 'development' | 'production' | 'test',
         DB_URL: process.env.DB_URL as string,
+        BCRYPT_SALT_ROUNDS: process.env.BCRYPT_SALT_ROUNDS as string,
     };
 };
 
