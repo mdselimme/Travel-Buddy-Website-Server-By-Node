@@ -8,7 +8,6 @@ import { makeHashedPassword } from '../../utils/makeHashedPassword';
 
 //USER REGISTER SERVICE FUNCTION
 const registerUserService = async (userData: Partial<IUser>): Promise<Partial<IUser> | null> => {
-
     // Check if user with the same email already exists
     const existingUser = await UserModel.findOne({ email: userData.email });
 
