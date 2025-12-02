@@ -4,6 +4,7 @@ import { Server } from "http";
 import app from "./app";
 import { envVars } from "./config/envVariable.config";
 import mongoose from "mongoose";
+import { seedSuperAdmin } from "./app/utils/seedSuperAdmin";
 
 let server: Server;
 
@@ -31,6 +32,7 @@ const bootstrap = async () => {
 // Start the bootstrap process
 (async () => {
     await bootstrap();
+    await seedSuperAdmin();
 })();
 
 const serverShutdown = async (message: string, err?: any) => {
