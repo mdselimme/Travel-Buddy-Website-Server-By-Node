@@ -1,10 +1,13 @@
 import httpStatus from 'http-status-codes';
 import ApiError from "../../utils/ApiError"
-import { IUser } from "../users/user.interface"
+import { IActiveStatus, IUser } from "../users/user.interface"
 import { UserModel } from "../users/user.model"
 import bcrypt from 'bcrypt';
 import { generateToken } from '../../utils/jwtToken';
 import { envVars } from '../../../config/envVariable.config';
+import { sendEmail } from '../../utils/sendEmail';
+import { generateOtpCode, OTP_EXPIRATION } from '../../utils/otpGenerate';
+import { redisClient } from '../../../config/redis.config';
 
 
 
@@ -71,10 +74,88 @@ const changePassword = async (userId: string, oldPassword: string, newPassword: 
     }
 };
 
+//EMAIL SEND VERIFICATION OTP SERVICE
+const emailSendVerification = async (email: string) => {
+    const existingUser = await UserModel.findOne({ email });
+
+    if (!existingUser) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'User does not found');
+    }
+
+    const otp = generateOtpCode();
+
+    const redisKey = `otp:${email}`;
+
+    await redisClient.set(redisKey, otp, {
+        expiration: {
+            type: "EX",
+            value: OTP_EXPIRATION
+        }
+    });
+
+    sendEmail({
+        to: existingUser.email,
+        subject: 'Email Verification',
+        templateName: 'emailVerification',
+        templateData: {
+            name: existingUser.fullName,
+            otp: otp,
+            subject: 'Email Verification From Travel Buddy.',
+        }
+    });
+}
+
+//Verify Email Validation Service
+const verifyEmailOtpVerification = async (email: string, otp: string) => {
+
+    const isUserExist = await UserModel.findOne({ email });
+
+    if (!isUserExist) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'User does not found');
+    };
+
+    if (isUserExist.isVerified) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'User already verified');
+    }
+
+    if (isUserExist.isActive !== IActiveStatus.ACTIVE) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'User is not active');
+    }
+
+    const redisKey = `otp:${email}`;
+
+    const savedOtp = await redisClient.get(redisKey);
+
+    if (!savedOtp) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid Otp Value.');
+    };
+
+    if (savedOtp !== otp) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid Otp Value.');
+    }
+
+    await Promise.all([
+        UserModel.findByIdAndUpdate(
+            isUserExist._id,
+            { isVerified: true },
+            { new: true, runValidators: true }
+        ),
+        redisClient.del(redisKey)
+    ]);
+
+    return {
+        message: 'Email verified successfully'
+    }
+
+};
+
 
 
 
 export const AuthService = {
     logInUser,
-    changePassword
+    changePassword,
+    emailSendVerification,
+    verifyEmailOtpVerification
+
 }

@@ -27,10 +27,17 @@ router.post('/change-password',
 );
 
 // AUTH EMAIL VERIFICATION ROUTE
-router.post('/verify-email',
+router.post('/verify-email-send',
     validateZodSchema(AuthValidation.emailValidation),
-    AuthController.verifyEmail
+    AuthController.emailSendVerification
 );
+
+//VERIFY EMAIL
+router.post('/verify-email',
+    validateZodSchema(AuthValidation.verifyEmailValidation),
+    AuthController.verifyEmailOtpVerification
+);
+
 
 // // AUTH FORGOT PASSWORD ROUTE
 // router.post('/forgot-password',

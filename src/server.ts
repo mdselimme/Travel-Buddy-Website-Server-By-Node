@@ -5,6 +5,7 @@ import app from "./app";
 import { envVars } from "./config/envVariable.config";
 import mongoose from "mongoose";
 import { seedSuperAdmin } from "./app/utils/seedSuperAdmin";
+import { connectRedis } from "./config/redis.config";
 
 let server: Server;
 
@@ -32,6 +33,7 @@ const bootstrap = async () => {
 // Start the bootstrap process
 (async () => {
     await bootstrap();
+    await connectRedis();
     await seedSuperAdmin();
 })();
 

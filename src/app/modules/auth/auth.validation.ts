@@ -17,6 +17,15 @@ const emailValidation = z.object({
         error: 'Email is required and string',
     }),
 });
+//Email VALIDATION
+const verifyEmailValidation = z.object({
+    email: z.string({
+        error: 'Email is required and string',
+    }),
+    otp: z.string({
+        error: 'OTP is required and string',
+    }).length(6, { error: "OTP must be exactly 6 digits long " })
+});
 
 //CHANGE PASSWORD VALIDATION
 const changePasswordValidation = z.object({
@@ -35,6 +44,6 @@ const changePasswordValidation = z.object({
 export const AuthValidation = {
     loginValidation,
     changePasswordValidation,
-    emailValidation
-
+    emailValidation,
+    verifyEmailValidation
 };

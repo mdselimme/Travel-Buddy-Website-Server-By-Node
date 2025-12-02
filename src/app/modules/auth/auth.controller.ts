@@ -43,6 +43,32 @@ const changePassword = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+//EMAIL VERIFICATION
+const emailSendVerification = catchAsync(async (req: Request, res: Response) => {
+    const { email } = req.body;
+
+    const result = await AuthService.emailSendVerification(email);
+    ApiResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        data: result,
+        message: 'Email verification code sent successfully.',
+    });
+});
+
+//EMAIL OTP VALIDATION
+const verifyEmailOtpVerification = catchAsync(async (req: Request, res: Response) => {
+    const { email, otp } = req.body;
+    const result = await AuthService.verifyEmailOtpVerification(email, otp);
+    ApiResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        data: result,
+        message: 'Email verified successfully.',
+    });
+});
+
+
 //LOG OUT USER
 const logOutUser = catchAsync(async (req: Request, res: Response) => {
 
@@ -71,6 +97,8 @@ const logOutUser = catchAsync(async (req: Request, res: Response) => {
 export const AuthController = {
     logInUser,
     changePassword,
-    logOutUser
+    logOutUser,
+    emailSendVerification,
+    verifyEmailOtpVerification
 
 }
