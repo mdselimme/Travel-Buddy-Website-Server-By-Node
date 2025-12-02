@@ -43,8 +43,34 @@ const changePassword = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+//LOG OUT USER
+const logOutUser = catchAsync(async (req: Request, res: Response) => {
+
+    res.clearCookie('accessToken', {
+        httpOnly: true,
+        secure: true,
+        path: '/',
+        sameSite: 'none'
+    });
+    res.clearCookie('refreshToken', {
+        httpOnly: true,
+        secure: true,
+        path: '/',
+        sameSite: 'none'
+    });
+
+
+    ApiResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'User Logged Out Successfully.',
+        data: null
+    });
+});
+
 export const AuthController = {
     logInUser,
-    changePassword
+    changePassword,
+    logOutUser
 
 }

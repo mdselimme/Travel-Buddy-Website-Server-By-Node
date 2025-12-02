@@ -26,10 +26,11 @@ router.post('/change-password',
     AuthController.changePassword
 );
 
-// // AUTH EMAIL VERIFICATION ROUTE
-// router.post('/verify-email',
-//     AuthController.verifyEmail
-// );
+// AUTH EMAIL VERIFICATION ROUTE
+router.post('/verify-email',
+    validateZodSchema(AuthValidation.emailValidation),
+    AuthController.verifyEmail
+);
 
 // // AUTH FORGOT PASSWORD ROUTE
 // router.post('/forgot-password',
@@ -41,9 +42,9 @@ router.post('/change-password',
 //     AuthController.refreshToken
 // );
 
-// // AUTH LOGOUT ROUTE
-// router.post('/logout',
-//     AuthController.logoutUser
-// );
+// AUTH LOGOUT ROUTE
+router.post('/logout',
+    AuthController.logOutUser
+);
 
 export const AuthRouter = router;

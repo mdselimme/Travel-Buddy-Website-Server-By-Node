@@ -2,6 +2,8 @@ import { Router } from "express";
 import { UserController } from "./user.controller";
 import { UserValidation } from "./user.validation";
 import validateZodSchema from "../../middlewares/validateZodSchemaRequest";
+import { checkAuth } from "../../middlewares/checkAuth";
+import { UserRole } from "./user.interface";
 
 
 const router = Router();
@@ -14,12 +16,14 @@ router.post('/',
 
 // USER UPDATE ROUTE
 router.patch('/',
+    checkAuth(...Object.values(UserRole)),
     validateZodSchema(UserValidation.userUpdateValidation),
     UserController.updateUser
 );
 
 // USER ROLE UPDATE ROUTE
 router.patch('/role',
+    checkAuth(UserRole.SUPER_ADMIN),
     validateZodSchema(UserValidation.userRoleUpdateValidation),
     UserController.updateUserRole
 );

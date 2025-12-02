@@ -37,6 +37,7 @@ const logInUser = async (payload: Partial<IUser>) => {
 
     return {
         ...jwtUserPayload,
+        isVerified: existingUser.isVerified,
         accessToken,
         refreshToken
     };
@@ -69,6 +70,8 @@ const changePassword = async (userId: string, oldPassword: string, newPassword: 
         message: 'Password changed successfully'
     }
 };
+
+
 
 
 export const AuthService = {

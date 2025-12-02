@@ -11,6 +11,13 @@ const loginValidation = z.object({
     }),
 });
 
+//Email VALIDATION
+const emailValidation = z.object({
+    email: z.string({
+        error: 'Email is required and string',
+    }),
+});
+
 //CHANGE PASSWORD VALIDATION
 const changePasswordValidation = z.object({
     oldPassword: z.string({
@@ -27,5 +34,7 @@ const changePasswordValidation = z.object({
 
 export const AuthValidation = {
     loginValidation,
-    changePasswordValidation
+    changePasswordValidation,
+    emailValidation
+
 };

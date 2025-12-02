@@ -21,6 +21,13 @@ interface IEnvVariables {
         REFRESH_TOKEN_SECRET: string,
         REFRESH_TOKEN_EXPIRED: string,
     },
+    SMTP: {
+        SMTP_PASS: string,
+        SMTP_USER: string,
+        SMTP_HOST: string,
+        SMTP_PORT: string,
+        SMTP_FROM: string,
+    }
 };
 
 // Load and validate environment variables
@@ -32,6 +39,11 @@ const loadEnvVariables = (): IEnvVariables => {
         "JWT_ACCESS_TOKEN_EXPIRED",
         "JWT_REFRESH_TOKEN_SECRET",
         "JWT_REFRESH_TOKEN_EXPIRED",
+        "SMTP_PASS",
+        "SMTP_USER",
+        "SMTP_HOST",
+        "SMTP_PORT",
+        "SMTP_FROM",
     ];
 
     requiredEnvVars.forEach((varName) => {
@@ -59,7 +71,14 @@ const loadEnvVariables = (): IEnvVariables => {
             ACCESS_TOKEN_EXPIRED: process.env.JWT_ACCESS_TOKEN_EXPIRED as string,
             REFRESH_TOKEN_SECRET: process.env.JWT_REFRESH_TOKEN_SECRET as string,
             REFRESH_TOKEN_EXPIRED: process.env.JWT_REFRESH_TOKEN_EXPIRED as string,
-        }
+        },
+        SMTP: {
+            SMTP_PASS: process.env.SMTP_PASS as string,
+            SMTP_USER: process.env.SMTP_USER as string,
+            SMTP_HOST: process.env.SMTP_HOST as string,
+            SMTP_PORT: process.env.SMTP_PORT as string,
+            SMTP_FROM: process.env.SMTP_FROM as string,
+        },
     };
 };
 
