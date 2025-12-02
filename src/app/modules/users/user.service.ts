@@ -28,7 +28,47 @@ const registerUserService = async (userData: Partial<IUser>): Promise<Partial<IU
 };
 
 //Update User Data Service Function
+const updateUserService = async (userId: string, updateData: Partial<IUser>): Promise<Partial<IUser> | null> => {
+
+    const existingUser = await UserModel.findById(userId);
+
+    if (!existingUser) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'User does not found.');
+    };
+
+    const updatedUser = await UserModel.findByIdAndUpdate(
+        userId,
+        updateData,
+        { new: true, runValidators: true }
+    );
+
+    return updatedUser;
+
+};
+
+//Update User Role Service Function
+const updateUserRoleService = async (userId: string, role: string): Promise<Partial<IUser> | null> => {
+
+    const existingUser = await UserModel.findById(userId);
+
+    if (!existingUser) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'User does not found.');
+    };
+
+    const updatedUser = await UserModel.findByIdAndUpdate(
+        userId,
+        { role },
+        { new: true, runValidators: true }
+    );
+    return {
+        role: updatedUser?.role
+    };
+};
+
+
 
 export const UserService = {
     registerUserService,
+    updateUserService,
+    updateUserRoleService
 }
