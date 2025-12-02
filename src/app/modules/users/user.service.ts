@@ -27,6 +27,8 @@ const registerUserService = async (userData: Partial<IUser>): Promise<Partial<IU
     return userWithoutPassword;
 };
 
+//Update User Data Service Function
+
 export const UserService = {
     registerUserService,
 }
