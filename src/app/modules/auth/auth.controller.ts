@@ -32,13 +32,13 @@ const changePassword = catchAsync(async (req: Request, res: Response) => {
 
     const decodedToken = req.user;
 
-    await AuthService.changePassword(decodedToken.userId, oldPassword, newPassword);
+    const result = await AuthService.changePassword(decodedToken.userId, oldPassword, newPassword);
 
 
     ApiResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
-        data: null,
+        data: result,
         message: 'Password changed successfully',
     });
 });

@@ -18,7 +18,7 @@ const logInUser = async (payload: Partial<IUser>) => {
         throw new ApiError(httpStatus.NOT_FOUND, 'User does not found')
     };
 
-    const isPasswordMatch = bcrypt.compare(payload.password as string, existingUser.password);
+    const isPasswordMatch = await bcrypt.compare(payload.password as string, existingUser.password);
 
     if (!isPasswordMatch) {
         throw new ApiError(httpStatus.UNAUTHORIZED, 'Password is incorrect')
@@ -51,7 +51,7 @@ const changePassword = async (userId: string, oldPassword: string, newPassword: 
         throw new ApiError(httpStatus.NOT_FOUND, 'User does not found');
     }
 
-    const isPasswordMatch = bcrypt.compare(oldPassword, existingUser.password);
+    const isPasswordMatch = await bcrypt.compare(oldPassword, existingUser.password);
 
     if (!isPasswordMatch) {
         throw new ApiError(httpStatus.UNAUTHORIZED, 'Old password is incorrect');
