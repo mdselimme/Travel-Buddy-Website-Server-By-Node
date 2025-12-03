@@ -3,11 +3,12 @@ import ApiError from "../../utils/ApiError"
 import { IActiveStatus, IUser } from "../users/user.interface"
 import { UserModel } from "../users/user.model"
 import bcrypt from 'bcrypt';
-import { generateToken } from '../../utils/jwtToken';
+import { generateToken, verifyToken } from '../../utils/jwtToken';
 import { envVars } from '../../../config/envVariable.config';
 import { sendEmail } from '../../utils/sendEmail';
 import { generateOtpCode, OTP_EXPIRATION } from '../../utils/otpGenerate';
 import { redisClient } from '../../../config/redis.config';
+import { IJwtTokenPayload } from '../../types/token.type';
 
 
 
@@ -193,6 +194,29 @@ const forgotPassword = async (email: string) => {
     }
 };
 
+//FORGOT PASSWORD RESET
+const forgotPasswordReset = async (token: string, password: string) => {
+    const decodedToken = verifyToken(token, envVars.JWT.ACCESS_TOKEN_SECRET) as IJwtTokenPayload;
+
+    const isUserExist = await UserModel.findById(decodedToken.userId);
+
+    if (!isUserExist) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'User does not found');
+    };
+
+    const hashedPassword = await bcrypt.hash(password, Number(envVars.BCRYPT_SALT_ROUNDS));
+
+    await UserModel.findByIdAndUpdate(
+        decodedToken.userId,
+        { password: hashedPassword },
+        { new: true, runValidators: true }
+    );
+
+    return {
+        message: 'Password Reset Successfully.'
+    }
+
+};
 
 
 export const AuthService = {
@@ -200,5 +224,6 @@ export const AuthService = {
     changePassword,
     emailSendVerification,
     verifyEmailOtpVerification,
-    forgotPassword
+    forgotPassword,
+    forgotPasswordReset
 }

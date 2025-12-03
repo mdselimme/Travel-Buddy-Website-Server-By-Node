@@ -14,10 +14,11 @@ router.post('/login',
     AuthController.logInUser
 );
 
-// // AUTH RESET PASSWORD ROUTE
-// router.post('/reset-password',
-//     AuthController.resetPassword
-// );
+// AUTH RESET PASSWORD ROUTE
+router.post('/reset-password',
+    validateZodSchema(AuthValidation.forgotPasswordValidation),
+    AuthController.forgotPasswordReset
+);
 
 // AUTH CHANGE PASSWORD ROUTE
 router.post('/change-password',
@@ -45,10 +46,11 @@ router.post('/forgot-password',
     AuthController.forgotPassword
 );
 
-// // AUTH REFRESH TOKEN ROUTE
-// router.post('/refresh-token',
-//     AuthController.refreshToken
-// );
+// AUTH REFRESH TOKEN ROUTE
+router.post('/refresh-token',
+    checkAuth(...Object.values(UserRole)),
+    AuthController.undoRefreshToken
+);
 
 // AUTH LOGOUT ROUTE
 router.post('/logout',

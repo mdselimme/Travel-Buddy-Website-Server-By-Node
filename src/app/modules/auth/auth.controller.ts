@@ -80,6 +80,19 @@ const forgotPassword = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+//FORGOT PASSWORD RESET
+const forgotPasswordReset = catchAsync(async (req: Request, res: Response) => {
+    const { token, password } = req.body;
+    const result = await AuthService.forgotPasswordReset(token, password);
+    ApiResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        data: result,
+        message: 'Password Reset Successfully.',
+    });
+});
+
+
 
 //LOG OUT USER
 const logOutUser = catchAsync(async (req: Request, res: Response) => {
@@ -112,6 +125,6 @@ export const AuthController = {
     logOutUser,
     emailSendVerification,
     verifyEmailOtpVerification,
-    forgotPassword
-
+    forgotPassword,
+    forgotPasswordReset
 }

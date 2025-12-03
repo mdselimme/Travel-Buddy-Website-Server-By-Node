@@ -26,6 +26,19 @@ const verifyEmailValidation = z.object({
         error: 'OTP is required and string',
     }).length(6, { error: "OTP must be exactly 6 digits long " })
 });
+//Forgot password validation
+const forgotPasswordValidation = z.object({
+    token: z.string({
+        error: 'Token is required and string',
+    }),
+    password: z
+        .string({ error: "password must be string & required." })
+        .min(8, { message: "Password minimum 8 characters long." })
+        .regex(/^(?=.*[A-Z])/, { message: "Password must be contain at least 1 uppercase letter" })
+        .regex(/^(?=.*[a-z])/, { message: "Password must be contain at least 1 lowercase letter" })
+        .regex(/^(?=.*[!@#$%^&*])/, { message: "Password must be contain at least 1 special character." })
+        .regex(/^(?=.*\d)/, { message: "Password must be contain at least 1 number" }),
+});
 
 //CHANGE PASSWORD VALIDATION
 const changePasswordValidation = z.object({
@@ -39,11 +52,12 @@ const changePasswordValidation = z.object({
         .regex(/^(?=.*[a-z])/, { message: "Password must be contain at least 1 lowercase letter" })
         .regex(/^(?=.*[!@#$%^&*])/, { message: "Password must be contain at least 1 special character." })
         .regex(/^(?=.*\d)/, { message: "Password must be contain at least 1 number" }),
-})
+});
 
 export const AuthValidation = {
     loginValidation,
     changePasswordValidation,
     emailValidation,
-    verifyEmailValidation
+    verifyEmailValidation,
+    forgotPasswordValidation
 };
