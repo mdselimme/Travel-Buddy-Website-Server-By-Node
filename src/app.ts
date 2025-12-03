@@ -1,4 +1,5 @@
 import express, { Application, Request, Response } from 'express';
+import bodyParser from 'body-parser';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import notFoundRoute from './app/middlewares/notFoundRoute';
@@ -11,6 +12,7 @@ app.use(cors({
     origin: 'http://localhost:3000',
     credentials: true
 }));
+app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());

@@ -19,6 +19,7 @@ const registerUser = catchAsync(async (req: Request, res: Response) => {
 //UPDATE USER CONTROLLER
 const updateUser = catchAsync(async (req: Request, res: Response) => {
     const { userId, ...updateData } = req.body;
+    updateData.profileImage = req.file?.path;
     const updatedUser = await UserService.updateUserService(userId, updateData);
     ApiResponse(res, {
         statusCode: httpStatus.OK,

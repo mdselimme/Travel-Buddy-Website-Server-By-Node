@@ -15,6 +15,7 @@ const userCreateValidation = z.object({
 
 // USER UPDATE VALIDATION
 const userUpdateValidation = z.object({
+    userId: z.string({ error: "User ID must be a string of objectId" }),
     fullName: z.string().min(3, 'Full name must be at least 3 characters long').optional(),
     email: z.email({ error: 'Invalid email address' }).optional(),
     contactNumber: z
