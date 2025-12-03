@@ -29,6 +29,18 @@ const updateUser = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+//GET ALL USERS CONTROLLER
+const getAllUsers = catchAsync(async (req: Request, res: Response) => {
+    const queryParams = req.query || {};
+    const users = await UserService.getAllUsersService(queryParams);
+    ApiResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Users retrieved successfully',
+        data: users
+    });
+});
+
 // UPDATE USER ROLE CONTROLLER 
 const updateUserRole = catchAsync(async (req: Request, res: Response) => {
     const { userId, role } = req.body;
@@ -44,5 +56,6 @@ const updateUserRole = catchAsync(async (req: Request, res: Response) => {
 export const UserController = {
     registerUser,
     updateUser,
-    updateUserRole
+    updateUserRole,
+    getAllUsers
 }

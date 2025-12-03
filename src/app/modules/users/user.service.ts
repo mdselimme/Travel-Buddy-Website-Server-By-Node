@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import httpStatus from 'http-status-codes';
 import ApiError from "../../utils/ApiError";
 import { IUser } from "./user.interface";
 import { UserModel } from "./user.model";
 import { makeHashedPassword } from '../../utils/makeHashedPassword';
+import { createQuery } from '../../utils/querySearch';
 
 
 
@@ -46,6 +48,26 @@ const updateUserService = async (userId: string, updateData: Partial<IUser>): Pr
 
 };
 
+//GET ALL USERS SERVICE FUNCTION
+const getAllUsersService = async (queryParams: any) => {
+
+    const { limit,
+        page, fields,
+        role, email,
+        isVerified, search,
+        startDate, endDate } = queryParams;
+
+    const users = await createQuery(UserModel)
+        .filter({ role, email, isVerified })
+        .search(['name', 'email'], search)
+        .dateRange('createdAt', startDate, endDate)
+        .paginate(page || 1, limit || 10)
+        .select(fields || '-password')
+        .exec();
+
+    return users;
+}
+
 //Update User Role Service Function
 const updateUserRoleService = async (userId: string, role: string): Promise<Partial<IUser> | null> => {
 
@@ -70,5 +92,6 @@ const updateUserRoleService = async (userId: string, role: string): Promise<Part
 export const UserService = {
     registerUserService,
     updateUserService,
-    updateUserRoleService
+    updateUserRoleService,
+    getAllUsersService,
 }

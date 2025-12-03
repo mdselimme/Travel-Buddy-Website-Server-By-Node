@@ -23,6 +23,12 @@ router.patch('/',
     UserController.updateUser
 );
 
+//GET ALL USER ROUTE
+router.get('/',
+    checkAuth(UserRole.SUPER_ADMIN, UserRole.ADMIN),
+    UserController.getAllUsers
+);
+
 // USER ROLE UPDATE ROUTE
 router.patch('/role',
     checkAuth(UserRole.SUPER_ADMIN),
