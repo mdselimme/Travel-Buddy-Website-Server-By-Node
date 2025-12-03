@@ -5,6 +5,7 @@ interface IEnvVariables {
     PORT: string;
     NODE_ENV: 'development' | 'production' | 'test';
     DB_URL: string;
+    CLIENT_SITE_URL: string;
     BCRYPT_SALT_ROUNDS: string;
     SUPER_ADMIN_EMAIL: string;
     SUPER_ADMIN_PASSWORD: string;
@@ -20,6 +21,7 @@ interface IEnvVariables {
         ACCESS_TOKEN_EXPIRED: string,
         REFRESH_TOKEN_SECRET: string,
         REFRESH_TOKEN_EXPIRED: string,
+        FORGOT_TOKEN_EXPIRED: string,
     },
     SMTP: {
         SMTP_PASS: string,
@@ -40,7 +42,9 @@ interface IEnvVariables {
 const loadEnvVariables = (): IEnvVariables => {
 
     const requiredEnvVars = [
-        'PORT', 'NODE_ENV', 'DB_URL', 'BCRYPT_SALT_ROUNDS', 'SUPER_ADMIN_EMAIL', 'SUPER_ADMIN_PASSWORD', 'SUPER_ADMIN_NAME',
+        'PORT', 'NODE_ENV', 'DB_URL',
+        "CLIENT_SITE_URL",
+        'BCRYPT_SALT_ROUNDS', 'SUPER_ADMIN_EMAIL', 'SUPER_ADMIN_PASSWORD', 'SUPER_ADMIN_NAME',
         'CLOUDINARY_CLOUD_NAME', 'CLOUDINARY_API_KEY', 'CLOUDINARY_API_SECRET', 'CLOUDINARY_SECRET', "JWT_ACCESS_TOKEN_SECRET",
         "JWT_ACCESS_TOKEN_EXPIRED",
         "JWT_REFRESH_TOKEN_SECRET",
@@ -53,7 +57,8 @@ const loadEnvVariables = (): IEnvVariables => {
         "REDIS_HOST",
         "REDIS_PORT",
         "REDIS_USERNAME",
-        "REDIS_PASSWORD"
+        "REDIS_PASSWORD",
+        "JWT_FORGOT_TOKEN_EXPIRED"
     ];
 
     requiredEnvVars.forEach((varName) => {
@@ -70,6 +75,7 @@ const loadEnvVariables = (): IEnvVariables => {
         SUPER_ADMIN_EMAIL: process.env.SUPER_ADMIN_EMAIL as string,
         SUPER_ADMIN_PASSWORD: process.env.SUPER_ADMIN_PASSWORD as string,
         SUPER_ADMIN_NAME: process.env.SUPER_ADMIN_NAME as string,
+        CLIENT_SITE_URL: process.env.CLIENT_SITE_URL as string,
         CLOUDINARY: {
             CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME as string,
             API_KEY: process.env.CLOUDINARY_API_KEY as string,
@@ -81,6 +87,7 @@ const loadEnvVariables = (): IEnvVariables => {
             ACCESS_TOKEN_EXPIRED: process.env.JWT_ACCESS_TOKEN_EXPIRED as string,
             REFRESH_TOKEN_SECRET: process.env.JWT_REFRESH_TOKEN_SECRET as string,
             REFRESH_TOKEN_EXPIRED: process.env.JWT_REFRESH_TOKEN_EXPIRED as string,
+            FORGOT_TOKEN_EXPIRED: process.env.JWT_FORGOT_TOKEN_EXPIRED as string
         },
         SMTP: {
             SMTP_PASS: process.env.SMTP_PASS as string,

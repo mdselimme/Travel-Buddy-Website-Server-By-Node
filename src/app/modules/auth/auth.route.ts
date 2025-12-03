@@ -39,10 +39,11 @@ router.post('/verify-email',
 );
 
 
-// // AUTH FORGOT PASSWORD ROUTE
-// router.post('/forgot-password',
-//     AuthController.resetPasswordVerify
-// );
+// AUTH FORGOT PASSWORD ROUTE
+router.post('/forgot-password',
+    validateZodSchema(AuthValidation.emailValidation),
+    AuthController.forgotPassword
+);
 
 // // AUTH REFRESH TOKEN ROUTE
 // router.post('/refresh-token',

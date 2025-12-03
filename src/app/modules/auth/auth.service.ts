@@ -149,6 +149,49 @@ const verifyEmailOtpVerification = async (email: string, otp: string) => {
 
 };
 
+//FORGOT PASSWORD EMAIL
+const forgotPassword = async (email: string) => {
+
+    const isUserExist = await UserModel.findOne({ email });
+
+    if (!isUserExist) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'User does not found');
+    }
+
+    if (!isUserExist.isVerified) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'User is not verified');
+    }
+
+    if (isUserExist.isActive !== IActiveStatus.ACTIVE) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'User is not active');
+    }
+
+    const jwtUserPayload = {
+        userId: isUserExist._id,
+        role: isUserExist.role,
+        email: isUserExist.email,
+        fullName: isUserExist.fullName
+    };
+
+    const tokenForForgotPass = generateToken(jwtUserPayload, envVars.JWT.ACCESS_TOKEN_SECRET, envVars.JWT.FORGOT_TOKEN_EXPIRED);
+
+    const redirectUrl = `${envVars.CLIENT_SITE_URL}/forgot-password?token=${tokenForForgotPass}&userId=${isUserExist._id}`;
+
+    sendEmail({
+        to: isUserExist.email,
+        subject: 'Forgot Password Email',
+        templateName: 'forgotPassword',
+        templateData: {
+            name: isUserExist.fullName,
+            redirectUrl: redirectUrl,
+            subject: 'Forgot Password Email from Travel Buddy.',
+        }
+    });
+
+    return {
+        message: 'Forgot Password Email Send Successfully.'
+    }
+};
 
 
 
@@ -156,6 +199,6 @@ export const AuthService = {
     logInUser,
     changePassword,
     emailSendVerification,
-    verifyEmailOtpVerification
-
+    verifyEmailOtpVerification,
+    forgotPassword
 }

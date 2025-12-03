@@ -68,6 +68,18 @@ const verifyEmailOtpVerification = catchAsync(async (req: Request, res: Response
     });
 });
 
+//FORGOT PASSWORD
+const forgotPassword = catchAsync(async (req: Request, res: Response) => {
+    const { email } = req.body;
+    const result = await AuthService.forgotPassword(email);
+    ApiResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        data: result,
+        message: 'Forgot Password Email Send Successfully.',
+    });
+});
+
 
 //LOG OUT USER
 const logOutUser = catchAsync(async (req: Request, res: Response) => {
@@ -99,6 +111,7 @@ export const AuthController = {
     changePassword,
     logOutUser,
     emailSendVerification,
-    verifyEmailOtpVerification
+    verifyEmailOtpVerification,
+    forgotPassword
 
 }
