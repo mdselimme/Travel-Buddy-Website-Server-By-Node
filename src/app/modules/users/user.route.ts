@@ -29,9 +29,15 @@ router.get('/',
     UserController.getAllUsers
 );
 
+//GET USER BY ID ROUTE
+router.get('/:id',
+    checkAuth(...Object.values(UserRole)),
+    UserController.getUserById
+);
+
 // USER ROLE UPDATE ROUTE
-router.patch('/role',
-    checkAuth(UserRole.SUPER_ADMIN),
+router.patch('/update-role',
+    checkAuth(UserRole.SUPER_ADMIN, UserRole.ADMIN),
     validateZodSchema(UserValidation.userRoleUpdateValidation),
     UserController.updateUserRole
 );

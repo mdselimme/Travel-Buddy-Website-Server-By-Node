@@ -35,7 +35,7 @@ const userUpdateValidation = z.object({
 //User Role Update Validation
 const userRoleUpdateValidation = z.object({
     userId: z.string({ error: "User ID must be a string of objectId" }),
-    role: z.enum(Object.values(UserRole), { error: "Invalid user role! Value must be from " + Object.values(UserRole).join(", ") + "the given options." }),
+    role: z.enum([UserRole.ADMIN, UserRole.USER], { error: "Invalid user role! Value must be from ADMIN, USER the given options." }),
 });
 
 export const UserValidation = {

@@ -3,6 +3,7 @@ import ApiResponse from "../../utils/ApiResponse";
 import catchAsync from "../../utils/catchAsync";
 import { UserService } from "./user.service";
 import { Request, Response } from 'express';
+import { IJwtTokenPayload } from '../../types/token.type';
 
 //REGISTER USER CONTROLLER
 const registerUser = catchAsync(async (req: Request, res: Response) => {
@@ -41,9 +42,25 @@ const getAllUsers = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+//GET USER BY ID CONTROLLER
+const getUserById = catchAsync(async (req: Request, res: Response) => {
+
+    const decodedToken = req.user;
+
+    const userId = req.params.id;
+    const user = await UserService.getUserByIdService(userId, decodedToken as IJwtTokenPayload);
+    ApiResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'User retrieved successfully',
+        data: user
+    });
+});
+
 // UPDATE USER ROLE CONTROLLER 
 const updateUserRole = catchAsync(async (req: Request, res: Response) => {
     const { userId, role } = req.body;
+
     const updatedUser = await UserService.updateUserRoleService(userId, role);
     ApiResponse(res, {
         statusCode: httpStatus.OK,
@@ -57,5 +74,6 @@ export const UserController = {
     registerUser,
     updateUser,
     updateUserRole,
-    getAllUsers
+    getAllUsers,
+    getUserById,
 }

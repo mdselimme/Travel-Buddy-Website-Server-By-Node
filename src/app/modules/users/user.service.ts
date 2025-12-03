@@ -5,6 +5,7 @@ import { IUser } from "./user.interface";
 import { UserModel } from "./user.model";
 import { makeHashedPassword } from '../../utils/makeHashedPassword';
 import { createQuery } from '../../utils/querySearch';
+import { IJwtTokenPayload } from '../../types/token.type';
 
 
 
@@ -66,7 +67,19 @@ const getAllUsersService = async (queryParams: any) => {
         .exec();
 
     return users;
-}
+};
+
+//GET USER BY ID SERVICE FUNCTION
+const getUserByIdService = async (userId: string, decodedToken: IJwtTokenPayload): Promise<Partial<IUser> | null> => {
+    if (decodedToken.role === 'USER' && decodedToken.userId !== userId) {
+        throw new ApiError(httpStatus.FORBIDDEN, 'You are not allowed to access this user data.');
+    }
+    const user = await UserModel.findById(userId).select('-password');
+    if (!user) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'User does not found.');
+    };
+    return user;
+};
 
 //Update User Role Service Function
 const updateUserRoleService = async (userId: string, role: string): Promise<Partial<IUser> | null> => {
@@ -76,6 +89,11 @@ const updateUserRoleService = async (userId: string, role: string): Promise<Part
     if (!existingUser) {
         throw new ApiError(httpStatus.NOT_FOUND, 'User does not found.');
     };
+
+    if (existingUser.role === role.toUpperCase()) {
+        throw new ApiError(httpStatus.BAD_REQUEST, `User is already assigned the role of ${role}.`);
+    };
+
 
     const updatedUser = await UserModel.findByIdAndUpdate(
         userId,
@@ -94,4 +112,5 @@ export const UserService = {
     updateUserService,
     updateUserRoleService,
     getAllUsersService,
+    getUserByIdService,
 }
