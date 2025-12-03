@@ -7,6 +7,7 @@ import { setTokenAuthCookie } from '../../utils/setTokenCookie';
 
 
 
+
 //Auth Login Controller
 const logInUser = catchAsync(async (req: Request, res: Response) => {
 
@@ -92,6 +93,21 @@ const forgotPasswordReset = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+//REFRESH TOKEN FUNCTION
+const undoRefreshToken = catchAsync(async (req: Request, res: Response) => {
+    const refreshToken = req.cookies.refreshToken || req.headers.authorization;
+
+    const result = await AuthService.undoRefreshToken(refreshToken);
+
+    setTokenAuthCookie(res, result);
+
+    ApiResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'RefreshToken Undo Successfully.',
+        data: result
+    });
+});
 
 
 //LOG OUT USER
@@ -126,5 +142,6 @@ export const AuthController = {
     emailSendVerification,
     verifyEmailOtpVerification,
     forgotPassword,
-    forgotPasswordReset
-}
+    forgotPasswordReset,
+    undoRefreshToken
+};

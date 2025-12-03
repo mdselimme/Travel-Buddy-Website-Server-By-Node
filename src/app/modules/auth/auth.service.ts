@@ -22,6 +22,10 @@ const logInUser = async (payload: Partial<IUser>) => {
         throw new ApiError(httpStatus.NOT_FOUND, 'User does not found')
     };
 
+    if (existingUser.isActive !== IActiveStatus.ACTIVE) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'User is not active');
+    }
+
     const isPasswordMatch = await bcrypt.compare(payload.password as string, existingUser.password);
 
     if (!isPasswordMatch) {
@@ -215,9 +219,42 @@ const forgotPasswordReset = async (token: string, password: string) => {
     return {
         message: 'Password Reset Successfully.'
     }
-
 };
 
+//REFRESH TOKEN UNDO SERVICE
+const undoRefreshToken = async (token: string) => {
+    const decodedToken = verifyToken(token, envVars.JWT.REFRESH_TOKEN_SECRET) as IJwtTokenPayload;
+
+    const isUserExists = await UserModel.findById(decodedToken.userId);
+
+    if (!isUserExists) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'User does not found');
+    };
+
+    if (!isUserExists.isVerified) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'User is not verified');
+    }
+
+    if (isUserExists.isActive !== IActiveStatus.ACTIVE) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'User is not active');
+    }
+
+    const jwtUserPayload = {
+        userId: isUserExists._id,
+        role: isUserExists.role,
+        email: isUserExists.email,
+        fullName: isUserExists.fullName
+    };
+
+    const accessToken = generateToken(jwtUserPayload, envVars.JWT.ACCESS_TOKEN_SECRET, envVars.JWT.ACCESS_TOKEN_EXPIRED);
+
+    const refreshToken = generateToken(jwtUserPayload, envVars.JWT.REFRESH_TOKEN_SECRET, envVars.JWT.REFRESH_TOKEN_EXPIRED);
+
+    return {
+        accessToken,
+        refreshToken
+    };
+};
 
 export const AuthService = {
     logInUser,
@@ -225,5 +262,6 @@ export const AuthService = {
     emailSendVerification,
     verifyEmailOtpVerification,
     forgotPassword,
-    forgotPasswordReset
+    forgotPasswordReset,
+    undoRefreshToken
 }

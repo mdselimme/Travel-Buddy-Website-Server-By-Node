@@ -48,7 +48,6 @@ router.post('/forgot-password',
 
 // AUTH REFRESH TOKEN ROUTE
 router.post('/refresh-token',
-    checkAuth(...Object.values(UserRole)),
     AuthController.undoRefreshToken
 );
 
