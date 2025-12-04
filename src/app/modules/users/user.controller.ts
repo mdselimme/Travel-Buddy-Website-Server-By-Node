@@ -100,6 +100,19 @@ const updateUserRole = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+//DELETE AN USER CONTROLLER
+const deleteAnUser = catchAsync(async (req: Request, res: Response) => {
+    const userId = req.params.id;
+
+    await UserService.deleteAnUserService(userId);
+    ApiResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'User deleted successfully',
+        data: null
+    });
+});
+
 export const UserController = {
     registerUser,
     updateUser,
@@ -107,5 +120,6 @@ export const UserController = {
     getAllUsers,
     getUserById,
     getUserProfile,
-    updateUserStatus
+    updateUserStatus,
+    deleteAnUser
 }

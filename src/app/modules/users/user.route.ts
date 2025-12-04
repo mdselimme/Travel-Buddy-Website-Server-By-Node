@@ -56,10 +56,10 @@ router.patch('/update-status/:id',
 );
 
 // USER DELETE ROUTE
-// router.delete('/:id',
-//     checkAuth(UserRole.SUPER_ADMIN, UserRole.ADMIN),
-//     UserController.deleteUser
-// );
+router.delete('/:id',
+    checkAuth(UserRole.SUPER_ADMIN, UserRole.ADMIN),
+    UserController.deleteAnUser
+);
 
 
 

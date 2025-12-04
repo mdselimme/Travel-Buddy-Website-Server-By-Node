@@ -54,13 +54,14 @@ const getAllUsersService = async (queryParams: any) => {
 
     const { limit,
         page, fields,
-        role, email,
+        role, email, sort,
         isVerified, search,
         startDate, endDate } = queryParams;
 
     const users = await createQuery(UserModel)
         .filter({ role, email, isVerified })
-        .search(['name', 'email'], search)
+        .search(['fullName', 'email'], search)
+        .sort(sort || '-createdAt')
         .dateRange('createdAt', startDate, endDate)
         .paginate(page || 1, limit || 10)
         .select(fields || '-password')
@@ -139,6 +140,17 @@ const updateUserStatusService = async (userId: string, isActive: string, decoded
     };
 };
 
+//DELETE AN USER SERVICE FUNCTION
+const deleteAnUserService = async (userId: string): Promise<void> => {
+    const isUserExist = await UserModel.findById(userId);
+
+    if (!isUserExist) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'User does not found.');
+    };
+
+    await UserModel.findByIdAndDelete(userId);
+};
+
 
 
 export const UserService = {
@@ -148,5 +160,6 @@ export const UserService = {
     getAllUsersService,
     getUserByIdService,
     getUserProfileService,
-    updateUserStatusService
+    updateUserStatusService,
+    deleteAnUserService
 }
