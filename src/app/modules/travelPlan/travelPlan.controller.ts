@@ -75,11 +75,24 @@ const getSingleTravelPlan = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+//DELETE A TRAVEL PLAN CONTROLLER
+const deleteATravelPlan = catchAsync(async (req: Request, res: Response) => {
+    const { id } = req.params;
 
+    const result = await TravelPlanService.deleteATravelPlan(id);
+
+    ApiResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: "Travel Plan deleted successfully",
+        data: result
+    });
+});
 
 export const TravelPlanController = {
     createATravelPlan,
     updateATravelPlan,
     getAllTravelPlans,
-    getSingleTravelPlan
+    getSingleTravelPlan,
+    deleteATravelPlan
 }

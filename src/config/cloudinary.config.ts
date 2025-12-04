@@ -12,6 +12,22 @@ cloudinary.config({
     api_secret: envVars.CLOUDINARY.API_SECRET
 });
 
+export const deleteImageFromCloudinary = async (url: string): Promise<void> => {
+    try {
+        const regex = /\/v\d+\/(.*?)\.(jpg|jpeg|png|gif|webp)$/i;
+        const match = url.match(regex);
+        if (match && match[1]) {
+            const public_id = match[1];
+            await cloudinary.uploader.destroy(public_id);
+        } else {
+            throw new ApiError(httpStatus.BAD_REQUEST, "Invalid image URL format.");
+        }
+    } catch (error) {
+        throw new ApiError(httpStatus.BAD_REQUEST, `Error deleting file from cloudinary: ${(error as Error).message}.`);
+    }
+};
+
+
 export const uploadFileToCloudinary = async (buffer: Buffer, fileName: string): Promise<UploadApiResponse | undefined> => {
     try {
 

@@ -4,6 +4,7 @@ import ApiError from "../../utils/ApiError";
 import { ITravelPlan } from "./travelPlan.interface"
 import { TravelPlanModel } from "./travelPlan.model";
 import { createQuery } from '../../utils/querySearch';
+import { deleteImageFromCloudinary } from '../../../config/cloudinary.config';
 
 
 //CREATE A TRAVEL PLAN SERVICE
@@ -50,9 +51,28 @@ const getSingleTravelPlan = async (id: string): Promise<Partial<ITravelPlan> | n
     return travelPlan;
 };
 
+//DELETE A TRAVEL PLAN SERVICE
+const deleteATravelPlan = async (id: string): Promise<Partial<ITravelPlan> | null> => {
+    const existingTravelPlan = await TravelPlanModel.findById(id);
+
+    if (!existingTravelPlan) {
+        throw new ApiError(httpStatus.NOT_FOUND, "Travel Plan not found");
+    }
+
+    if (existingTravelPlan?.thumbnail) {
+        await deleteImageFromCloudinary(existingTravelPlan.thumbnail);
+    }
+
+    await TravelPlanModel.findByIdAndDelete(id);
+
+    return null
+
+};
+
 export const TravelPlanService = {
     createATravelPlan,
     updateATravelPlan,
     getAllTravelPlans,
-    getSingleTravelPlan
+    getSingleTravelPlan,
+    deleteATravelPlan
 }

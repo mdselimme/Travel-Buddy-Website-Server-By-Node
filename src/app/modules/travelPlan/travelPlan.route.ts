@@ -33,8 +33,13 @@ router.patch("/:id",
 
 //GET TRAVEL PLAN BY ID ROUTE
 router.get("/:id",
-    checkAuth(...Object.values(UserRole)),
     TravelPlanController.getSingleTravelPlan
+);
+
+//DELETE A TRAVEL PLAN ROUTE
+router.delete("/:id",
+    checkAuth(...Object.values(UserRole)),
+    TravelPlanController.deleteATravelPlan
 );
 
 
