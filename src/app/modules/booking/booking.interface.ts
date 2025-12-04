@@ -1,19 +1,20 @@
 import { Types } from "mongoose";
 
 export enum BookingStatus {
-    PENDING = "PENDING",
-    CONFIRMED = "CONFIRMED",
+    ONGOING = "ONGOING",
+    BOOKED = "BOOKED",
     CANCELLED = "CANCELLED"
-}
+};
 
 
 export interface IBooking {
-    _id?: string;
-    travelersId: Types.ObjectId[];
-    paymentsId: Types.ObjectId[];
+    _id?: Types.ObjectId;
+    travelerId: Types.ObjectId;
+    paymentId: Types.ObjectId;
     travelPlanId: Types.ObjectId;
-    total: number;
+    totalMembers: number;
     status: BookingStatus;
+    totalCosts: number;
     createdAt?: Date;
     updatedAt?: Date;
 }

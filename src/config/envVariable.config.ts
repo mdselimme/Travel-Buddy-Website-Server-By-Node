@@ -35,6 +35,19 @@ interface IEnvVariables {
         REDIS_PORT: string,
         REDIS_USERNAME: string,
         REDIS_PASSWORD: string,
+    },
+    SSL: {
+        SSL_COMMERZ_STORE_ID: string
+        SSL_COMMERZ_STORE_PASS: string
+        SSL_COMMERZ_PAYMENT_API: string
+        SSL_COMMERZ_VALIDATION_API: string
+        SSL_COMMERZ_IPN_URL: string,
+        SSL_SUCCESS_FRONTEND_URL: string,
+        SSL_FAIL_FRONTEND_URL: string,
+        SSL_CANCEL_FRONTEND_URL: string,
+        SSL_SUCCESS_BACKEND_URL: string,
+        SSL_FAIL_BACKEND_URL: string,
+        SSL_CANCEL_BACKEND_URL: string
     }
 };
 
@@ -58,7 +71,18 @@ const loadEnvVariables = (): IEnvVariables => {
         "REDIS_PORT",
         "REDIS_USERNAME",
         "REDIS_PASSWORD",
-        "JWT_FORGOT_TOKEN_EXPIRED"
+        "JWT_FORGOT_TOKEN_EXPIRED",
+        "SSL_COMMERZ_STORE_ID",
+        "SSL_COMMERZ_STORE_PASS",
+        "SSL_COMMERZ_PAYMENT_API",
+        "SSL_COMMERZ_VALIDATION_API",
+        "SSL_COMMERZ_IPN_URL",
+        "SSL_SUCCESS_FRONTEND_URL",
+        "SSL_FAIL_FRONTEND_URL",
+        "SSL_CANCEL_FRONTEND_URL",
+        "SSL_SUCCESS_BACKEND_URL",
+        "SSL_FAIL_BACKEND_URL",
+        "SSL_CANCEL_BACKEND_URL"
     ];
 
     requiredEnvVars.forEach((varName) => {
@@ -101,6 +125,19 @@ const loadEnvVariables = (): IEnvVariables => {
             REDIS_PORT: process.env.REDIS_PORT as string,
             REDIS_USERNAME: process.env.REDIS_USERNAME as string,
             REDIS_PASSWORD: process.env.REDIS_PASSWORD as string,
+        },
+        SSL: {
+            SSL_COMMERZ_STORE_ID: process.env.SSL_COMMERZ_STORE_ID as string,
+            SSL_COMMERZ_STORE_PASS: process.env.SSL_COMMERZ_STORE_PASS as string,
+            SSL_COMMERZ_PAYMENT_API: process.env.SSL_COMMERZ_PAYMENT_API as string,
+            SSL_COMMERZ_VALIDATION_API: process.env.SSL_COMMERZ_VALIDATION_API as string,
+            SSL_COMMERZ_IPN_URL: process.env.SSL_COMMERZ_IPN_URL as string,
+            SSL_SUCCESS_FRONTEND_URL: process.env.SSL_SUCCESS_FRONTEND_URL as string,
+            SSL_FAIL_FRONTEND_URL: process.env.SSL_FAIL_FRONTEND_URL as string,
+            SSL_CANCEL_FRONTEND_URL: process.env.SSL_CANCEL_FRONTEND_URL as string,
+            SSL_SUCCESS_BACKEND_URL: process.env.SSL_SUCCESS_BACKEND_URL as string,
+            SSL_FAIL_BACKEND_URL: process.env.SSL_FAIL_BACKEND_URL as string,
+            SSL_CANCEL_BACKEND_URL: process.env.SSL_CANCEL_BACKEND_URL as string
         }
     };
 };
