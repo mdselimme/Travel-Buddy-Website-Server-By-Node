@@ -69,6 +69,15 @@ const getAllUsersService = async (queryParams: any) => {
     return users;
 };
 
+//GET USER PROFILE SERVICE FUNCTION
+const getUserProfileService = async (decodedToken: IJwtTokenPayload): Promise<Partial<IUser> | null> => {
+    const user = await UserModel.findById(decodedToken.userId).select('-password');
+    if (!user) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'User does not found.');
+    };
+    return user;
+};
+
 //GET USER BY ID SERVICE FUNCTION
 const getUserByIdService = async (userId: string, decodedToken: IJwtTokenPayload): Promise<Partial<IUser> | null> => {
     if (decodedToken.role === 'USER' && decodedToken.userId !== userId) {
@@ -113,4 +122,5 @@ export const UserService = {
     updateUserRoleService,
     getAllUsersService,
     getUserByIdService,
+    getUserProfileService
 }

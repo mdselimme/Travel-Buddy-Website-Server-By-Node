@@ -44,7 +44,10 @@ const logInUser = async (payload: Partial<IUser>) => {
     const refreshToken = generateToken(jwtUserPayload, envVars.JWT.REFRESH_TOKEN_SECRET, envVars.JWT.REFRESH_TOKEN_EXPIRED);
 
     return {
-        ...jwtUserPayload,
+        _id: existingUser._id,
+        fullName: existingUser.fullName,
+        email: existingUser.email,
+        role: existingUser.role,
         isVerified: existingUser.isVerified,
         accessToken,
         refreshToken

@@ -42,6 +42,21 @@ const getAllUsers = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+//GET USER PROFILE CONTROLLER
+const getUserProfile = catchAsync(async (req: Request, res: Response) => {
+
+    const decodedToken = req.user;
+
+    const user = await UserService.getUserProfileService(decodedToken as IJwtTokenPayload);
+    ApiResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'User profile retrieved successfully',
+        data: user
+    });
+
+});
+
 //GET USER BY ID CONTROLLER
 const getUserById = catchAsync(async (req: Request, res: Response) => {
 
@@ -76,4 +91,5 @@ export const UserController = {
     updateUserRole,
     getAllUsers,
     getUserById,
+    getUserProfile
 }

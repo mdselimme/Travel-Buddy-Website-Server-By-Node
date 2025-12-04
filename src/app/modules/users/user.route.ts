@@ -29,6 +29,12 @@ router.get('/',
     UserController.getAllUsers
 );
 
+//USER PROFILE GET ROUTE
+router.get('/me',
+    checkAuth(...Object.values(UserRole)),
+    UserController.getUserProfile
+);
+
 //GET USER BY ID ROUTE
 router.get('/:id',
     checkAuth(...Object.values(UserRole)),
@@ -41,5 +47,19 @@ router.patch('/update-role',
     validateZodSchema(UserValidation.userRoleUpdateValidation),
     UserController.updateUserRole
 );
+
+//USER PROFILE SOFT DELETE ROUTE
+// router.patch('/soft-delete/:id',
+//     checkAuth(...Object.values(UserRole)),
+//     UserController.softDeleteUserProfile
+// );
+
+// USER DELETE ROUTE
+// router.delete('/:id',
+//     checkAuth(UserRole.SUPER_ADMIN, UserRole.ADMIN),
+//     UserController.deleteUser
+// );
+
+
 
 export const UserRouter = router;
