@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import httpStatus from 'http-status-codes';
 import ApiError from "../../utils/ApiError";
-import { IUser } from "./user.interface";
+import { IUser, UserRole } from "./user.interface";
 import { UserModel } from "./user.model";
 import { makeHashedPassword } from '../../utils/makeHashedPassword';
 import { createQuery } from '../../utils/querySearch';
@@ -114,6 +114,31 @@ const updateUserRoleService = async (userId: string, role: string): Promise<Part
     };
 };
 
+//UPDATE USER STATUS SERVICE FUNCTION
+const updateUserStatusService = async (userId: string, isActive: string, decodedToken: IJwtTokenPayload): Promise<Partial<IUser> | null> => {
+    const existingUser = await UserModel.findById(userId);
+
+    if (!existingUser) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'User does not found.');
+    };
+
+    if (decodedToken.role !== UserRole.SUPER_ADMIN && existingUser.role === UserRole.SUPER_ADMIN) {
+        throw new ApiError(httpStatus.FORBIDDEN, 'You are not allowed to update user status.');
+    };
+
+    if (existingUser.isActive === isActive) {
+        throw new ApiError(httpStatus.BAD_REQUEST, `User status is already ${isActive}.`);
+    };
+    const updatedUser = await UserModel.findByIdAndUpdate(
+        userId,
+        { isActive },
+        { new: true, runValidators: true }
+    );
+    return {
+        isActive: updatedUser?.isActive
+    };
+};
+
 
 
 export const UserService = {
@@ -122,5 +147,6 @@ export const UserService = {
     updateUserRoleService,
     getAllUsersService,
     getUserByIdService,
-    getUserProfileService
+    getUserProfileService,
+    updateUserStatusService
 }

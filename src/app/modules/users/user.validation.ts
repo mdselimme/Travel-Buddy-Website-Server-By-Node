@@ -1,5 +1,5 @@
 import z from "zod";
-import { UserRole } from "./user.interface";
+import { IActiveStatus, UserRole } from "./user.interface";
 // USER CREATE VALIDATION
 const userCreateValidation = z.object({
     fullName: z.string().min(3, 'Full name must be at least 3 characters long'),
@@ -38,8 +38,14 @@ const userRoleUpdateValidation = z.object({
     role: z.enum([UserRole.ADMIN, UserRole.USER], { error: "Invalid user role! Value must be from ADMIN, USER the given options." }),
 });
 
+//USER STATUS UPDATE VALIDATION
+const userStatusUpdateValidation = z.object({
+    isActive: z.enum([...Object.values(IActiveStatus)], { error: `Invalid status value! Value must be from ${Object.values(IActiveStatus).join(', ')} these options.` }),
+});
+
 export const UserValidation = {
     userCreateValidation,
     userUpdateValidation,
     userRoleUpdateValidation,
-}
+    userStatusUpdateValidation
+};

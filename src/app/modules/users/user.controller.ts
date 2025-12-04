@@ -72,6 +72,21 @@ const getUserById = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+//UPDATE USER STATUS CONTROLLER
+const updateUserStatus = catchAsync(async (req: Request, res: Response) => {
+    const userId = req.params.id;
+    const { isActive } = req.body;
+    const decodedToken = req.user;
+
+    const updatedUser = await UserService.updateUserStatusService(userId, isActive, decodedToken as IJwtTokenPayload);
+    ApiResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'User status updated successfully',
+        data: updatedUser
+    });
+});
+
 // UPDATE USER ROLE CONTROLLER 
 const updateUserRole = catchAsync(async (req: Request, res: Response) => {
     const { userId, role } = req.body;
@@ -91,5 +106,6 @@ export const UserController = {
     updateUserRole,
     getAllUsers,
     getUserById,
-    getUserProfile
+    getUserProfile,
+    updateUserStatus
 }

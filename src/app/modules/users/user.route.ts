@@ -48,11 +48,12 @@ router.patch('/update-role',
     UserController.updateUserRole
 );
 
-//USER PROFILE SOFT DELETE ROUTE
-// router.patch('/soft-delete/:id',
-//     checkAuth(...Object.values(UserRole)),
-//     UserController.softDeleteUserProfile
-// );
+//USER PROFILE STATUS UPDATE ROUTE
+router.patch('/update-status/:id',
+    checkAuth(UserRole.SUPER_ADMIN, UserRole.ADMIN),
+    validateZodSchema(UserValidation.userStatusUpdateValidation),
+    UserController.updateUserStatus
+);
 
 // USER DELETE ROUTE
 // router.delete('/:id',
