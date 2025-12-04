@@ -31,5 +31,11 @@ router.patch("/:id",
     TravelPlanController.updateATravelPlan
 );
 
+//GET TRAVEL PLAN BY ID ROUTE
+router.get("/:id",
+    checkAuth(...Object.values(UserRole)),
+    TravelPlanController.getSingleTravelPlan
+);
+
 
 export const TravelPlanRouter = router;

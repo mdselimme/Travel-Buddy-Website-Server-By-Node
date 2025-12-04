@@ -63,10 +63,23 @@ const getAllTravelPlans = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+//GET SINGLE TRAVEL PLAN CONTROLLER
+const getSingleTravelPlan = catchAsync(async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const result = await TravelPlanService.getSingleTravelPlan(id);
+    ApiResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: "Travel Plan retrieved successfully",
+        data: result
+    });
+});
+
 
 
 export const TravelPlanController = {
     createATravelPlan,
     updateATravelPlan,
-    getAllTravelPlans
+    getAllTravelPlans,
+    getSingleTravelPlan
 }

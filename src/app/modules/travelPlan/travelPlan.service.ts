@@ -39,9 +39,20 @@ const getAllTravelPlans = async (query: any) => {
 
 };
 
+//GET SINGLE TRAVEL PLAN SERVICE
+const getSingleTravelPlan = async (id: string): Promise<Partial<ITravelPlan> | null> => {
+    const travelPlan = await TravelPlanModel.findById(id);
+
+    if (!travelPlan) {
+        throw new ApiError(httpStatus.NOT_FOUND, "Travel Plan not found");
+    }
+
+    return travelPlan;
+};
 
 export const TravelPlanService = {
     createATravelPlan,
     updateATravelPlan,
-    getAllTravelPlans
+    getAllTravelPlans,
+    getSingleTravelPlan
 }
