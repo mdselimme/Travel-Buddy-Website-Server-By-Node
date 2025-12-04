@@ -11,6 +11,20 @@ const createATravelPlanSchema = z.object({
     travelTypes: z.array(z.string({ error: "Each travel type must be a string" }), { error: "Travel Types is required & must be an array of strings" }),
 });
 
+//UPDATE A TRAVEL PLAN VALIDATION
+const updateATravelPlanSchema = z.object({
+    travelTitle: z.string({ error: "Travel Title must be a string" }).optional(),
+    destination: z.string({ error: "Destination must be a string" }).optional(),
+    accommodations: z.string({ error: "Accommodations must be a string" }).optional(),
+    travelDescription: z.string({ error: "Travel Description must be a string" }).optional(),
+    activities: z.array(z.string({ error: "Each activity must be a string" }), { error: "Activities must be an array of strings" }).optional(),
+    startDate: z.string({ error: "Start Date must be a string and valid date format" }).optional(),
+    endDate: z.string({ error: "End Date must be a string and valid date format" }).optional(),
+    budgetRange: z.number({ error: "Budget Range must be a number" }).optional(),
+    travelTypes: z.array(z.string({ error: "Each travel type must be a string" }), { error: "Travel Types must be an array of strings" }).optional(),
+});
+
 export const TravelPlanValidation = {
-    createATravelPlanSchema
+    createATravelPlanSchema,
+    updateATravelPlanSchema
 };

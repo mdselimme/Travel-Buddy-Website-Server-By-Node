@@ -7,6 +7,7 @@ import { TravelPlanController } from "./travelPlan.controller";
 import { multerUpload } from "../../../config/multer.config";
 
 
+
 const router = Router();
 
 //CREATE A NEW TRAVEL PLAN
@@ -15,6 +16,19 @@ router.post("/create-plan",
     multerUpload.single("file"),
     validateZodSchema(TravelPlanValidation.createATravelPlanSchema),
     TravelPlanController.createATravelPlan
+);
+
+//GET ALL TRAVEL PLANS ROUTE
+router.get("/",
+    TravelPlanController.getAllTravelPlans
+);
+
+//UPDATE A TRAVEL PLAN
+router.patch("/:id",
+    checkAuth(...Object.values(UserRole)),
+    multerUpload.single("file"),
+    validateZodSchema(TravelPlanValidation.updateATravelPlanSchema),
+    TravelPlanController.updateATravelPlan
 );
 
 

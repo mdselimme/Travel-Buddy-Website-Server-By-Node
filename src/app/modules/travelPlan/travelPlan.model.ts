@@ -5,6 +5,7 @@ import { ITravelPlan } from "./travelPlan.interface";
 
 const travelPlanSchema = new Schema<ITravelPlan>({
     travelersIds: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    travelTitle: { type: String, required: true },
     thumbnail: { type: String, required: true },
     bookingId: { type: Schema.Types.ObjectId, ref: "Booking" },
     creatorId: { type: Schema.Types.ObjectId, ref: "User", required: true },
