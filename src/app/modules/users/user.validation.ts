@@ -17,7 +17,6 @@ const userCreateValidation = z.object({
 const userUpdateValidation = z.object({
     userId: z.string({ error: "User ID must be a string of objectId" }),
     fullName: z.string().min(3, 'Full name must be at least 3 characters long').optional(),
-    email: z.email({ error: 'Invalid email address' }).optional(),
     contactNumber: z
         .string()
         .length(11, { message: "Phone number must be exactly 11 digits" })
@@ -26,10 +25,10 @@ const userUpdateValidation = z.object({
                 "Invalid Bangladeshi phone number. It must start with '01' and be exactly 11 digits long.",
         }).optional(),
     address: z.string({ error: "address must be a string" }).optional(),
-    visitedCountries: z.array(z.string({ error: "visited countries must be a string array" })).optional(),
+    visitedPlaces: z.array(z.string({ error: "visited places must be a string array" })).optional(),
     currentLocation: z.string({ error: "current location must be a string" }).optional(),
-    travelsInterests: z.array(z.string({ error: "travel interests must be a string array" })).optional(),
-    aboutMe: z.string({ error: "about me must be a string" }).optional(),
+    interests: z.array(z.string({ error: "interests must be a string array" })).optional(),
+    bio: z.string({ error: "bio must be a string" }).optional(),
 });
 
 //User Role Update Validation

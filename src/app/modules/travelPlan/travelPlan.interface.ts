@@ -1,6 +1,12 @@
 import { Types } from "mongoose";
 
 
+export enum TravelPlanStatus {
+    ONGOING = "ONGOING",
+    COMPLETED = "COMPLETED",
+    CANCELLED = "CANCELLED",
+}
+
 
 export interface ITravelPlan {
     _id?: Types.ObjectId;
@@ -12,6 +18,7 @@ export interface ITravelPlan {
     destination: string;
     startDate: Date;
     endDate: Date;
+    travelPlanStatus: TravelPlanStatus;
     activities?: string[];
     accommodations?: string;
     budgetRange: number;

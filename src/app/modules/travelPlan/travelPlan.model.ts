@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-import { ITravelPlan } from "./travelPlan.interface";
+import { ITravelPlan, TravelPlanStatus } from "./travelPlan.interface";
 
 
 
@@ -18,6 +18,7 @@ const travelPlanSchema = new Schema<ITravelPlan>({
     travelTypes: [{ type: String, required: true }],
     travelDescription: { type: String },
     reviewsIds: [{ type: Schema.Types.ObjectId, ref: "Review" }],
+    travelPlanStatus: { type: String, enum: Object.values(TravelPlanStatus), default: TravelPlanStatus.ONGOING }
 }, {
     versionKey: false,
     timestamps: true

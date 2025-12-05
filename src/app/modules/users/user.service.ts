@@ -6,47 +6,92 @@ import { UserModel } from "./user.model";
 import { makeHashedPassword } from '../../utils/makeHashedPassword';
 import { createQuery } from '../../utils/querySearch';
 import { IJwtTokenPayload } from '../../types/token.type';
+import { ProfileModel } from '../profiles/profile.model';
 
 
 
 //USER REGISTER SERVICE FUNCTION
-const registerUserService = async (userData: Partial<IUser>): Promise<Partial<IUser> | null> => {
-    // Check if user with the same email already exists
-    const existingUser = await UserModel.findOne({ email: userData.email });
+const registerUserService = async (userData: Partial<IUser & { fullName: string }>): Promise<Partial<IUser> | null> => {
 
-    // Check if user with the same email already exists
-    if (existingUser) {
-        throw new ApiError(httpStatus.CONFLICT, 'User email already exists.');
-    };
-    // Hash the password before saving
-    const hashedPassword = await makeHashedPassword(userData.password as string);
-    userData.password = hashedPassword;
+    const session = await UserModel.startSession();
+    session.startTransaction();
 
-    const newUserCreate = await UserModel.create(userData);
+    try {
+        // Check if user with the same email already exists
+        const existingUser = await UserModel.findOne({ email: userData.email });
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password: _, ...userWithoutPassword } = newUserCreate.toObject();
+        // Check if user with the same email already exists
+        if (existingUser) {
+            throw new ApiError(httpStatus.CONFLICT, 'User email already exists.');
+        };
+        // Hash the password before saving
+        const hashedPassword = await makeHashedPassword(userData.password as string);
+        userData.password = hashedPassword;
 
-    return userWithoutPassword;
+        const newUserCreate = await UserModel.create([userData], { session });
+
+        const createProfileData = {
+            fullName: userData.fullName as string,
+            userId: newUserCreate[0]._id,
+            email: newUserCreate[0].email,
+        };
+
+        const createdProfile = await ProfileModel.create([createProfileData], { session });
+
+        // Link the created profile to the user
+        newUserCreate[0].profile = createdProfile[0]._id;
+        newUserCreate[0].isProfileCompleted = false;
+        await newUserCreate[0].save({ session });
+
+
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { password: _, ...userWithoutPassword } = newUserCreate[0].toObject();
+        await session.commitTransaction();
+        session.endSession();
+
+        return userWithoutPassword;
+    } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
+        throw error;
+    }
 };
 
 //Update User Data Service Function
 const updateUserService = async (userId: string, updateData: Partial<IUser>): Promise<Partial<IUser> | null> => {
 
-    const existingUser = await UserModel.findById(userId);
+    const session = await UserModel.startSession();
+    session.startTransaction();
 
-    if (!existingUser) {
-        throw new ApiError(httpStatus.NOT_FOUND, 'User does not found.');
-    };
+    try {
 
-    const updatedUser = await UserModel.findByIdAndUpdate(
-        userId,
-        updateData,
-        { new: true, runValidators: true }
-    );
+        const existingUser = await UserModel.findById(userId);
 
-    return updatedUser;
+        if (!existingUser) {
+            throw new ApiError(httpStatus.NOT_FOUND, 'User does not found.');
+        };
 
+        const updatedUser = await ProfileModel.findByIdAndUpdate(
+            existingUser.profile,
+            updateData,
+            { new: true, runValidators: true, session }
+        );
+
+        if (updatedUser) {
+            existingUser.isProfileCompleted = true;
+            await existingUser.save({ session });
+        }
+
+        await session.commitTransaction();
+        session.endSession();
+
+        return updatedUser;
+
+    } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
+        throw error;
+    }
 };
 
 //GET ALL USERS SERVICE FUNCTION
@@ -64,6 +109,7 @@ const getAllUsersService = async (queryParams: any) => {
         .sort(sort || '-createdAt')
         .dateRange('createdAt', startDate, endDate)
         .paginate(page || 1, limit || 10)
+        .populate('profile')
         .select(fields || '-password')
         .exec();
 
@@ -72,10 +118,13 @@ const getAllUsersService = async (queryParams: any) => {
 
 //GET USER PROFILE SERVICE FUNCTION
 const getUserProfileService = async (decodedToken: IJwtTokenPayload): Promise<Partial<IUser> | null> => {
-    const user = await UserModel.findById(decodedToken.userId).select('-password');
+    const user = await UserModel.findById(decodedToken.userId)
+        .select('-password').populate('profile');
+
     if (!user) {
         throw new ApiError(httpStatus.NOT_FOUND, 'User does not found.');
     };
+
     return user;
 };
 
@@ -84,7 +133,7 @@ const getUserByIdService = async (userId: string, decodedToken: IJwtTokenPayload
     if (decodedToken.role === 'USER' && decodedToken.userId !== userId) {
         throw new ApiError(httpStatus.FORBIDDEN, 'You are not allowed to access this user data.');
     }
-    const user = await UserModel.findById(userId).select('-password');
+    const user = await UserModel.findById(userId).select('-password').populate('profile');
     if (!user) {
         throw new ApiError(httpStatus.NOT_FOUND, 'User does not found.');
     };
@@ -141,14 +190,28 @@ const updateUserStatusService = async (userId: string, isActive: string, decoded
 };
 
 //DELETE AN USER SERVICE FUNCTION
-const deleteAnUserService = async (userId: string): Promise<void> => {
-    const isUserExist = await UserModel.findById(userId);
+const deleteAnUserService = async (userId: string) => {
+    const session = await UserModel.startSession();
+    session.startTransaction();
+    try {
+        const isUserExist = await UserModel.findById(userId);
 
-    if (!isUserExist) {
-        throw new ApiError(httpStatus.NOT_FOUND, 'User does not found.');
+        if (!isUserExist) {
+            throw new ApiError(httpStatus.NOT_FOUND, 'User does not found.');
+        };
+
+        await UserModel.findByIdAndDelete(userId, { session });
+        await ProfileModel.findByIdAndDelete(isUserExist.profile, { session });
+        await session.commitTransaction();
+        session.endSession();
+        return {
+            message: `User with id ${userId} has been deleted successfully.`,
+        }
+    } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
+        throw error;
     };
-
-    await UserModel.findByIdAndDelete(userId);
 };
 
 

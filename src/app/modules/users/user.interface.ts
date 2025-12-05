@@ -16,19 +16,12 @@ export enum IActiveStatus {
 
 export interface IUser {
     _id?: Types.ObjectId;
-    fullName: string;
     email: string;
     password: string;
-    contactNumber?: string;
-    profileImage?: string;
-    aboutMe?: string;
-    address?: string;
+    isProfileCompleted: boolean;
     role: UserRole;
-    visitedCountries?: string[];
-    currentLocation?: string;
-    travelInterests?: string[];
-    travelsPlans?: Types.ObjectId[];
     isActive: IActiveStatus;
+    profile?: Types.ObjectId;
     isVerified: boolean;
     createdAt?: Date;
     updatedAt?: Date;
