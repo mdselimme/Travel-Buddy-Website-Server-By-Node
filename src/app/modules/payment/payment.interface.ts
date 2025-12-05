@@ -10,12 +10,10 @@ export enum PaymentStatus {
 
 export interface IPayment {
     _id?: Types.ObjectId;
-    travelerId: Types.ObjectId;
-    travelPlanId: Types.ObjectId;
+    user: Types.ObjectId;
     transactionId: string;
     invoiceUrl?: string;
     paymentGatewayData?: any;
-    bookingId: Types.ObjectId;
     status: PaymentStatus;
     amount: number;
     createdAt?: Date;

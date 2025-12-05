@@ -2,8 +2,8 @@ import { Router } from "express";
 import { UserRouter } from "../modules/users/user.route";
 import { AuthRouter } from "../modules/auth/auth.route";
 import { TravelPlanRouter } from "../modules/travelPlan/travelPlan.route";
-import { BookingRouter } from "../modules/booking/booking.route";
 import { ReviewRouter } from "../modules/review/review.route";
+import { SubscriptionRouter } from "../modules/subscription/subscription.route";
 
 interface IRoute {
     path: string;
@@ -26,8 +26,8 @@ const allRoutes: IRoute[] = [
         route: TravelPlanRouter
     },
     {
-        path: "/booking",
-        route: BookingRouter
+        path: "/subscription",
+        route: SubscriptionRouter
     },
     {
         path: "/review",
