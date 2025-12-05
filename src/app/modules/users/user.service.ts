@@ -7,6 +7,7 @@ import { makeHashedPassword } from '../../utils/makeHashedPassword';
 import { createQuery } from '../../utils/querySearch';
 import { IJwtTokenPayload } from '../../types/token.type';
 import { ProfileModel } from '../profiles/profile.model';
+import { deleteImageFromCloudinary } from '../../../config/cloudinary.config';
 
 
 
@@ -201,7 +202,9 @@ const deleteAnUserService = async (userId: string) => {
         };
 
         await UserModel.findByIdAndDelete(userId, { session });
-        await ProfileModel.findByIdAndDelete(isUserExist.profile, { session });
+        //Profile Delete and Image from Cloudinary
+        const profile = await ProfileModel.findByIdAndDelete(isUserExist.profile, { session });
+        await deleteImageFromCloudinary(profile?.profileImage as string);
         await session.commitTransaction();
         session.endSession();
         return {
