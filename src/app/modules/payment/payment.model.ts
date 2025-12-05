@@ -4,9 +4,8 @@ import { IPayment, PaymentStatus } from "./payment.interface";
 
 
 const paymentSchemaModel = new Schema<IPayment>({
-    travelerId: { type: Schema.Types.ObjectId, required: true, ref: "User" },
-    travelPlanId: { type: Schema.Types.ObjectId, required: true, ref: "TravelPlan" },
-    bookingId: { type: Schema.Types.ObjectId, required: true, ref: "Booking" },
+    user: { type: Schema.Types.ObjectId, required: true, ref: "User" },
+    subscription: { type: Schema.Types.ObjectId, required: true, ref: "Subscription" },
     transactionId: { type: String, required: true, unique: true },
     invoiceUrl: { type: String },
     paymentGatewayData: { type: Schema.Types.Mixed },
