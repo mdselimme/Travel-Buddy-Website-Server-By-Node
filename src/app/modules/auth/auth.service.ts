@@ -9,6 +9,7 @@ import { sendEmail } from '../../utils/sendEmail';
 import { generateOtpCode, OTP_EXPIRATION } from '../../utils/otpGenerate';
 import { redisClient } from '../../../config/redis.config';
 import { IJwtTokenPayload } from '../../types/token.type';
+import { ProfileModel } from '../profiles/profile.model';
 
 
 
@@ -32,11 +33,18 @@ const logInUser = async (payload: Partial<IUser>) => {
         throw new ApiError(httpStatus.UNAUTHORIZED, 'Password is incorrect')
     };
 
+    const profile = await ProfileModel.findById(existingUser.profile);
+
+    if (!profile) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'User profile does not found')
+    }
+
+
     const jwtUserPayload = {
+        fullName: profile?.fullName,
         userId: existingUser._id,
         role: existingUser.role,
         email: existingUser.email,
-        fullName: existingUser.fullName
     };
 
     const accessToken = generateToken(jwtUserPayload, envVars.JWT.ACCESS_TOKEN_SECRET, envVars.JWT.ACCESS_TOKEN_EXPIRED);
@@ -45,9 +53,10 @@ const logInUser = async (payload: Partial<IUser>) => {
 
     return {
         _id: existingUser._id,
-        fullName: existingUser.fullName,
         email: existingUser.email,
         role: existingUser.role,
+        isActive: existingUser.isActive,
+        isProfileCompleted: existingUser.isProfileCompleted,
         isVerified: existingUser.isVerified,
         accessToken,
         refreshToken
@@ -94,6 +103,13 @@ const emailSendVerification = async (email: string) => {
 
     const redisKey = `otp:${email}`;
 
+    const profile = await ProfileModel.findById(existingUser.profile);
+
+    if (!profile) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'User profile does not found')
+    }
+
+
     await redisClient.set(redisKey, otp, {
         expiration: {
             type: "EX",
@@ -101,12 +117,14 @@ const emailSendVerification = async (email: string) => {
         }
     });
 
+
+
     sendEmail({
         to: existingUser.email,
         subject: 'Email Verification',
         templateName: 'emailVerification',
         templateData: {
-            name: existingUser.fullName,
+            name: profile?.fullName,
             otp: otp,
             subject: 'Email Verification From Travel Buddy.',
         }
@@ -174,11 +192,18 @@ const forgotPassword = async (email: string) => {
         throw new ApiError(httpStatus.BAD_REQUEST, 'User is not active');
     }
 
+    const profile = await ProfileModel.findById(isUserExist.profile);
+
+    if (!profile) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'User profile does not found')
+    }
+
+
     const jwtUserPayload = {
         userId: isUserExist._id,
         role: isUserExist.role,
         email: isUserExist.email,
-        fullName: isUserExist.fullName
+        fullName: profile?.fullName
     };
 
     const tokenForForgotPass = generateToken(jwtUserPayload, envVars.JWT.ACCESS_TOKEN_SECRET, envVars.JWT.FORGOT_TOKEN_EXPIRED);
@@ -190,7 +215,7 @@ const forgotPassword = async (email: string) => {
         subject: 'Forgot Password Email',
         templateName: 'forgotPassword',
         templateData: {
-            name: isUserExist.fullName,
+            name: profile?.fullName,
             redirectUrl: redirectUrl,
             subject: 'Forgot Password Email from Travel Buddy.',
         }
@@ -242,11 +267,18 @@ const undoRefreshToken = async (token: string) => {
         throw new ApiError(httpStatus.BAD_REQUEST, 'User is not active');
     }
 
+    const profile = await ProfileModel.findById(isUserExists.profile);
+
+    if (!profile) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'User profile does not found')
+    }
+
+
     const jwtUserPayload = {
         userId: isUserExists._id,
         role: isUserExists.role,
         email: isUserExists.email,
-        fullName: isUserExists.fullName
+        fullName: profile?.fullName
     };
 
     const accessToken = generateToken(jwtUserPayload, envVars.JWT.ACCESS_TOKEN_SECRET, envVars.JWT.ACCESS_TOKEN_EXPIRED);
