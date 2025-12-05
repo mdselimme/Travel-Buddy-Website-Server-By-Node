@@ -2,29 +2,35 @@ import { Types } from "mongoose";
 
 
 export enum TravelPlanStatus {
-    ONGOING = "ONGOING",
+    UPCOMING = "UPCOMING",
     COMPLETED = "COMPLETED",
     CANCELLED = "CANCELLED",
 }
 
+interface BudgetRange {
+    min: number;
+    max: number;
+}
+
+interface Destination {
+    city: string;
+    country: string;
+}
 
 export interface ITravelPlan {
     _id?: Types.ObjectId;
+    userId: Types.ObjectId;
     travelTitle: string;
-    travelersIds?: Types.ObjectId[];
-    thumbnail: string;
-    bookingId?: Types.ObjectId;
-    creatorId: Types.ObjectId;
-    destination: string;
+    destination: Destination;
     startDate: Date;
     endDate: Date;
-    travelPlanStatus: TravelPlanStatus;
-    activities?: string[];
-    accommodations?: string;
-    budgetRange: number;
+    budgetRange: BudgetRange;
     travelTypes: string[];
     travelDescription?: string;
-    reviewsIds?: Types.ObjectId[];
+    itinerary: string[];
+    thumbnail: string;
+    isVisible: boolean;
+    travelPlanStatus: TravelPlanStatus;
     createdAt?: Date;
     updatedAt?: Date;
 };

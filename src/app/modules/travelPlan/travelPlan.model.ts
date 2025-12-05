@@ -4,21 +4,24 @@ import { ITravelPlan, TravelPlanStatus } from "./travelPlan.interface";
 
 
 const travelPlanSchema = new Schema<ITravelPlan>({
-    travelersIds: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    userId: { type: Schema.Types.ObjectId, required: true, ref: "User" },
     travelTitle: { type: String, required: true },
-    thumbnail: { type: String, required: true },
-    bookingId: { type: Schema.Types.ObjectId, ref: "Booking" },
-    creatorId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    destination: { type: String, required: true },
+    destination: {
+        city: { type: String, required: true },
+        country: { type: String, required: true }
+    },
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },
-    activities: [{ type: String }],
-    accommodations: { type: String },
-    budgetRange: { type: Number, required: true },
+    budgetRange: {
+        min: { type: Number, required: true },
+        max: { type: Number, required: true }
+    },
     travelTypes: [{ type: String, required: true }],
     travelDescription: { type: String },
-    reviewsIds: [{ type: Schema.Types.ObjectId, ref: "Review" }],
-    travelPlanStatus: { type: String, enum: Object.values(TravelPlanStatus), default: TravelPlanStatus.ONGOING }
+    itinerary: [{ type: String, required: true }],
+    thumbnail: { type: String, required: true },
+    isVisible: { type: Boolean, required: true },
+    travelPlanStatus: { type: String, enum: Object.values(TravelPlanStatus), default: TravelPlanStatus.UPCOMING }
 }, {
     versionKey: false,
     timestamps: true
