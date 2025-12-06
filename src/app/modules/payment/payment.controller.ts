@@ -33,22 +33,24 @@ const handlePaymentSuccess = catchAsync(async (req: Request, res: Response) => {
 //FAIL PAYMENT CONTROLLER
 const handlePaymentFail = catchAsync(async (req: Request, res: Response) => {
 
+    const result = await PaymentService.handlePaymentFail(req.query as Record<string, string>);
 
     ApiResponse(res, {
         success: false,
         message: "Payment failed",
         statusCode: httpStatus.BAD_REQUEST,
-        data: null,
+        data: result,
     });
 });
 
 //CANCEL PAYMENT CONTROLLER
 const handlePaymentCancel = catchAsync(async (req: Request, res: Response) => {
+    const result = await PaymentService.handlePaymentCancel(req.query as Record<string, string>);
     ApiResponse(res, {
         success: false,
         message: "Payment was cancelled",
         statusCode: httpStatus.OK,
-        data: null,
+        data: result,
     });
 });
 

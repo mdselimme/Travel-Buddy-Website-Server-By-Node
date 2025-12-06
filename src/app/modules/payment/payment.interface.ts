@@ -5,6 +5,7 @@ export enum PaymentStatus {
     PENDING = "PENDING",
     PAID = "PAID",
     FAILED = "FAILED",
+    CANCELLED = "CANCELLED",
 }
 
 
@@ -15,6 +16,8 @@ export interface IPayment {
     transactionId: string;
     invoiceUrl?: string;
     subscriptionType: string;
+    subStartDate?: Date;
+    subEndDate?: Date;
     paymentGatewayData?: any;
     status: PaymentStatus;
     amount: number;

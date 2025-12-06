@@ -15,17 +15,17 @@ router.post("/init",
 );
 
 //SUCCESS PAYMENT ROUTE
-router.get("/success",
+router.post("/success",
     PaymentController.handlePaymentSuccess
 );
 
 //SUCCESS PAYMENT ROUTE
-router.get("/fail",
+router.post("/fail",
     PaymentController.handlePaymentFail
 );
 
 //SUCCESS PAYMENT ROUTE
-router.get("/cancel",
+router.post("/cancel",
     PaymentController.handlePaymentCancel
 );
 

@@ -9,6 +9,8 @@ import { PaymentStatus } from './payment.interface';
 import { ISSLCommerz } from '../sslCommerz/sslCommerz.interface';
 import { ProfileModel } from '../profiles/profile.model';
 import { SSLCommerzService } from '../sslCommerz/sslCommerz.service';
+import { SubscriptionPlan } from '../subscription/subscription.interface';
+import { IActiveStatus } from '../users/user.interface';
 
 //INIT PAYMENT SERVICE
 const initSubscriptionPayment = async (subscription: Types.ObjectId, user: Types.ObjectId) => {
@@ -20,6 +22,14 @@ const initSubscriptionPayment = async (subscription: Types.ObjectId, user: Types
     if (!isUserExist) {
         throw new ApiError(httpStatus.NOT_FOUND, "User not found");
     };
+
+    if (!isUserExist.isVerified) {
+        throw new ApiError(httpStatus.NOT_FOUND, "User is not verified. Please verify your account to proceed.");
+    }
+
+    if (isUserExist.isActive !== IActiveStatus.ACTIVE) {
+        throw new ApiError(httpStatus.BAD_REQUEST, `User account is ${isUserExist.isActive}. Please contact support.`);
+    }
 
     const profileData = await ProfileModel.findById(isUserExist.profile);
 
@@ -64,44 +74,65 @@ const initSubscriptionPayment = async (subscription: Types.ObjectId, user: Types
         payment: paymentCreate
     };
 };
-
-//SUCCESS PAYMENT SERVICE
+// SUCCESS PAYMENT SERVICE
 const handlePaymentSuccess = async (query: Record<string, string>) => {
-
     const { transactionId } = query;
+
     const session = await ProfileModel.startSession();
     session.startTransaction();
 
     try {
+        // Find the payment record
         const paymentData = await PaymentModel.findOne({ transactionId });
 
         if (!paymentData) {
             throw new ApiError(httpStatus.NOT_FOUND, "Payment data not found");
         }
-        paymentData.status = PaymentStatus.PAID;
 
+        paymentData.status = PaymentStatus.PAID;
         const updatedPayment = await paymentData.save({ session });
 
+        //find the profile and update subscription details
         const findProfile = await ProfileModel.findOne({ userId: paymentData.user });
 
         if (!findProfile) {
             throw new ApiError(httpStatus.NOT_FOUND, "Profile not found for the user");
         }
 
-        const subStartDate = new Date();
+        // Calculate subscription dates
+        const now = new Date();
+        let subStartDate: Date;
+        let subEndDate: Date;
 
-        const subEndDate = paymentData.subscriptionType === "MONTHLY" ?
-            new Date(subStartDate.getFullYear(), subStartDate.getMonth() + 1, subStartDate.getDate()) :
-            new Date(subStartDate.getFullYear() + 1, subStartDate.getMonth(), subStartDate.getDate());
+        const subscriptionMonths = paymentData.subscriptionType === SubscriptionPlan.MONTHLY ? 1 : 12;
 
+        // If user already has an active subscription, extend it
+        if (findProfile.isSubscribed && findProfile.subEndDate && new Date(findProfile.subEndDate) > now) {
+            subStartDate = findProfile.subStartDate as Date; // keep old start date
+            subEndDate = new Date(findProfile.subEndDate);
+            subEndDate.setMonth(subEndDate.getMonth() + subscriptionMonths);
+        } else {
+            // New subscription
+            subStartDate = now;
+            subEndDate = new Date(now);
+            subEndDate.setMonth(now.getMonth() + subscriptionMonths);
+        }
+        // Update profile with subscription info
         findProfile.subStartDate = subStartDate;
         findProfile.subEndDate = subEndDate;
         findProfile.isSubscribed = true;
 
         await findProfile.save({ session });
 
+        await PaymentModel.findByIdAndUpdate(
+            paymentData._id,
+            { subStartDate, subEndDate },
+            { session }
+        );
+
         await session.commitTransaction();
         session.endSession();
+
         return updatedPayment;
 
     } catch (error) {
@@ -110,8 +141,36 @@ const handlePaymentSuccess = async (query: Record<string, string>) => {
         throw error;
     }
 };
+//FAIL PAYMENT SERVICE
+const handlePaymentFail = async (query: Record<string, string>) => {
+    const { transactionId } = query;
+
+    const paymentData = await PaymentModel.findOne({ transactionId });
+    if (!paymentData) {
+        throw new ApiError(httpStatus.NOT_FOUND, "Payment data not found");
+    }
+    paymentData.status = PaymentStatus.FAILED;
+    const updatedPayment = await paymentData.save();
+    return updatedPayment;
+};
+
+
+//CANCEL PAYMENT SERVICE
+const handlePaymentCancel = async (query: Record<string, string>) => {
+    const { transactionId } = query;
+
+    const paymentData = await PaymentModel.findOne({ transactionId });
+    if (!paymentData) {
+        throw new ApiError(httpStatus.NOT_FOUND, "Payment data not found");
+    }
+    paymentData.status = PaymentStatus.CANCELLED;
+    const updatedPayment = await paymentData.save();
+    return updatedPayment;
+};
 
 export const PaymentService = {
     initSubscriptionPayment,
-    handlePaymentSuccess
-}
+    handlePaymentSuccess,
+    handlePaymentFail,
+    handlePaymentCancel
+};

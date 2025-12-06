@@ -10,6 +10,8 @@ const paymentSchemaModel = new Schema<IPayment>({
     transactionId: { type: String, required: true, unique: true },
     invoiceUrl: { type: String },
     paymentGatewayData: { type: Schema.Types.Mixed },
+    subStartDate: { type: Date },
+    subEndDate: { type: Date },
     subscriptionType: { type: String, required: true, enum: Object.values(SubscriptionPlan) },
     status: { type: String, required: true, enum: Object.values(PaymentStatus) },
     amount: { type: Number, required: true },
