@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import httpStatus from 'http-status-codes';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { envVars } from "../../../config/envVariable.config";
 import ApiError from "../../utils/ApiError";
 import { ISSLCommerz } from "./sslCommerz.interface";
 import axios from "axios";
+import { PaymentModel } from '../payment/payment.model';
 
 
 //SSL COMMERZ INIT
@@ -18,7 +20,7 @@ const sslPaymentInit = async (payload: ISSLCommerz) => {
             success_url: `${envVars.SSL.SSL_SUCCESS_BACKEND_URL}?transactionId=${payload.transactionId}&amount=${payload.amount}&status=success`,
             fail_url: `${envVars.SSL.SSL_FAIL_BACKEND_URL}?transactionId=${payload.transactionId}&amount=${payload.amount}&status=fail`,
             cancel_url: `${envVars.SSL.SSL_CANCEL_BACKEND_URL}?transactionId=${payload.transactionId}&amount=${payload.amount}&status=cancel`,
-            ipn_url: 'http://localhost:3030/ipn',
+            ipn_url: envVars.SSL.SSL_COMMERZ_IPN_URL,
             shipping_method: 'N/A',
             product_name: 'Tour Service',
             product_category: 'Entertainment',
@@ -57,6 +59,26 @@ const sslPaymentInit = async (payload: ISSLCommerz) => {
     }
 };
 
+//SSL PAYMENT VALIDATION
+const validatePayment = async (payload: any) => {
+    try {
+        const response = await axios({
+            method: "GET",
+            url: `${envVars.SSL.SSL_COMMERZ_VALIDATION_API}?val_id=${payload.val_id}&store_id=${process.env.SSL_COMMERZ_STORE_ID}&store_passwd=${process.env.SSL_COMMERZ_STORE_PASS}`,
+        });
+
+        await PaymentModel.updateOne(
+            { transactionId: payload.tran_id },
+            { paymentGatewayData: response.data },
+            { runValidators: true }
+        );
+    } catch (error: any) {
+        console.log(`Payment validation error occured: ${error.message}`);
+        throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to validate SSL Commerz payment: ' + error.message);
+    }
+};
+
 export const SSLCommerzService = {
     sslPaymentInit,
+    validatePayment,
 };

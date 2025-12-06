@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import ApiResponse from "../../utils/ApiResponse";
 import catchAsync from "../../utils/catchAsync"
 import { PaymentService } from "./payment.service";
+import { SSLCommerzService } from '../sslCommerz/sslCommerz.service';
 
 
 //INIT PAYMENT CONTROLLER
@@ -54,9 +55,21 @@ const handlePaymentCancel = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+//VALIDATE PAYMENT CONTROLLER
+const validatePayment = catchAsync(async (req: Request, res: Response) => {
+    await SSLCommerzService.validatePayment(req.body);
+    ApiResponse(res, {
+        success: true,
+        message: "Payment validated successfully",
+        statusCode: httpStatus.OK,
+        data: null,
+    });
+});
+
 export const PaymentController = {
     initSubscriptionPayment,
     handlePaymentSuccess,
     handlePaymentFail,
-    handlePaymentCancel
+    handlePaymentCancel,
+    validatePayment
 }

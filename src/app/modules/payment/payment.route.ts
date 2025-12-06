@@ -5,6 +5,7 @@ import { PaymentController } from "./payment.controller";
 import validateZodSchema from "../../middlewares/validateZodSchemaRequest";
 import { PaymentValidation } from "./payment.validation";
 
+
 const router = Router();
 
 //INIT PAYMENT ROUTE
@@ -27,6 +28,11 @@ router.post("/fail",
 //SUCCESS PAYMENT ROUTE
 router.post("/cancel",
     PaymentController.handlePaymentCancel
+);
+
+//VALIDATE PAYMENT ROUTE
+router.post("/validate-payment",
+    PaymentController.validatePayment
 );
 
 
