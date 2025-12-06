@@ -9,6 +9,7 @@ import { handleDuplicateError } from "../errorHelpers/handleDuplicateError";
 import ApiError from "../utils/ApiError";
 import { handlerCastError } from "../errorHelpers/handleCastError";
 import { handleValidationError } from "../errorHelpers/handleValidationError";
+import { deleteImageFromCloudinary } from "../../config/cloudinary.config";
 
 
 //GLOBAL ERROR HANDLER MIDDLEWARE
@@ -17,6 +18,10 @@ export const globalErrorHandler = async (error: any, req: Request, res: Response
     if (envVars.NODE_ENV === 'development') {
         console.error("Error Details:", error);
     };
+
+    if (req.file) {
+        await deleteImageFromCloudinary(req.file.path);
+    }
 
     let errorSources: IErrorSource[] = [];
     let statusCode = 500;

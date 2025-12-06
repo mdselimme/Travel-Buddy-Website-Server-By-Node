@@ -20,7 +20,7 @@ const travelPlanSchema = new Schema<ITravelPlan>({
     travelDescription: { type: String },
     itinerary: [{ type: String, required: true }],
     thumbnail: { type: String, required: true },
-    isVisible: { type: Boolean, required: true },
+    isVisible: { type: Boolean, required: true, default: true },
     travelPlanStatus: { type: String, enum: Object.values(TravelPlanStatus), default: TravelPlanStatus.UPCOMING }
 }, {
     versionKey: false,
