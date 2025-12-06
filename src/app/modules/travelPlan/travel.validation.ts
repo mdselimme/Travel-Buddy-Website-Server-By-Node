@@ -15,7 +15,7 @@ const createATravelPlanSchema = z.object({
         min: z.number({ error: "Minimum budget is required & must be a number" }),
         max: z.number({ error: "Maximum budget is required & must be a number" })
     }),
-    travelTypes: z.array(z.string({ error: "Each travel type must be a string" }), { error: "Travel Types is required & must be an array of strings" }),
+    travelTypes: z.array(z.string({ error: "Each travel type must be a string & must be a valid ObjectId" }), { error: "Travel Types is required & must be an array of strings" }),
     travelDescription: z.string({ error: "Travel Description must be a string" }),
     itinerary: z.array(z.string({ error: "Each itinerary item must be a string" }), { error: "Itinerary is required & must be an array of strings" }),
 });
@@ -33,7 +33,7 @@ const updateATravelPlanSchema = z.object({
         min: z.number({ error: "Minimum budget is required & must be a number" }).optional(),
         max: z.number({ error: "Maximum budget is required & must be a number" }).optional()
     }).optional(),
-    travelTypes: z.array(z.string({ error: "Each travel type must be a string" }), { error: "Travel Types is required & must be an array of strings" }).optional(),
+    travelTypes: z.array(z.string({ error: "Each travel type must be a string & must be a valid ObjectId" }), { error: "Travel Types is required & must be an array of strings" }).optional(),
     travelDescription: z.string({ error: "Travel Description must be a string" }).optional(),
     itinerary: z.array(z.string({ error: "Each itinerary item must be a string" }), { error: "Itinerary is required & must be an array of strings" }).optional(),
     isVisible: z.boolean({ error: "Is Visible must be a boolean" }).optional(),

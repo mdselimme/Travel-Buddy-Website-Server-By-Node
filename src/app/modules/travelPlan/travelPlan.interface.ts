@@ -25,7 +25,7 @@ export interface ITravelPlan {
     startDate: Date;
     endDate: Date;
     budgetRange: BudgetRange;
-    travelTypes: string[];
+    travelTypes: Types.ObjectId[];
     travelDescription?: string;
     itinerary: string[];
     thumbnail: string;

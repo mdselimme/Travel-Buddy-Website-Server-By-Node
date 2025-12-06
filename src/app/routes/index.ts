@@ -5,6 +5,7 @@ import { TravelPlanRouter } from "../modules/travelPlan/travelPlan.route";
 import { ReviewRouter } from "../modules/review/review.route";
 import { SubscriptionRouter } from "../modules/subscription/subscription.route";
 import { PaymentRouter } from "../modules/payment/payment.route";
+import { TravelTypeRouter } from "../modules/travelType/travelType.route";
 
 interface IRoute {
     path: string;
@@ -33,6 +34,10 @@ const allRoutes: IRoute[] = [
     {
         path: "/payment",
         route: PaymentRouter
+    },
+    {
+        path: "/travel-type",
+        route: TravelTypeRouter
     },
     {
         path: "/review",

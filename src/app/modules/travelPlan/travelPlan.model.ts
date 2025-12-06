@@ -16,7 +16,7 @@ const travelPlanSchema = new Schema<ITravelPlan>({
         min: { type: Number, required: true },
         max: { type: Number, required: true }
     },
-    travelTypes: [{ type: String, required: true }],
+    travelTypes: [{ type: Schema.Types.ObjectId, required: true }],
     travelDescription: { type: String },
     itinerary: [{ type: String, required: true }],
     thumbnail: { type: String, required: true },
