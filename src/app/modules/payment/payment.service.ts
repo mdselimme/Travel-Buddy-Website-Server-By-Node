@@ -52,6 +52,7 @@ const initSubscriptionPayment = async (subscription: Types.ObjectId, user: Types
         user,
         subscription,
         transactionId,
+        subscriptionType: isSubscriptionExist.plan,
         status: PaymentStatus.PENDING,
         amount: isSubscriptionExist.price,
     };
@@ -64,6 +65,53 @@ const initSubscriptionPayment = async (subscription: Types.ObjectId, user: Types
     };
 };
 
+//SUCCESS PAYMENT SERVICE
+const handlePaymentSuccess = async (query: Record<string, string>) => {
+
+    const { transactionId } = query;
+    const session = await ProfileModel.startSession();
+    session.startTransaction();
+
+    try {
+        const paymentData = await PaymentModel.findOne({ transactionId });
+
+        if (!paymentData) {
+            throw new ApiError(httpStatus.NOT_FOUND, "Payment data not found");
+        }
+        paymentData.status = PaymentStatus.PAID;
+
+        const updatedPayment = await paymentData.save({ session });
+
+        const findProfile = await ProfileModel.findOne({ userId: paymentData.user });
+
+        if (!findProfile) {
+            throw new ApiError(httpStatus.NOT_FOUND, "Profile not found for the user");
+        }
+
+        const subStartDate = new Date();
+
+        const subEndDate = paymentData.subscriptionType === "MONTHLY" ?
+            new Date(subStartDate.getFullYear(), subStartDate.getMonth() + 1, subStartDate.getDate()) :
+            new Date(subStartDate.getFullYear() + 1, subStartDate.getMonth(), subStartDate.getDate());
+
+        findProfile.subStartDate = subStartDate;
+        findProfile.subEndDate = subEndDate;
+        findProfile.isSubscribed = true;
+
+        await findProfile.save({ session });
+
+        await session.commitTransaction();
+        session.endSession();
+        return updatedPayment;
+
+    } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
+        throw error;
+    }
+};
+
 export const PaymentService = {
-    initSubscriptionPayment
+    initSubscriptionPayment,
+    handlePaymentSuccess
 }

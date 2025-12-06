@@ -12,7 +12,22 @@ router.post("/init",
     checkAuth(...Object.values(UserRole)),
     validateZodSchema(PaymentValidation.paymentValidateSchema),
     PaymentController.initSubscriptionPayment
-)
+);
+
+//SUCCESS PAYMENT ROUTE
+router.get("/success",
+    PaymentController.handlePaymentSuccess
+);
+
+//SUCCESS PAYMENT ROUTE
+router.get("/fail",
+    PaymentController.handlePaymentFail
+);
+
+//SUCCESS PAYMENT ROUTE
+router.get("/cancel",
+    PaymentController.handlePaymentCancel
+);
 
 
 export const PaymentRouter = router;

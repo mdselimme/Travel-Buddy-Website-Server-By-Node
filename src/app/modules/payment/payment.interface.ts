@@ -14,6 +14,7 @@ export interface IPayment {
     subscription: Types.ObjectId;
     transactionId: string;
     invoiceUrl?: string;
+    subscriptionType: string;
     paymentGatewayData?: any;
     status: PaymentStatus;
     amount: number;
