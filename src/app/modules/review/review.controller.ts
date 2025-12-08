@@ -3,12 +3,15 @@ import { Request, Response } from "express";
 import catchAsync from "../../utils/catchAsync";
 import ApiResponse from "../../utils/ApiResponse";
 import { ReviewService } from './review.service';
+import { IJwtTokenPayload } from '../../types/token.type';
 
 
 //CREATE A REVIEW
 const createReview = catchAsync(async (req: Request, res: Response) => {
 
-    const result = await ReviewService.createReview(req.body);
+    const decodedToken = req.user;
+
+    const result = await ReviewService.createReview(decodedToken as IJwtTokenPayload, req.body);
 
     ApiResponse(res, {
         statusCode: httpStatus.CREATED,
