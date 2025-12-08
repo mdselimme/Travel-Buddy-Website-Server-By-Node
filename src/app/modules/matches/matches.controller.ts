@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import catchAsync from "../../utils/catchAsync"
 import ApiResponse from "../../utils/ApiResponse";
 import { MatchesService } from './matches.service';
+import { IJwtTokenPayload } from '../../types/token.type';
 
 
 //CREATE MATCH CONTROLLER
@@ -32,7 +33,53 @@ const getAllMatches = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+//UPDATE MATCH CONTROLLER
+const updateMatch = catchAsync(async (req: Request, res: Response) => {
+
+    const decodedToken = req.user;
+
+    const matchId = req.params.id;
+
+    const result = await MatchesService.updateMatch(decodedToken as IJwtTokenPayload, matchId, req.body);
+
+    ApiResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: "Update match Successfully.",
+        data: result
+    });
+});
+
+//SINGLE MATCH CONTROLLER
+const getSingleMatch = catchAsync(async (req: Request, res: Response) => {
+    const matchId = req.params.id;
+
+    const result = await MatchesService.getSingleMatch(matchId);
+    ApiResponse(res, {
+        success: true,
+        message: "Match fetched successfully",
+        statusCode: httpStatus.OK,
+        data: result
+    });
+});
+
+//MY MATCHES CONTROLLER
+const getMyMatches = catchAsync(async (req: Request, res: Response) => {
+
+    const decodedToken = req.user;
+    const result = await MatchesService.getMyMatches(decodedToken as IJwtTokenPayload);
+    ApiResponse(res, {
+        success: true,
+        message: "My matches fetched successfully",
+        statusCode: httpStatus.OK,
+        data: result
+    });
+});
+
 export const MatchesController = {
     createMatch,
-    getAllMatches
+    getAllMatches,
+    updateMatch,
+    getSingleMatch,
+    getMyMatches
 };

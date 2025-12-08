@@ -12,7 +12,6 @@ const createMatchZodSchema = z.object({
 
 //UPDATE MATCH VALIDATION
 const updateMatchZodSchema = z.object({
-    matchId: z.string({ error: "Match ID is required & must be a ObjectId" }),
     status: z.enum(Object.values(MatchStatus), { error: `Status must be one of: ${Object.values(MatchStatus).join(", ")} these.` })
 });
 

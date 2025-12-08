@@ -4,6 +4,8 @@ import ApiError from "../../utils/ApiError";
 import { IMatch } from "./matches.interface";
 import { MatchesModel } from "./matches.model";
 import { createQuery } from '../../utils/querySearch';
+import { IJwtTokenPayload } from '../../types/token.type';
+import { TravelPlanModel } from '../travelPlan/travelPlan.model';
 
 const createMatch = async (matchData: IMatch) => {
 
@@ -19,6 +21,30 @@ const createMatch = async (matchData: IMatch) => {
     const newMatch = await MatchesModel.create(matchData);
 
     return newMatch;
+};
+
+//Update MATCH SERVICE FUNCTION
+const updateMatch = async (decodedToken: IJwtTokenPayload, id: string, matchData: Partial<IMatch> & { matchId: string }) => {
+    const travelPlan = await TravelPlanModel.findOne({ user: decodedToken.userId });
+    if (!travelPlan) {
+        throw new ApiError(httpStatus.UNAUTHORIZED, "You are not authorized to update this match.");
+    }
+    const match = await MatchesModel.findById(id);
+    if (!match) {
+        throw new ApiError(httpStatus.NOT_FOUND, "Match not found.");
+    }
+    if (match.status === matchData.status) {
+        throw new ApiError(httpStatus.BAD_REQUEST, `Already have your given status.`);
+    }
+    const updatedMatch = await MatchesModel.findByIdAndUpdate(
+        id,
+        matchData,
+        { new: true, runValidators: true }
+    );
+    if (!updatedMatch) {
+        throw new ApiError(httpStatus.NOT_FOUND, "Match not found.");
+    }
+    return updatedMatch;
 };
 
 //GET ALL MATCHES SERVICE FUNCTION
@@ -56,7 +82,38 @@ const getAllMatches = async (query: any) => {
     return matches;
 };
 
+
+//SINGLE MATCH SERVICE FUNCTION
+const getSingleMatch = async (matchId: string) => {
+    const match = await MatchesModel.findById(matchId)
+        .populate("travelPlanId", "destination startDate endDate")
+        .populate("senderId", "email")
+        .populate("receiverId", "email");
+
+    if (!match) {
+        throw new ApiError(httpStatus.NOT_FOUND, "Match not found.");
+    }
+
+    return match;
+};
+
+//MY MATCHES SERVICE FUNCTION
+const getMyMatches = async (decodedToken: IJwtTokenPayload) => {
+    const myMatches = await MatchesModel.find({
+        $or: [
+            { senderId: decodedToken.userId },
+            { receiverId: decodedToken.userId }
+        ]
+    }).populate("travelPlanId", "destination startDate endDate").populate("senderId", "email").populate("receiverId", "email");
+
+    return myMatches;
+};
+
+
 export const MatchesService = {
     createMatch,
-    getAllMatches
+    getAllMatches,
+    updateMatch,
+    getMyMatches,
+    getSingleMatch
 };
