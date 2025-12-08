@@ -4,11 +4,22 @@ import { IJwtTokenPayload } from "../../types/token.type"
 import ApiError from "../../utils/ApiError";
 import { IReview } from "./review.interface"
 import { ReviewModel } from "./review.model";
+import { TravelPlanModel } from '../travelPlan/travelPlan.model';
+import { TravelPlanStatus } from '../travelPlan/travelPlan.interface';
+import { createQuery } from '../../utils/querySearch';
 
 //CREATE A REVIEW
 const createReview = async (decodedToken: IJwtTokenPayload, reviewData: Partial<IReview>) => {
 
     reviewData.traveler = decodedToken.userId;
+
+    const travelPlan = await TravelPlanModel.findOne({
+        _id: reviewData.travelPlan, status: TravelPlanStatus.COMPLETED
+    });
+
+    if (!travelPlan) {
+        throw new ApiError(httpStatus.BAD_REQUEST, "You can only review completed travel plans");
+    }
 
     const travelUserExistingReview = await ReviewModel.findOne({
         travelPlan: reviewData.travelPlan,
@@ -35,7 +46,12 @@ const getSingleReview = async (id: string) => {
 
 //GET ALL REVIEWS
 const getAllReviews = async (query: any) => {
-    const reviews = await ReviewModel.find(query);
+    const { page, limit, sort } = query
+    const reviews = await createQuery(ReviewModel)
+        .paginate(page || 1, limit || 10)
+        .sort(sort || '-createdAt')
+        .exec();
+
     return reviews;
 };
 
