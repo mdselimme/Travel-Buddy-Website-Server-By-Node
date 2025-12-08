@@ -19,7 +19,7 @@ interface Destination {
 
 export interface ITravelPlan {
     _id?: Types.ObjectId;
-    userId: Types.ObjectId;
+    user: Types.ObjectId;
     travelTitle: string;
     destination: Destination;
     startDate: Date;

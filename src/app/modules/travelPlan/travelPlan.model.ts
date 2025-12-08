@@ -7,7 +7,7 @@ import { ITravelPlan, TravelPlanStatus } from "./travelPlan.interface";
 
 
 const travelPlanSchema = new Schema<ITravelPlan>({
-    userId: { type: Schema.Types.ObjectId, required: true, ref: "User" },
+    user: { type: Schema.Types.ObjectId, required: true, ref: "User" },
     travelTitle: { type: String, required: true, minlength: 3 },
     destination: {
         city: { type: String, required: true, minlength: 3 },

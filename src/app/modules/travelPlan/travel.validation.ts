@@ -3,7 +3,7 @@ import { TravelPlanStatus } from "./travelPlan.interface";
 
 //CREATE A TRAVEL PLAN VALIDATION
 const createATravelPlanSchema = z.object({
-    userId: z.string({ error: "User ID is required & must be a string" }),
+    user: z.string({ error: "User ID is required & must be a string" }),
     travelTitle: z.string({ error: "Travel Title is required & must be a string" }),
     destination: z.object({
         city: z.string({ error: "City is required & must be a string" }),
