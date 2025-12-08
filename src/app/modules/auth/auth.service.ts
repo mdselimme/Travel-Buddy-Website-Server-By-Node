@@ -215,7 +215,7 @@ const forgotPassword = async (email: string) => {
 
     const tokenForForgotPass = generateToken(jwtUserPayload, envVars.JWT.ACCESS_TOKEN_SECRET, envVars.JWT.FORGOT_TOKEN_EXPIRED);
 
-    const redirectUrl = `${envVars.CLIENT_SITE_URL}/forgot-password?token=${tokenForForgotPass}&userId=${isUserExist._id}`;
+    const redirectUrl = `${envVars.CLIENT_SITE_URL}/reset-password?token=${tokenForForgotPass}&userId=${isUserExist._id}`;
 
     sendEmail({
         to: isUserExist.email,

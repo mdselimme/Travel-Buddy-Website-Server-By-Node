@@ -10,7 +10,6 @@ const app: Application = express();
 // Middleware
 app.use(cors({
     origin: 'http://localhost:3000',
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     credentials: true
 }));
 app.use(bodyParser.json());
@@ -21,7 +20,7 @@ app.use(cookieParser());
 // default router after server is running
 app.get('/', (req: Request, res: Response) => {
     res.send({
-        version: '1.0.0',
+        version: '1.0.1',
         message: 'Welcome to the Travel Buddy Server is Running!',
         timestamp: new Date().toISOString(),
         uptime: process.uptime().toFixed(2) + ' seconds'
