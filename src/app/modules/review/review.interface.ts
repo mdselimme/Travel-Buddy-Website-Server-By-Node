@@ -5,10 +5,10 @@ import { Types } from "mongoose";
 
 export interface IReview {
     _id?: Types.ObjectId;
-    travelPlanId: Types.ObjectId,
-    travelerId: Types.ObjectId,
+    travelPlan: Types.ObjectId,
+    traveler: Types.ObjectId,
     rating: number;
-    comment: string;
+    description: string;
     createdAt?: Date;
     updatedAt?: Date;
 };
