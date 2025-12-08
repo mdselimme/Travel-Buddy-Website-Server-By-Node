@@ -1,8 +1,8 @@
-import { Types } from "mongoose"
+
 
 
 export interface IJwtTokenPayload {
-    userId: Types.ObjectId
+    userId: string;
     role: string
     email: string
     fullName: string

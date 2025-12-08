@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Request, Response, NextFunction } from 'express';
 
 const notFoundRoute = (req: Request, res: Response, next: NextFunction) => {

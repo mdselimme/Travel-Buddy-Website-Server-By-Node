@@ -11,7 +11,9 @@ const createReview = catchAsync(async (req: Request, res: Response) => {
 
     const decodedToken = req.user;
 
-    const result = await ReviewService.createReview(decodedToken as IJwtTokenPayload, req.body);
+    req.body.traveler = (decodedToken as IJwtTokenPayload).userId;
+
+    const result = await ReviewService.createReview(req.body);
 
     ApiResponse(res, {
         statusCode: httpStatus.CREATED,

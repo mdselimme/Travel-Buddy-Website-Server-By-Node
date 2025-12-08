@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import httpStatus from 'http-status-codes';
-import { IJwtTokenPayload } from "../../types/token.type"
 import ApiError from "../../utils/ApiError";
 import { IReview } from "./review.interface"
 import { ReviewModel } from "./review.model";
@@ -9,9 +8,8 @@ import { TravelPlanStatus } from '../travelPlan/travelPlan.interface';
 import { createQuery } from '../../utils/querySearch';
 
 //CREATE A REVIEW
-const createReview = async (decodedToken: IJwtTokenPayload, reviewData: Partial<IReview>) => {
+const createReview = async (reviewData: Partial<IReview>) => {
 
-    reviewData.traveler = decodedToken.userId;
 
     const travelPlan = await TravelPlanModel.findOne({
         _id: reviewData.travelPlan, status: TravelPlanStatus.COMPLETED
@@ -23,7 +21,7 @@ const createReview = async (decodedToken: IJwtTokenPayload, reviewData: Partial<
 
     const travelUserExistingReview = await ReviewModel.findOne({
         travelPlan: reviewData.travelPlan,
-        traveler: decodedToken.userId,
+        traveler: reviewData.traveler,
     });
 
     if (travelUserExistingReview) {
