@@ -9,6 +9,11 @@ import { TravelPlanModel } from '../travelPlan/travelPlan.model';
 
 const createMatch = async (matchData: IMatch) => {
 
+    const travelPlan = await TravelPlanModel.findById(matchData.travelPlanId);
+    if (!travelPlan) {
+        throw new ApiError(httpStatus.NOT_FOUND, "Travel Plan not found.");
+    }
+
     const checkMatch = await MatchesModel.findOne({
         travelPlanId: matchData.travelPlanId,
         senderId: matchData.senderId,
