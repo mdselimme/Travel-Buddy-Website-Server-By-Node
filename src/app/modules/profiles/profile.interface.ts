@@ -3,7 +3,7 @@ import { Types } from "mongoose";
 
 export interface IProfile {
     _id?: Types.ObjectId;
-    userId: Types.ObjectId;
+    user: Types.ObjectId;
     fullName: string;
     email: string;
     contactNumber?: string;

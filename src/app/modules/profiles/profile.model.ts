@@ -3,7 +3,7 @@ import { IProfile } from "./profile.interface";
 
 
 const profileSchemaModel = new Schema<IProfile>({
-    userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    user: { type: Schema.Types.ObjectId, ref: "User", required: true },
     fullName: { type: String, required: true, minlength: 3, maxlength: 100 },
     email: { type: String, required: true },
     contactNumber: { type: String },

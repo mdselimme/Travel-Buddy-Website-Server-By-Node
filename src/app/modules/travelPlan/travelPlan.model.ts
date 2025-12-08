@@ -3,20 +3,23 @@ import { ITravelPlan, TravelPlanStatus } from "./travelPlan.interface";
 
 
 
+
+
+
 const travelPlanSchema = new Schema<ITravelPlan>({
     userId: { type: Schema.Types.ObjectId, required: true, ref: "User" },
-    travelTitle: { type: String, required: true },
+    travelTitle: { type: String, required: true, minlength: 3 },
     destination: {
-        city: { type: String, required: true },
-        country: { type: String, required: true }
+        city: { type: String, required: true, minlength: 3 },
+        country: { type: String, required: true, minlength: 3 }
     },
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },
     budgetRange: {
-        min: { type: Number, required: true },
-        max: { type: Number, required: true }
+        min: { type: Number, required: true, min: 1 },
+        max: { type: Number, required: true, min: 1 }
     },
-    travelTypes: [{ type: Schema.Types.ObjectId, required: true }],
+    travelTypes: [{ type: Schema.Types.ObjectId, required: true, ref: "TravelType" }],
     travelDescription: { type: String },
     itinerary: [{ type: String, required: true }],
     thumbnail: { type: String, required: true },

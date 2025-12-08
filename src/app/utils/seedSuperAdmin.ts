@@ -29,7 +29,7 @@ export const seedSuperAdmin = async () => {
             const superAdmin = await UserModel.create([superAdminsData], { session });
 
             const createdProfileData = {
-                userId: superAdmin[0]._id,
+                user: superAdmin[0]._id,
                 fullName: superAdminsData.fullName as string,
                 email: superAdmin[0].email,
             };
