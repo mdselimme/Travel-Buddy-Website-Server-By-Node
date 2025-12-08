@@ -19,7 +19,8 @@ interface IDateRangeFilter {
 interface IPopulateOptions {
     path: string;
     select?: string;
-    populate?: IPopulateOptions;
+    model?: string;
+    populate?: IPopulateOptions | IPopulateOptions[];
 }
 
 interface IQueryResult<T> {
@@ -34,7 +35,7 @@ interface IQueryResult<T> {
 
 /**
  * Dynamic Query Builder for Mongoose
- * Supports pagination, multi-field filtering, sorting, searching, date range filtering, and population
+ * Supports pagination, multi-field filtering, sorting, searching, date range filtering, and nested population
  */
 class QuerySearch {
     private model: any;
@@ -52,7 +53,7 @@ class QuerySearch {
 
     /**
      * Add filters to query
-     * filters - Object with field names and values
+     * @param filters - Object with field names and values
      */
     filter(filters: IFilterOptions): this {
         Object.keys(filters).forEach((key) => {
@@ -65,9 +66,9 @@ class QuerySearch {
 
     /**
      * Add date range filter
-     * field - Field name to filter
-     * startDate - Start date (ISO string or Date object)
-     * endDate - End date (ISO string or Date object)
+     * @param field - Field name to filter
+     * @param startDate - Start date (ISO string or Date object)
+     * @param endDate - End date (ISO string or Date object)
      */
     dateRange(field: string, startDate?: string | Date, endDate?: string | Date): this {
         if (field && (startDate || endDate)) {
@@ -82,13 +83,26 @@ class QuerySearch {
 
     /**
      * Add search functionality across multiple fields
-     * searchFields - Array of field names to search in
-     * searchValue - Search string
+     * @param searchFields - Array of field names to search in (can be unlimited)
+     * @param searchValue - Search string
+     * @example
+     * .search(['name', 'email', 'phone', 'address'], 'john')
      */
-    search(searchFields: string[], searchValue: string): this {
-        if (searchValue && searchFields.length > 0) {
-            const searchRegex = { $regex: searchValue, $options: 'i' };
-            this.filterOptions.$or = searchFields.map((field) => ({
+    search(searchFields: string[] | string, searchValue?: string): this {
+        let fields: string[] = [];
+        let value = '';
+
+        if (Array.isArray(searchFields)) {
+            fields = searchFields;
+            value = searchValue || '';
+        } else if (typeof searchFields === 'string') {
+            fields = [searchFields];
+            value = searchValue || '';
+        }
+
+        if (value && fields.length > 0) {
+            const searchRegex = { $regex: value, $options: 'i' };
+            this.filterOptions.$or = fields.map((field) => ({
                 [field]: searchRegex,
             }));
         }
@@ -97,8 +111,8 @@ class QuerySearch {
 
     /**
      * Add pagination
-     * page - Page number (default: 1)
-     *limit - Items per page (default: 10)
+     * @param page - Page number (default: 1)
+     * @param limit - Items per page (default: 10)
      */
     paginate(page = 1, limit = 10): this {
         this.queryOptions.page = Math.max(page, 1);
@@ -108,17 +122,18 @@ class QuerySearch {
 
     /**
      * Add sorting
-     * sortBy - Comma-separated fields. Prefix with "-" for descending
+     * @param sortBy - Comma-separated fields. Prefix with "-" for descending
      * e.g., "name,-createdAt"
      */
     sort(sortBy: string): this {
         if (sortBy) {
             const sortObject: any = {};
             sortBy.split(',').forEach((field) => {
-                if (field.startsWith('-')) {
-                    sortObject[field.substring(1)] = -1;
+                const trimmedField = field.trim();
+                if (trimmedField.startsWith('-')) {
+                    sortObject[trimmedField.substring(1)] = -1;
                 } else {
-                    sortObject[field] = 1;
+                    sortObject[trimmedField] = 1;
                 }
             });
             this.queryOptions.sortBy = sortObject;
@@ -128,7 +143,7 @@ class QuerySearch {
 
     /**
      * Select specific fields
-     * fields - Comma-separated field names. Prefix with "-" to exclude
+     * @param fields - Comma-separated field names. Prefix with "-" to exclude
      * e.g., "name,email,-password"
      */
     select(fields: string): this {
@@ -140,8 +155,8 @@ class QuerySearch {
 
     /**
      * Exclude specific fields from result
-     * fields - Array of field names to exclude
-     * e.g., ['password', '__v', 'resetToken']
+     * @param fields - Array of field names to exclude (can be unlimited)
+     * e.g., ['password', '__v', 'resetToken', 'tempOtp', 'secretData']
      */
     exclude(fields: string[]): this {
         this.excludeFields = fields;
@@ -150,25 +165,89 @@ class QuerySearch {
 
     /**
      * Populate referenced documents with optional field selection
-     * path - Path to populate
-     * select - Fields to include/exclude (prefix "-" to exclude)
-     * e.g., populate('author') or populate('author', 'name email -password')
+     * @param path - Path to populate
+     * @param select - Fields to include/exclude (prefix "-" to exclude)
+     * @param model - Model name for population (optional)
+     * @example
+     * .populate('author')
+     * .populate('author', 'name email -password')
+     * .populate('author', 'name email', 'Author')
      */
-    populate(path: string, select?: string): this {
+    populate(path: string, select?: string, model?: string): this {
         const populateObj: IPopulateOptions = { path };
         if (select) {
             populateObj.select = select;
+        }
+        if (model) {
+            populateObj.model = model;
         }
         this.populateOptions.push(populateObj);
         return this;
     }
 
     /**
-     * Populate with nested population
-     *populateChain - Array of populate options
-     * e.g., [{path: 'author', select: 'name'}, {path: 'author.profile', select: 'bio'}]
+     * Populate with nested population (single level)
+     * @param path - Path to populate
+     * @param select - Fields to include/exclude
+     * @param nestedPath - Nested path to populate
+     * @param nestedSelect - Nested fields to include/exclude
+     * @param nestedModel - Nested model name (optional)
+     * @example
+     * .populateNested('receiverId', 'email profile', 'profile', 'bio avatar', 'Profile')
      */
-    populateNested(populateChain: IPopulateOptions[]): this {
+    populateNested(
+        path: string,
+        select?: string,
+        nestedPath?: string,
+        nestedSelect?: string,
+        nestedModel?: string
+    ): this {
+        const populateObj: IPopulateOptions = { path };
+
+        if (select) {
+            populateObj.select = select;
+        }
+
+        if (nestedPath) {
+            const nestedObj: IPopulateOptions = { path: nestedPath };
+            if (nestedSelect) {
+                nestedObj.select = nestedSelect;
+            }
+            if (nestedModel) {
+                nestedObj.model = nestedModel;
+            }
+            populateObj.populate = nestedObj;
+        }
+
+        this.populateOptions.push(populateObj);
+        return this;
+    }
+
+    /**
+     * Populate with deep nested population (multiple levels)
+     * @param populateChain - Array of populate options with nested structure
+     * @example
+     * .populateDeep([
+     *   {
+     *     path: 'receiverId',
+     *     select: 'email profile',
+     *     populate: {
+     *       path: 'profile',
+     *       select: 'bio avatar',
+     *       model: 'Profile'
+     *     }
+     *   },
+     *   {
+     *     path: 'senderId',
+     *     select: 'name email',
+     *     populate: {
+     *       path: 'department',
+     *       select: 'name code'
+     *     }
+     *   }
+     * ])
+     */
+    populateDeep(populateChain: IPopulateOptions[]): this {
         this.populateOptions.push(...populateChain);
         return this;
     }
@@ -186,7 +265,6 @@ class QuerySearch {
             }
 
             if (endDate) {
-                // Set endDate to end of day
                 const end = new Date(endDate);
                 end.setHours(23, 59, 59, 999);
                 dateCondition.$lte = end;
@@ -204,7 +282,6 @@ class QuerySearch {
     private buildFieldSelection(): string {
         let fields = this.queryOptions.fields || '';
 
-        // Add excluded fields
         if (this.excludeFields.length > 0) {
             const excludedFields = this.excludeFields.map(f => `-${f}`).join(' ');
             fields = fields ? `${fields} ${excludedFields}` : excludedFields;
@@ -217,36 +294,26 @@ class QuerySearch {
      * Execute the query
      */
     async exec(): Promise<IQueryResult<any>> {
-        // Build date range filters
         this.buildDateRangeFilters();
 
-        // Apply filters
         this.query = this.model.find(this.filterOptions);
 
-        // Apply field selection with excludes
         const fieldSelection = this.buildFieldSelection();
         if (fieldSelection) {
             this.query = this.query.select(fieldSelection);
         }
 
-        // Apply population
+        // Apply population with nested support
         this.populateOptions.forEach((popOption) => {
-            if (popOption.select) {
-                this.query = this.query.populate(popOption.path, popOption.select);
-            } else {
-                this.query = this.query.populate(popOption.path);
-            }
+            this.query = this.query.populate(popOption);
         });
 
-        // Apply sorting
         if (this.queryOptions.sortBy) {
             this.query = this.query.sort(this.queryOptions.sortBy);
         }
 
-        // Get total count before pagination
         const total = await this.model.countDocuments(this.filterOptions);
 
-        // Apply pagination
         const page = this.queryOptions.page || 1;
         const limit = this.queryOptions.limit || 10;
         const skip = (page - 1) * limit;
@@ -269,8 +336,8 @@ class QuerySearch {
 
 /**
  * Factory function to create QuerySearch instance
- *model - Mongoose model
- * QuerySearch instance
+ * @param model - Mongoose model
+ * @returns QuerySearch instance
  */
 export const createQuery = (model: any): QuerySearch => {
     return new QuerySearch(model);

@@ -33,7 +33,7 @@ const registerUserService = async (userData: Partial<IUser & { fullName: string 
 
         const createProfileData = {
             fullName: userData.fullName as string,
-            userId: newUserCreate[0]._id,
+            user: newUserCreate[0]._id,
             email: newUserCreate[0].email,
         };
 
