@@ -10,7 +10,7 @@ import { multerUpload } from "../../../config/multer.config";
 const router = Router();
 
 // USER CREATE ROUTE 
-router.post('/',
+router.post('/register',
     validateZodSchema(UserValidation.userCreateValidation),
     UserController.registerUser
 );

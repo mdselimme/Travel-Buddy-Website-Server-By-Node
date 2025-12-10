@@ -12,7 +12,8 @@ export const setTokenAuthCookie = (res: Response, tokenInfo: IAuthToken) => {
             httpOnly: true,
             secure: true,
             path: "/",
-            sameSite: "none"
+            sameSite: "none",
+            maxAge: 1000 * 60 * 60 * 24,
         })
     }
     if (tokenInfo.refreshToken) {
@@ -20,7 +21,8 @@ export const setTokenAuthCookie = (res: Response, tokenInfo: IAuthToken) => {
             httpOnly: true,
             secure: true,
             path: "/",
-            sameSite: "none"
+            sameSite: "none",
+            maxAge: 1000 * 60 * 60 * 24 * 30,
         })
     }
 };

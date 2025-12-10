@@ -23,7 +23,7 @@ const registerUserService = async (userData: Partial<IUser & { fullName: string 
 
         // Check if user with the same email already exists
         if (existingUser) {
-            throw new ApiError(httpStatus.CONFLICT, 'User email already exists.');
+            throw new ApiError(httpStatus.BAD_REQUEST, 'User email already exists.');
         };
         // Hash the password before saving
         const hashedPassword = await makeHashedPassword(userData.password as string);

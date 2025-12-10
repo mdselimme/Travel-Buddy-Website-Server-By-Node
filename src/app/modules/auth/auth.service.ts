@@ -23,15 +23,13 @@ const logInUser = async (payload: Partial<IUser>) => {
         throw new ApiError(httpStatus.NOT_FOUND, 'User does not found')
     };
 
-    if (!existingUser.isVerified) {
-        return {
-            isVerified: existingUser.isVerified,
-            message: 'User is not verified. Please verify your email to log in.'
-        }
-    }
 
     if (existingUser.isActive !== IActiveStatus.ACTIVE) {
-        throw new ApiError(httpStatus.BAD_REQUEST, 'User is not active');
+        throw new ApiError(httpStatus.BAD_REQUEST, 'User is not active. Please contact support.');
+    }
+
+    if (!existingUser.isVerified) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'User is not verified. Please verify your email.');
     }
 
     const isPasswordMatch = await bcrypt.compare(payload.password as string, existingUser.password);
