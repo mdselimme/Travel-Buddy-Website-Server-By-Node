@@ -109,8 +109,8 @@ const getAllUsersService = async (queryParams: any) => {
         .search(['fullName', 'email'], search)
         .sort(sort || '-createdAt')
         .dateRange('createdAt', startDate, endDate)
-        .paginate(page || 1, limit || 10)
         .populate('profile')
+        .paginate(page || 1, limit || 10)
         .select(fields || '-password')
         .exec();
 
@@ -120,7 +120,7 @@ const getAllUsersService = async (queryParams: any) => {
 //GET USER PROFILE SERVICE FUNCTION
 const getUserProfileService = async (decodedToken: IJwtTokenPayload): Promise<Partial<IUser> | null> => {
     const user = await UserModel.findById(decodedToken.userId)
-        .select('-password').populate('profile');
+        .select('-password');
 
     if (!user) {
         throw new ApiError(httpStatus.NOT_FOUND, 'User does not found.');
