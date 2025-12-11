@@ -8,6 +8,7 @@ import { createQuery } from '../../utils/querySearch';
 import { IJwtTokenPayload } from '../../types/token.type';
 import { ProfileModel } from '../profiles/profile.model';
 import { deleteImageFromCloudinary } from '../../../config/cloudinary.config';
+import { IProfile } from '../profiles/profile.interface';
 
 
 
@@ -59,7 +60,7 @@ const registerUserService = async (userData: Partial<IUser & { fullName: string 
 };
 
 //Update User Data Service Function
-const updateUserService = async (userId: string, updateData: Partial<IUser>): Promise<Partial<IUser> | null> => {
+const updateUserService = async (userId: string, updateData: Partial<IProfile>): Promise<Partial<IUser> | null> => {
 
     const session = await UserModel.startSession();
     session.startTransaction();
@@ -70,6 +71,19 @@ const updateUserService = async (userId: string, updateData: Partial<IUser>): Pr
 
         if (!existingUser) {
             throw new ApiError(httpStatus.NOT_FOUND, 'User does not found.');
+        };
+
+        if (updateData?.profileImage) {
+
+            const profile = await ProfileModel.findById(existingUser.profile);
+
+            if (!profile) {
+                throw new ApiError(httpStatus.NOT_FOUND, 'Profile does not found for this user.');
+            };
+
+            if (profile.profileImage) {
+                await deleteImageFromCloudinary(profile.profileImage);
+            }
         };
 
         const updatedUser = await ProfileModel.findByIdAndUpdate(
