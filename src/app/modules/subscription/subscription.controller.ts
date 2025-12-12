@@ -36,7 +36,7 @@ const updateSubscriptionPlan = catchAsync(async (req: Request, res: Response) =>
 
 //GET ALL CONTROLLER SUBSCRIPTION PLANS
 const getAllSubscriptionPlans = catchAsync(async (req: Request, res: Response) => {
-    const result = await SubscriptionService.getAllSubscriptionsService(req.query);
+    const result = await SubscriptionService.getAllSubscriptionsService();
     ApiResponse(res, {
         success: true,
         message: "Subscription plans retrieved successfully",
