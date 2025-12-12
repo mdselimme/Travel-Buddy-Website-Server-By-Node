@@ -23,6 +23,19 @@ const getProfileById = catchAsync(async (req: Request, res: Response) => {
 
 });
 
+//GET PROFILE BY USER ID
+const getProfileByUserId = catchAsync(async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const result = await ProfileService.getProfileByUserId(id);
+    ApiResponse(res, {
+        success: true,
+        message: "Profile fetched successfully",
+        statusCode: httpStatus.OK,
+        data: result
+    })
+});
+
 export const ProfileController = {
-    getProfileById
+    getProfileById,
+    getProfileByUserId
 }

@@ -123,7 +123,7 @@ const getAllUsersService = async (queryParams: any) => {
         .search(['fullName', 'email'], search)
         .sort(sort || '-createdAt')
         .dateRange('createdAt', startDate, endDate)
-        .populate('profile')
+        .populate('profile', "fullName profileImage isSubscribed")
         .paginate(page || 1, limit || 10)
         .select(fields || '-password')
         .exec();
@@ -156,9 +156,9 @@ const getUserByIdService = async (userId: string, decodedToken: IJwtTokenPayload
 };
 
 //Update User Role Service Function
-const updateUserRoleService = async (userId: string, role: string): Promise<Partial<IUser> | null> => {
+const updateUserRoleService = async (email: string, role: string): Promise<Partial<IUser> | null> => {
 
-    const existingUser = await UserModel.findById(userId);
+    const existingUser = await UserModel.findOne({ email });
 
     if (!existingUser) {
         throw new ApiError(httpStatus.NOT_FOUND, 'User does not found.');
@@ -170,7 +170,7 @@ const updateUserRoleService = async (userId: string, role: string): Promise<Part
 
 
     const updatedUser = await UserModel.findByIdAndUpdate(
-        userId,
+        existingUser._id,
         { role },
         { new: true, runValidators: true }
     );

@@ -41,7 +41,9 @@ const getAllTravelTypesService = async (query: any) => {
     const travelTypes = await createQuery(TravelTypeModel)
         .sort(sort || '-createdAt')
         .paginate(page || 1, limit || 10)
-        .exec();
+        .select("typeName")
+        .exec()
+        ;
     return travelTypes;
 };
 

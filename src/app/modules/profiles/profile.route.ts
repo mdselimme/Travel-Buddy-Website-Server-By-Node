@@ -6,9 +6,15 @@ import { ProfileController } from "./profile.controller";
 
 const router = Router();
 
+//GET MY PROFILE ROUTE
 router.get("/me",
     checkAuth(...Object.values(UserRole)),
     ProfileController.getProfileById
+);
+
+// GET PROFILE BY USER ID ROUTE 
+router.get("/:id",
+    ProfileController.getProfileByUserId
 );
 
 export const ProfileRouter = router;

@@ -26,7 +26,6 @@ router.patch("/:id",
 
 //GET ALL SUBSCRIPTION PLANS
 router.get("/",
-    checkAuth(UserRole.SUPER_ADMIN, UserRole.ADMIN),
     SubscriptionController.getAllSubscriptionPlans
 );
 

@@ -22,6 +22,11 @@ const updateATravelPlan = async (id: string, payload: Partial<ITravelPlan>): Pro
     if (!existingTravelPlan) {
         throw new ApiError(httpStatus.NOT_FOUND, "Travel Plan not found");
     }
+
+    if (payload.thumbnail && existingTravelPlan.thumbnail) {
+        await deleteImageFromCloudinary(existingTravelPlan.thumbnail);
+    }
+
     const updatedTravelPlan = await TravelPlanModel.findByIdAndUpdate(id, payload, { new: true });
     return updatedTravelPlan;
 };
@@ -33,6 +38,7 @@ const getAllTravelPlans = async (query: any) => {
 
     const result = await createQuery(TravelPlanModel)
         .sort(sort || '-createdAt')
+        .populate('travelTypes', "typeName")
         .paginate(page || 1, limit || 10)
         .exec();
 
@@ -40,9 +46,15 @@ const getAllTravelPlans = async (query: any) => {
 
 };
 
+//GET MY TRAVEL PLANS SERVICE
+const getMyTravelPlans = async (userId: string): Promise<Partial<ITravelPlan>[]> => {
+    const myTravelPlans = await TravelPlanModel.find({ user: userId }).sort({ createdAt: -1 }).populate('travelTypes', "typeName");
+    return myTravelPlans;
+}
+
 //GET SINGLE TRAVEL PLAN SERVICE
 const getSingleTravelPlan = async (id: string): Promise<Partial<ITravelPlan> | null> => {
-    const travelPlan = await TravelPlanModel.findById(id);
+    const travelPlan = await TravelPlanModel.findById(id).populate('travelTypes', "typeName");
 
     if (!travelPlan) {
         throw new ApiError(httpStatus.NOT_FOUND, "Travel Plan not found");
@@ -74,5 +86,6 @@ export const TravelPlanService = {
     updateATravelPlan,
     getAllTravelPlans,
     getSingleTravelPlan,
-    deleteATravelPlan
+    deleteATravelPlan,
+    getMyTravelPlans
 }

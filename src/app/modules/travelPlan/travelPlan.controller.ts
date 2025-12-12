@@ -4,6 +4,7 @@ import catchAsync from "../../utils/catchAsync"
 import ApiResponse from "../../utils/ApiResponse"
 import { TravelPlanService } from './travelPlan.service';
 import ApiError from '../../utils/ApiError';
+import { IJwtTokenPayload } from '../../types/token.type';
 
 
 
@@ -63,6 +64,20 @@ const getAllTravelPlans = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+// GET MY TRAVEL PLANS CONTROLLER
+const getMyTravelPlans = catchAsync(async (req: Request, res: Response) => {
+    const decodedToken = req.user as IJwtTokenPayload;
+    const userId = decodedToken?.userId;
+    const result = await TravelPlanService.getMyTravelPlans(userId);
+
+    ApiResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: "My Travel Plans retrieved successfully",
+        data: result
+    });
+});
+
 //GET SINGLE TRAVEL PLAN CONTROLLER
 const getSingleTravelPlan = catchAsync(async (req: Request, res: Response) => {
     const { id } = req.params;
@@ -94,5 +109,6 @@ export const TravelPlanController = {
     updateATravelPlan,
     getAllTravelPlans,
     getSingleTravelPlan,
+    getMyTravelPlans,
     deleteATravelPlan
 }

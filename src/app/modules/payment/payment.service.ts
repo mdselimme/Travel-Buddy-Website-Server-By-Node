@@ -1,5 +1,4 @@
 import httpStatus from 'http-status-codes';
-import { Types } from "mongoose"
 import { PaymentModel } from "./payment.model"
 import { UserModel } from "../users/user.model";
 import ApiError from "../../utils/ApiError";
@@ -13,7 +12,7 @@ import { SubscriptionPlan } from '../subscription/subscription.interface';
 import { IActiveStatus } from '../users/user.interface';
 
 //INIT PAYMENT SERVICE
-const initSubscriptionPayment = async (subscription: Types.ObjectId, user: Types.ObjectId) => {
+const initSubscriptionPayment = async (subscription: string, user: string) => {
 
     const transactionId = getTransactionId();
 
@@ -90,10 +89,10 @@ const handlePaymentSuccess = async (query: Record<string, string>) => {
         }
 
         paymentData.status = PaymentStatus.PAID;
-        const updatedPayment = await paymentData.save({ session });
+        await paymentData.save({ session });
 
         //find the profile and update subscription details
-        const findProfile = await ProfileModel.findOne({ userId: paymentData.user });
+        const findProfile = await ProfileModel.findOne({ user: paymentData.user });
 
         if (!findProfile) {
             throw new ApiError(httpStatus.NOT_FOUND, "Profile not found for the user");
@@ -133,7 +132,10 @@ const handlePaymentSuccess = async (query: Record<string, string>) => {
         await session.commitTransaction();
         session.endSession();
 
-        return updatedPayment;
+        return {
+            success: true,
+            message: "Payment Completed Successfully."
+        };
 
     } catch (error) {
         await session.abortTransaction();
@@ -150,9 +152,20 @@ const handlePaymentFail = async (query: Record<string, string>) => {
         throw new ApiError(httpStatus.NOT_FOUND, "Payment data not found");
     }
     paymentData.status = PaymentStatus.FAILED;
-    const updatedPayment = await paymentData.save();
-    return updatedPayment;
+    await paymentData.save();
+    return {
+        success: false,
+        message: "Payment Failed."
+    };
 };
+
+//GET ME PAYMENT SERVICE
+const getMePaymentService = async (userId: string) => {
+    const payments = await PaymentModel.find({ user: userId })
+        .populate('subscription');
+    return payments;
+};
+
 
 
 //CANCEL PAYMENT SERVICE
@@ -164,13 +177,17 @@ const handlePaymentCancel = async (query: Record<string, string>) => {
         throw new ApiError(httpStatus.NOT_FOUND, "Payment data not found");
     }
     paymentData.status = PaymentStatus.CANCELLED;
-    const updatedPayment = await paymentData.save();
-    return updatedPayment;
+    await paymentData.save();
+    return {
+        success: false,
+        message: "Payment Cancelled."
+    };
 };
 
 export const PaymentService = {
     initSubscriptionPayment,
     handlePaymentSuccess,
     handlePaymentFail,
-    handlePaymentCancel
+    handlePaymentCancel,
+    getMePaymentService
 };

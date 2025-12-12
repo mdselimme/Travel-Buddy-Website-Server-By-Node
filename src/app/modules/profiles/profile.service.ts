@@ -18,6 +18,17 @@ const getProfileById = async (user: string) => {
     return profile;
 }
 
+//GET PROFILE BY USER ID
+const getProfileByUserId = async (userId: string) => {
+    const profile = await ProfileModel.findOne({ user: userId });
+    if (!profile) {
+        throw new ApiError(httpStatus.NOT_FOUND, "Profile not found");
+    }
+    return profile;
+};
+
+
 export const ProfileService = {
-    getProfileById
+    getProfileById,
+    getProfileByUserId
 };

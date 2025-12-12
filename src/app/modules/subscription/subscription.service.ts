@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import httpStatus from 'http-status-codes';
 import ApiError from "../../utils/ApiError";
 import { ISubscription } from "./subscription.interface";
 import { SubscriptionModel } from "./subscription.model";
-import { createQuery } from '../../utils/querySearch';
+
 
 
 //create subscription service
@@ -28,10 +27,8 @@ const updateSubscriptionService = async (id: string, updateData: Partial<ISubscr
 };
 
 //GET ALL SUBSCRIPTION SERVICE
-const getAllSubscriptionsService = async (query: any) => {
-    const { sort } = query;
-    const subscriptions = await createQuery(SubscriptionModel)
-        .sort(sort || '-createdAt').exec();
+const getAllSubscriptionsService = async (): Promise<ISubscription[]> => {
+    const subscriptions = await SubscriptionModel.find()
     return subscriptions;
 };
 

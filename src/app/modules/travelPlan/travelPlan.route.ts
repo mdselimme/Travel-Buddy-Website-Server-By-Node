@@ -31,6 +31,12 @@ router.patch("/:id",
     TravelPlanController.updateATravelPlan
 );
 
+// GET MY TRAVEL PLANS ROUTE 
+router.get("/my-plans",
+    checkAuth(...Object.values(UserRole)),
+    TravelPlanController.getMyTravelPlans
+);
+
 //GET TRAVEL PLAN BY ID ROUTE
 router.get("/:id",
     TravelPlanController.getSingleTravelPlan

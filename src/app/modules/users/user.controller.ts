@@ -89,9 +89,9 @@ const updateUserStatus = catchAsync(async (req: Request, res: Response) => {
 
 // UPDATE USER ROLE CONTROLLER 
 const updateUserRole = catchAsync(async (req: Request, res: Response) => {
-    const { userId, role } = req.body;
+    const { email, role } = req.body;
 
-    const updatedUser = await UserService.updateUserRoleService(userId, role);
+    const updatedUser = await UserService.updateUserRoleService(email, role);
     ApiResponse(res, {
         statusCode: httpStatus.OK,
         success: true,

@@ -15,6 +15,17 @@ router.post("/init",
     PaymentController.initSubscriptionPayment
 );
 
+//GET PAYMENT BY USER ROUTE
+router.get("/me",
+    checkAuth(...Object.values(UserRole)),
+    PaymentController.getMePayments
+);
+//GET ALL PAYMENTS ROUTE
+// router.get("/",
+//     checkAuth(UserRole.ADMIN),
+//     PaymentController.getAllPayments
+// );
+
 //SUCCESS PAYMENT ROUTE
 router.post("/success",
     PaymentController.handlePaymentSuccess
