@@ -34,12 +34,41 @@ const updateATravelPlan = async (id: string, payload: Partial<ITravelPlan>): Pro
 //GET ALL TRAVEL PLANS SERVICE
 const getAllTravelPlans = async (query: any) => {
 
-    const { page, limit, sort } = query;
+    const {
+        page,
+        limit,
+        sort,
+        search,
+        destination,
+        travelType,
+        startDate,
+        endDate,
+        status,
+    } = query;
+
+    // Build filter object
+    const filters: any = {};
+
+    if (destination) {
+        filters.destination = destination;
+    }
+
+    if (travelType) {
+        filters.travelTypes = travelType;
+    }
+
+    if (status) {
+        filters.status = status;
+    }
 
     const result = await createQuery(TravelPlanModel)
+        .filter(filters)
+        .search(['title', 'destination', 'description'], search)
+        .dateRange('startDate', startDate, endDate)
+        .populate('travelTypes', 'typeName')
+        .populate('user', 'name email -password')
         .sort(sort || '-createdAt')
-        .populate('travelTypes', "typeName")
-        .paginate(page || 1, limit || 10)
+        .paginate(Number(page) || 1, Number(limit) || 10)
         .exec();
 
     return result;
