@@ -5,6 +5,7 @@ import { ITravelPlan } from "./travelPlan.interface"
 import { TravelPlanModel } from "./travelPlan.model";
 import { createQuery } from '../../utils/querySearch';
 import { deleteImageFromCloudinary } from '../../../config/cloudinary.config';
+import { TravelTypeModel } from "../travelType/travelType.model";
 
 
 //CREATE A TRAVEL PLAN SERVICE
@@ -44,6 +45,7 @@ const getAllTravelPlans = async (query: any) => {
         startDate,
         endDate,
         status,
+        fields
     } = query;
 
     // Build filter object
@@ -53,8 +55,14 @@ const getAllTravelPlans = async (query: any) => {
         filters.destination = destination;
     }
 
+    // Handle travelType by typeName
     if (travelType) {
-        filters.travelTypes = travelType;
+
+        const travelTypeDoc = await TravelTypeModel.findOne({ typeName: new RegExp(travelType, 'i') });
+        if (travelTypeDoc) {
+            filters.travelTypes = travelTypeDoc._id;
+        }
+
     }
 
     if (status) {
@@ -63,11 +71,12 @@ const getAllTravelPlans = async (query: any) => {
 
     const result = await createQuery(TravelPlanModel)
         .filter(filters)
-        .search(['title', 'destination', 'description'], search)
+        .search(['travelTitle', 'destination.city', 'destination.country'], search)
         .dateRange('startDate', startDate, endDate)
         .populate('travelTypes', 'typeName')
-        .populate('user', 'name email -password')
+        .populate('user', 'name email')
         .sort(sort || '-createdAt')
+        .select(fields)
         .paginate(Number(page) || 1, Number(limit) || 10)
         .exec();
 
