@@ -23,6 +23,11 @@ router.get("/",
     TravelPlanController.getAllTravelPlans
 );
 
+//GET TRAVEL PLANS CITIES ROUTE
+router.get("/cities",
+    TravelPlanController.getTravelPlansCities
+);
+
 //UPDATE A TRAVEL PLAN
 router.patch("/:id",
     checkAuth(...Object.values(UserRole)),
@@ -38,7 +43,7 @@ router.get("/my-plans",
 );
 
 //router matches
-router.get("/my-matches", 
+router.get("/my-matches",
     checkAuth(...Object.values(UserRole)),
     TravelPlanController.getMyMatchesTravelPlans
 );

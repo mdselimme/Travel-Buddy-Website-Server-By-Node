@@ -91,6 +91,17 @@ const getMyMatchesTravelPlans = catchAsync(async (req: Request, res: Response) =
     });
 });
 
+//GET TRAVEL PLANS CITIES CONTROLLER
+const getTravelPlansCities = catchAsync(async (req: Request, res: Response) => {
+    const result = await TravelPlanService.getTravelPlansCities();
+    ApiResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: "Travel Plans cities retrieved successfully",
+        data: result
+    });
+});
+
 //GET SINGLE TRAVEL PLAN CONTROLLER
 const getSingleTravelPlan = catchAsync(async (req: Request, res: Response) => {
     const { id } = req.params;
@@ -124,5 +135,6 @@ export const TravelPlanController = {
     getSingleTravelPlan,
     getMyTravelPlans,
     deleteATravelPlan,
-    getMyMatchesTravelPlans
+    getMyMatchesTravelPlans,
+    getTravelPlansCities
 }

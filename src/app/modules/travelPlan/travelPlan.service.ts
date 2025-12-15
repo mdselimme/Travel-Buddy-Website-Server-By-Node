@@ -91,6 +91,12 @@ const getMyTravelPlans = async (userId: string): Promise<Partial<ITravelPlan>[]>
     return myTravelPlans;
 }
 
+//  GET TRAVEL PLANS CITIES SERVICE
+const getTravelPlansCities = async (): Promise<string[]> => {
+    const cities = await TravelPlanModel.distinct("destination.city", { isVisible: true });
+    return cities;
+}
+
 // GET MY MATCHES TRAVEL PLANS SERVICE
 const getMyMatchesTravelPlans = async (userId: string): Promise<Partial<ITravelPlan>[]> => {
 
@@ -141,5 +147,6 @@ export const TravelPlanService = {
     getSingleTravelPlan,
     deleteATravelPlan,
     getMyTravelPlans,
-    getMyMatchesTravelPlans
+    getMyMatchesTravelPlans,
+    getTravelPlansCities
 }
