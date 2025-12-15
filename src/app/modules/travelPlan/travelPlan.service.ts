@@ -6,6 +6,7 @@ import { TravelPlanModel } from "./travelPlan.model";
 import { createQuery } from '../../utils/querySearch';
 import { deleteImageFromCloudinary } from '../../../config/cloudinary.config';
 import { TravelTypeModel } from "../travelType/travelType.model";
+import { ProfileModel } from '../profiles/profile.model';
 
 
 //CREATE A TRAVEL PLAN SERVICE
@@ -90,6 +91,20 @@ const getMyTravelPlans = async (userId: string): Promise<Partial<ITravelPlan>[]>
     return myTravelPlans;
 }
 
+// GET MY MATCHES TRAVEL PLANS SERVICE
+const getMyMatchesTravelPlans = async (userId: string): Promise<Partial<ITravelPlan>[]> => {
+
+    const profileExists = await ProfileModel.findOne({ user: userId });
+    if (!profileExists) {
+        throw new ApiError(httpStatus.NOT_FOUND, "Profile not found. Please create your profile first.");
+    }
+    const myMatchesTravelPlans = await TravelPlanModel.find({
+        'travelTypes': { $in: profileExists.interests }
+    }).sort({ createdAt: -1 }).populate('travelTypes', "typeName");
+
+    return myMatchesTravelPlans;
+};
+
 //GET SINGLE TRAVEL PLAN SERVICE
 const getSingleTravelPlan = async (id: string): Promise<Partial<ITravelPlan> | null> => {
     const travelPlan = await TravelPlanModel.findById(id).populate('travelTypes', "typeName");
@@ -125,5 +140,6 @@ export const TravelPlanService = {
     getAllTravelPlans,
     getSingleTravelPlan,
     deleteATravelPlan,
-    getMyTravelPlans
+    getMyTravelPlans,
+    getMyMatchesTravelPlans
 }

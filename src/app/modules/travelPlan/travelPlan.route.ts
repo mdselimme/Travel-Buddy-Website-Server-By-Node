@@ -37,6 +37,12 @@ router.get("/my-plans",
     TravelPlanController.getMyTravelPlans
 );
 
+//router matches
+router.get("/my-matches", 
+    checkAuth(...Object.values(UserRole)),
+    TravelPlanController.getMyMatchesTravelPlans
+);
+
 //GET TRAVEL PLAN BY ID ROUTE
 router.get("/:id",
     TravelPlanController.getSingleTravelPlan

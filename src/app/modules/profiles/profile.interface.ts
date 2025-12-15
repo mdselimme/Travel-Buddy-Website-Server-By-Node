@@ -15,7 +15,7 @@ export interface IProfile {
     subStartDate?: Date;
     subEndDate?: Date;
     currentLocation?: string;
-    interests?: string[];
+    interests?: Types.ObjectId[];
     createdAt?: Date;
     updatedAt?: Date;
 }

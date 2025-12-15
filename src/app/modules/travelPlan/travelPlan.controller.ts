@@ -78,6 +78,19 @@ const getMyTravelPlans = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+// GET MY MATCHES TRAVEL PLANS CONTROLLER
+const getMyMatchesTravelPlans = catchAsync(async (req: Request, res: Response) => {
+    const decodedToken = req.user as IJwtTokenPayload;
+    const userId = decodedToken?.userId;
+    const result = await TravelPlanService.getMyMatchesTravelPlans(userId);
+    ApiResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: "My Matches Travel Plans retrieved successfully",
+        data: result
+    });
+});
+
 //GET SINGLE TRAVEL PLAN CONTROLLER
 const getSingleTravelPlan = catchAsync(async (req: Request, res: Response) => {
     const { id } = req.params;
@@ -110,5 +123,6 @@ export const TravelPlanController = {
     getAllTravelPlans,
     getSingleTravelPlan,
     getMyTravelPlans,
-    deleteATravelPlan
+    deleteATravelPlan,
+    getMyMatchesTravelPlans
 }

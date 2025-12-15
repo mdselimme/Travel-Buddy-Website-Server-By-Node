@@ -15,7 +15,7 @@ const profileSchemaModel = new Schema<IProfile>({
     subStartDate: { type: Date },
     subEndDate: { type: Date },
     currentLocation: { type: String },
-    interests: [{ type: String, default: [] }],
+    interests: [{ type: Schema.Types.ObjectId, ref: "TravelType", default: [] }],
 }, {
     timestamps: true,
     versionKey: false
