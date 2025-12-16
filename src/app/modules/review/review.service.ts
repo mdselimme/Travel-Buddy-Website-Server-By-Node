@@ -11,8 +11,13 @@ import { createQuery } from '../../utils/querySearch';
 const createReview = async (reviewData: Partial<IReview>) => {
 
 
+    if (reviewData.arrangedBy === reviewData.traveler) {
+        throw new ApiError(httpStatus.BAD_REQUEST, "You cannot review your own travel plan");
+    }
+
     const travelPlan = await TravelPlanModel.findOne({
-        _id: reviewData.travelPlan, status: TravelPlanStatus.COMPLETED
+        _id: reviewData.travelPlan,
+        travelPlanStatus: TravelPlanStatus.COMPLETED
     });
 
     if (!travelPlan) {
@@ -20,6 +25,7 @@ const createReview = async (reviewData: Partial<IReview>) => {
     }
 
     const travelUserExistingReview = await ReviewModel.findOne({
+        arrangedBy: reviewData.arrangedBy,
         travelPlan: reviewData.travelPlan,
         traveler: reviewData.traveler,
     });

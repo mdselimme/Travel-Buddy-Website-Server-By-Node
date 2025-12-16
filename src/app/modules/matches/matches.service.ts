@@ -9,13 +9,19 @@ import { TravelPlanModel } from '../travelPlan/travelPlan.model';
 
 const createMatch = async (matchData: IMatch) => {
 
+    if (matchData.senderId === matchData.receiverId) {
+        throw new ApiError(httpStatus.BAD_REQUEST, "Sender and Receiver cannot be the same user.");
+    }
+
     const travelPlan = await TravelPlanModel.findById(matchData.travelPlanId);
+
     if (!travelPlan) {
         throw new ApiError(httpStatus.NOT_FOUND, "Travel Plan not found.");
     }
 
     const checkMatch = await MatchesModel.findOne({
         travelPlanId: matchData.travelPlanId,
+        receiverId: matchData.receiverId,
         senderId: matchData.senderId,
     });
 
@@ -104,12 +110,13 @@ const getSingleMatch = async (matchId: string) => {
 
 //MY MATCHES SERVICE FUNCTION
 const getMyMatches = async (decodedToken: IJwtTokenPayload) => {
+
     const myMatches = await MatchesModel.find({
         $or: [
             { senderId: decodedToken.userId },
             { receiverId: decodedToken.userId }
         ]
-    }).populate("travelPlanId", "destination startDate endDate").populate("senderId", "email").populate("receiverId", "email");
+    }).populate("travelPlanId", "travelTitle")
 
     return myMatches;
 };

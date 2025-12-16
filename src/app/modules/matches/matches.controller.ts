@@ -67,7 +67,9 @@ const getSingleMatch = catchAsync(async (req: Request, res: Response) => {
 const getMyMatches = catchAsync(async (req: Request, res: Response) => {
 
     const decodedToken = req.user;
+
     const result = await MatchesService.getMyMatches(decodedToken as IJwtTokenPayload);
+
     ApiResponse(res, {
         success: true,
         message: "My matches fetched successfully",

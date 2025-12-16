@@ -2,6 +2,8 @@ import { Router } from "express";
 import { checkAuth } from "../../middlewares/checkAuth";
 import { UserRole } from "../users/user.interface";
 import { ReviewController } from "./review.controller";
+import validateZodSchema from "../../middlewares/validateZodSchemaRequest";
+import { ReviewValidated } from "./review.validation";
 
 
 
@@ -10,6 +12,7 @@ const router = Router();
 //CREATE A REVIEW
 router.post("/create",
     checkAuth(...Object.values(UserRole)),
+    validateZodSchema(ReviewValidated.createReviewZodSchema),
     ReviewController.createReview);
 
 //GET A SINGLE REVIEW

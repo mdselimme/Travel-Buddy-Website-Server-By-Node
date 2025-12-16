@@ -15,6 +15,13 @@ router.post("/create",
     MatchesController.createMatch
 );
 
+//MY MATCHES ROUTE
+router.get("/my-matches",
+    checkAuth(...Object.values(UserRole)),
+    MatchesController.getMyMatches
+);
+
+
 //SINGLE MATCH ROUTE
 router.get("/:id",
     checkAuth(...Object.values(UserRole)),
@@ -32,12 +39,6 @@ router.patch("/:id",
     checkAuth(...Object.values(UserRole)),
     validateZodSchema(MatchesValidated.updateMatchZodSchema),
     MatchesController.updateMatch
-);
-
-//MY MATCHES ROUTE
-router.get("/my-matches",
-    checkAuth(...Object.values(UserRole)),
-    MatchesController.getMyMatches
 );
 
 
