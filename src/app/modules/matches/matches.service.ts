@@ -10,7 +10,7 @@ import { TravelPlanModel } from '../travelPlan/travelPlan.model';
 const createMatch = async (matchData: IMatch) => {
 
     if (matchData.senderId === matchData.receiverId) {
-        throw new ApiError(httpStatus.BAD_REQUEST, "Sender and Receiver cannot be the same user.");
+        throw new ApiError(httpStatus.BAD_REQUEST, "You cannot match with yourself.");
     }
 
     const travelPlan = await TravelPlanModel.findById(matchData.travelPlanId);
@@ -116,7 +116,8 @@ const getMyMatches = async (decodedToken: IJwtTokenPayload) => {
             { senderId: decodedToken.userId },
             { receiverId: decodedToken.userId }
         ]
-    }).populate("travelPlanId", "travelTitle")
+    })
+        .populate("travelPlanId", "travelTitle travelPlanStatus user")
 
     return myMatches;
 };

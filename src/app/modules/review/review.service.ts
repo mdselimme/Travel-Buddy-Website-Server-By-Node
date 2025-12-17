@@ -10,7 +10,6 @@ import { createQuery } from '../../utils/querySearch';
 //CREATE A REVIEW
 const createReview = async (reviewData: Partial<IReview>) => {
 
-
     if (reviewData.arrangedBy === reviewData.traveler) {
         throw new ApiError(httpStatus.BAD_REQUEST, "You cannot review your own travel plan");
     }
