@@ -11,7 +11,7 @@ export interface IReview {
     traveler: Types.ObjectId,
     arrangedByRating: number;
     travelerRating: number;
-    travelerByDescription: string;
+    travelerDescription: string;
     createdAt?: Date;
     updatedAt?: Date;
 };

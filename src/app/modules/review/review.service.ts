@@ -53,7 +53,27 @@ const getMyReviews = async (travelerId: string) => {
         $or: [
             { traveler: travelerId }, { arrangedBy: travelerId }
         ]
-    });
+    }).populate("travelPlan", "travelTitle")
+        .populate(
+            {
+                path: 'arrangedBy',
+                select: "profile",
+                populate: {
+                    path: 'profile',
+                    select: 'fullName'
+                },
+            }
+        )
+        .populate(
+            {
+                path: 'traveler',
+                select: "profile",
+                populate: {
+                    path: 'profile',
+                    select: 'fullName'
+                },
+            }
+        );
     return reviews;
 };
 

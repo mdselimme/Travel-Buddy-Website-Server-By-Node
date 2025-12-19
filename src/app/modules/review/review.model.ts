@@ -9,7 +9,7 @@ const reviewSchemaModel = new Schema<IReview>({
     arrangedByRating: { type: Number, required: true },
     arrangedByDescription: { type: String, required: true },
     travelerRating: { type: Number, default: 0 },
-    travelerByDescription: { type: String, default: "" },
+    travelerDescription: { type: String, default: "" },
 }, {
     timestamps: true,
     versionKey: false,
