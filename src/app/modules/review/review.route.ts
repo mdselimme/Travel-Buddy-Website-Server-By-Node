@@ -15,6 +15,12 @@ router.post("/create",
     validateZodSchema(ReviewValidated.createReviewZodSchema),
     ReviewController.createReview);
 
+//GET MY REVIEWS
+router.get("/my-reviews",
+    checkAuth(...Object.values(UserRole)),
+    ReviewController.getMyReviews
+);
+
 //GET A SINGLE REVIEW
 router.get("/:id",
     checkAuth(...Object.values(UserRole)),
@@ -29,6 +35,8 @@ router.get("/",
 router.patch("/:id",
     checkAuth(...Object.values(UserRole)),
     ReviewController.updateReview);
+
+
 
 //DELETE A REVIEW
 router.delete("/:id",

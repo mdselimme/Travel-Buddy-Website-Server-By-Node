@@ -23,6 +23,19 @@ const createReview = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+//GET MY REVIEWS
+const getMyReviews = catchAsync(async (req: Request, res: Response) => {
+    const decodedToken = req.user;
+    const travelerId = (decodedToken as IJwtTokenPayload).userId;
+    const result = await ReviewService.getMyReviews(travelerId);
+    ApiResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "My reviews fetched successfully",
+        data: result,
+    });
+});
+
 //GET A SINGLE REVIEW
 const getSingleReview = catchAsync(async (req: Request, res: Response) => {
 
@@ -84,4 +97,5 @@ export const ReviewController = {
     getAllReviews,
     updateReview,
     deleteReview,
+    getMyReviews,
 };

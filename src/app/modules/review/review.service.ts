@@ -47,6 +47,16 @@ const getSingleReview = async (id: string) => {
     return review;
 };
 
+//GET MY REVIEWS
+const getMyReviews = async (travelerId: string) => {
+    const reviews = await ReviewModel.find({
+        $or: [
+            { traveler: travelerId }, { arrangedBy: travelerId }
+        ]
+    });
+    return reviews;
+};
+
 //GET ALL REVIEWS
 const getAllReviews = async (query: any) => {
     const { page, limit, sort } = query
@@ -85,4 +95,5 @@ export const ReviewService = {
     getAllReviews,
     updateReview,
     deleteReview,
+    getMyReviews
 }
