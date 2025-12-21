@@ -12,7 +12,7 @@ const router = Router();
 
 //CREATE A NEW TRAVEL PLAN
 router.post("/create-plan",
-    checkAuth(...Object.values(UserRole)),
+    checkAuth(UserRole.USER),
     multerUpload.single("file"),
     validateZodSchema(TravelPlanValidation.createATravelPlanSchema),
     TravelPlanController.createATravelPlan

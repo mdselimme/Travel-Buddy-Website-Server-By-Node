@@ -82,6 +82,25 @@ const getAllReviews = async (query: any) => {
     const { page, limit, sort } = query
     const reviews = await createQuery(ReviewModel)
         .paginate(page || 1, limit || 10)
+        .populate("travelPlan", "travelTitle")
+        .populateDeep([
+            {
+                path: 'arrangedBy',
+                select: "profile",
+                populate: {
+                    path: 'profile',
+                    select: 'fullName'
+                },
+            },
+            {
+                path: 'traveler',
+                select: "profile",
+                populate: {
+                    path: 'profile',
+                    select: 'fullName'
+                },
+            }
+        ])
         .sort(sort || '-createdAt')
         .exec();
 

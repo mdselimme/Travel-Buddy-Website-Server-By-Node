@@ -22,10 +22,14 @@ router.patch('/:id',
     TravelTypeController.updateTravelTypeController);
 
 //GET ALL TRAVEL TYPES ROUTE
-router.get('/', TravelTypeController.getAllTravelTypesController);
+router.get('/',
+    TravelTypeController.getAllTravelTypesController
+);
 
 //GET SINGLE TRAVEL TYPE ROUTE
-router.get('/:id', TravelTypeController.getSingleTravelTypeController);
+router.get('/:id',
+    TravelTypeController.getSingleTravelTypeController
+);
 
 //DELETE TRAVEL TYPE ROUTE
 router.delete('/:id',

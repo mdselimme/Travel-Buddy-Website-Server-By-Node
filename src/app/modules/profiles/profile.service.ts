@@ -10,7 +10,6 @@ const getProfileById = async (user: string) => {
 
     const profile = await ProfileModel.findOne({ user: user });
 
-
     if (!profile) {
         throw new ApiError(httpStatus.NOT_FOUND, "Profile not found");
     }
