@@ -9,6 +9,7 @@ import { TravelPlanModel } from '../travelPlan/travelPlan.model';
 
 const createMatch = async (matchData: IMatch) => {
 
+
     if (matchData.senderId === matchData.receiverId) {
         throw new ApiError(httpStatus.BAD_REQUEST, "You cannot match with yourself.");
     }
@@ -118,6 +119,22 @@ const getMyMatches = async (decodedToken: IJwtTokenPayload) => {
         ]
     })
         .populate("travelPlanId", "travelTitle travelPlanStatus user")
+        .populate({
+            path: "senderId",
+            select: "profile",
+            populate: {
+                path: "profile",
+                select: "fullName"
+            }
+        })
+        .populate({
+            path: "receiverId",
+            select: "profile",
+            populate: {
+                path: "profile",
+                select: "fullName"
+            }
+        });
 
     return myMatches;
 };

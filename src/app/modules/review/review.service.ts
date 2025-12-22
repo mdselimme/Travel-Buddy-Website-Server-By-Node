@@ -10,7 +10,7 @@ import { createQuery } from '../../utils/querySearch';
 //CREATE A REVIEW
 const createReview = async (reviewData: Partial<IReview>) => {
 
-    if (reviewData.user === reviewData.user) {
+    if (reviewData.user === reviewData.traveler) {
         throw new ApiError(httpStatus.BAD_REQUEST, "You cannot review your own travel plan");
     }
 
@@ -53,7 +53,7 @@ const getMyReviews = async (travelerId: string) => {
         $or: [
             { traveler: travelerId }, { user: travelerId }
         ]
-    }).populate("travel", "travelTitle")
+    }).populate("travelPlan", "travelTitle")
         .populate(
             {
                 path: 'user',
@@ -85,7 +85,7 @@ const getAllReviews = async (query: any) => {
         .populate("travelPlan", "travelTitle")
         .populateDeep([
             {
-                path: 'arrangedBy',
+                path: 'user',
                 select: "profile",
                 populate: {
                     path: 'profile',
