@@ -10,12 +10,12 @@ import { createQuery } from '../../utils/querySearch';
 //CREATE A REVIEW
 const createReview = async (reviewData: Partial<IReview>) => {
 
-    if (reviewData.arrangedBy === reviewData.traveler) {
+    if (reviewData.user === reviewData.user) {
         throw new ApiError(httpStatus.BAD_REQUEST, "You cannot review your own travel plan");
     }
 
     const travelPlan = await TravelPlanModel.findOne({
-        _id: reviewData.travelPlan,
+        _id: reviewData.travel,
         travelPlanStatus: TravelPlanStatus.COMPLETED
     });
 
@@ -24,8 +24,8 @@ const createReview = async (reviewData: Partial<IReview>) => {
     }
 
     const travelUserExistingReview = await ReviewModel.findOne({
-        arrangedBy: reviewData.arrangedBy,
-        travelPlan: reviewData.travelPlan,
+        user: reviewData.user,
+        travel: reviewData.travel,
         traveler: reviewData.traveler,
     });
 
@@ -51,12 +51,12 @@ const getSingleReview = async (id: string) => {
 const getMyReviews = async (travelerId: string) => {
     const reviews = await ReviewModel.find({
         $or: [
-            { traveler: travelerId }, { arrangedBy: travelerId }
+            { traveler: travelerId }, { user: travelerId }
         ]
-    }).populate("travelPlan", "travelTitle")
+    }).populate("travel", "travelTitle")
         .populate(
             {
-                path: 'arrangedBy',
+                path: 'user',
                 select: "profile",
                 populate: {
                     path: 'profile',

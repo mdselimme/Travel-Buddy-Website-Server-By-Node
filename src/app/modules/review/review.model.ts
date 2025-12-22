@@ -3,13 +3,11 @@ import { IReview } from "./review.interface";
 
 
 const reviewSchemaModel = new Schema<IReview>({
-    travelPlan: { type: Schema.Types.ObjectId, ref: 'TravelPlan', required: true },
-    arrangedBy: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
+    travel: { type: Schema.Types.ObjectId, ref: 'TravelPlan', required: true },
+    user: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
     traveler: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-    arrangedByRating: { type: Number, required: true },
-    arrangedByDescription: { type: String, required: true },
-    travelerRating: { type: Number, default: 0 },
-    travelerDescription: { type: String, default: "" },
+    description: { type: String, required: true },
+    rating: { type: Number, required: true, min: 1, max: 5 },
 }, {
     timestamps: true,
     versionKey: false,
