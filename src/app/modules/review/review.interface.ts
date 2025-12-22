@@ -5,7 +5,7 @@ import { Types } from "mongoose";
 
 export interface IReview {
     _id?: Types.ObjectId;
-    travel: Types.ObjectId;
+    travelPlan: Types.ObjectId;
     user: Types.ObjectId;
     traveler: Types.ObjectId,
     description: string;

@@ -3,7 +3,7 @@ import z from "zod";
 
 // CREATE REVIEW VALIDATION 
 const createReviewZodSchema = z.object({
-    travel: z.string({ error: "Travel is required & must be an ObjectId." }),
+    travelPlan: z.string({ error: "Travel is required & must be an ObjectId." }),
     user: z.string({ error: "User is required & must be an ObjectId." }),
     traveler: z.string({ error: "Traveler is required & must be an ObjectId." }),
     rating: z.number({ error: "Rating is required" }).min(1, "Rating must be at least 1").max(5, "Rating must be at most 5"),

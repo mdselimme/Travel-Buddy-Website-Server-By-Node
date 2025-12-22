@@ -15,7 +15,7 @@ const createReview = async (reviewData: Partial<IReview>) => {
     }
 
     const travelPlan = await TravelPlanModel.findOne({
-        _id: reviewData.travel,
+        _id: reviewData.travelPlan,
         travelPlanStatus: TravelPlanStatus.COMPLETED
     });
 
@@ -25,7 +25,7 @@ const createReview = async (reviewData: Partial<IReview>) => {
 
     const travelUserExistingReview = await ReviewModel.findOne({
         user: reviewData.user,
-        travel: reviewData.travel,
+        travelPlan: reviewData.travelPlan,
         traveler: reviewData.traveler,
     });
 
