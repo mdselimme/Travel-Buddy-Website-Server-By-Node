@@ -21,6 +21,12 @@ router.get("/my-reviews",
     ReviewController.getMyReviews
 );
 
+//Travel Plan Reviews
+router.get("/travel-plan/:id",
+    checkAuth(...Object.values(UserRole)),
+    ReviewController.getTravelPlanReviews
+);
+
 //GET A SINGLE REVIEW
 router.get("/:id",
     checkAuth(...Object.values(UserRole)),

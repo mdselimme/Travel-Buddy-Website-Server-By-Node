@@ -51,7 +51,7 @@ const getSingleReview = async (id: string) => {
 const getMyReviews = async (travelerId: string) => {
     const reviews = await ReviewModel.find({
         $or: [
-            { traveler: travelerId }, { user: travelerId }
+            { traveler: travelerId },
         ]
     }).populate("travelPlan", "travelTitle")
         .populate(
@@ -128,11 +128,34 @@ const deleteReview = async (id: string) => {
     return null;
 };
 
+//Travel Plan Reviews
+const getTravelPlanReviews = async (travelPlanId: string, arrangerId: string) => {
+    const reviews = await ReviewModel.find({
+        travelPlan: travelPlanId,
+        traveler: { $ne: arrangerId },
+        user: arrangerId // Exclude reviews made by the requesting traveler
+    }).populate("travelPlan", "travelTitle")
+        .populate(
+            {
+                path: 'traveler',
+                select: "profile",
+                populate: {
+                    path: 'profile',
+                    select: 'fullName'
+                },
+            }
+        );
+    return reviews;
+};
+
+
+
 export const ReviewService = {
     createReview,
     getSingleReview,
     getAllReviews,
     updateReview,
     deleteReview,
-    getMyReviews
+    getMyReviews,
+    getTravelPlanReviews
 }

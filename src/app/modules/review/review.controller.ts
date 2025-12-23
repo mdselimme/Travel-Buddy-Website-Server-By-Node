@@ -77,6 +77,20 @@ const updateReview = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+//Travel Plan Reviews
+const getTravelPlanReviews = catchAsync(async (req: Request, res: Response) => {
+    const travelPlanId = req.params.id;
+    const decodedToken = req.user;
+    const travelerId = (decodedToken as IJwtTokenPayload).userId;
+    const result = await ReviewService.getTravelPlanReviews(travelPlanId, travelerId);
+    ApiResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: "Travel plan reviews fetched successfully",
+        data: result,
+    });
+});
+
 //DELETE A REVIEW
 const deleteReview = catchAsync(async (req: Request, res: Response) => {
     const id = req.params.id;
@@ -98,4 +112,5 @@ export const ReviewController = {
     updateReview,
     deleteReview,
     getMyReviews,
+    getTravelPlanReviews
 };
