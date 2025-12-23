@@ -34,7 +34,6 @@ router.get("/:id",
 
 //GET ALL REVIEWS
 router.get("/",
-    checkAuth(...Object.values(UserRole)),
     ReviewController.getAllReviews);
 
 //UPDATE A REVIEW
