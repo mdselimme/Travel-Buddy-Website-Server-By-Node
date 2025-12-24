@@ -12,6 +12,11 @@ router.get("/me",
     ProfileController.getProfileById
 );
 
+//GET ALL PROFILES ROUTE
+router.get("/",
+    ProfileController.getAllProfiles
+);
+
 // GET PROFILE BY USER ID ROUTE 
 router.get("/:id",
     ProfileController.getProfileByUserId

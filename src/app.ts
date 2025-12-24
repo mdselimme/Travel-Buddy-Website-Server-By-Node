@@ -5,6 +5,10 @@ import cookieParser from 'cookie-parser';
 import notFoundRoute from './app/middlewares/notFoundRoute';
 import router from './app/routes';
 import { globalErrorHandler } from './app/middlewares/globalErrorHandlers';
+import cron from 'node-cron';
+import { SubscriptionService } from './app/modules/subscription/subscription.service';
+
+
 const app: Application = express();
 
 // Middleware
@@ -16,6 +20,17 @@ app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+// Schedule a cron job to run every day at midnight
+cron.schedule("* * * * *", async () => {
+    try {
+        await SubscriptionService.checkAndUpdateExpiredSubscriptionsService();
+        console.log("node cron called at: " + new Date())
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+        console.log(error.message)
+    }
+});
 
 // default router after server is running
 app.get('/', (req: Request, res: Response) => {

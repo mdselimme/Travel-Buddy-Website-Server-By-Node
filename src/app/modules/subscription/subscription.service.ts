@@ -2,6 +2,7 @@ import httpStatus from 'http-status-codes';
 import ApiError from "../../utils/ApiError";
 import { ISubscription } from "./subscription.interface";
 import { SubscriptionModel } from "./subscription.model";
+import { ProfileModel } from "../profiles/profile.model";
 
 
 
@@ -54,10 +55,51 @@ const softDeleteSubscriptionService = async (id: string): Promise<ISubscription 
     return subscription;
 };
 
+//CHECK AND UPDATE EXPIRED SUBSCRIPTIONS SERVICE
+const checkAndUpdateExpiredSubscriptionsService = async () => {
+    const currentDate = new Date();
+
+    // Find all profiles where subscription has ended
+    const expiredProfiles = await ProfileModel.find({
+        isSubscribed: true,
+        subEndDate: { $lte: currentDate }
+    });
+
+    if (expiredProfiles.length === 0) {
+        return { message: "No expired subscriptions found", updatedCount: 0 };
+    }
+
+    // Update all expired profiles
+    const updateResult = await ProfileModel.updateMany(
+        {
+            isSubscribed: true,
+            subEndDate: { $lte: currentDate }
+        },
+        {
+            $set: {
+                isSubscribed: false,
+                subStartDate: null,
+                subEndDate: null
+            }
+        }
+    );
+
+    return {
+        message: "Expired subscriptions updated successfully",
+        updatedCount: updateResult.modifiedCount,
+        expiredProfiles: expiredProfiles.map(profile => ({
+            profileId: profile._id,
+            email: profile.email,
+            endDate: profile.subEndDate
+        }))
+    };
+};
+
 export const SubscriptionService = {
     createSubscriptionService,
     updateSubscriptionService,
     getAllSubscriptionsService,
     getSubscriptionService,
-    softDeleteSubscriptionService
+    softDeleteSubscriptionService,
+    checkAndUpdateExpiredSubscriptionsService
 }

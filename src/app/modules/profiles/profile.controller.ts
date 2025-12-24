@@ -35,7 +35,19 @@ const getProfileByUserId = catchAsync(async (req: Request, res: Response) => {
     })
 });
 
+//GET ALL PROFILES EXCEPT ADMIN AND SUPER ADMIN
+const getAllProfiles = catchAsync(async (req: Request, res: Response) => {
+    const result = await ProfileService.getAllProfilesExceptAdmins();
+    ApiResponse(res, {
+        success: true,
+        message: "Profiles fetched successfully",
+        statusCode: httpStatus.OK,
+        data: result
+    })
+});
+
 export const ProfileController = {
     getProfileById,
-    getProfileByUserId
+    getProfileByUserId,
+    getAllProfiles
 }
