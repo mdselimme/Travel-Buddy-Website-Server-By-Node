@@ -125,7 +125,7 @@ npm run dev
 
 - User can create an account with name, email, password, role (User|Agent) type.
 
-#### user create api
+#### 1. user create api
 
 - method: `POST` api endpoint: http://localhost:5000/api/v1/user/register
 
@@ -168,15 +168,15 @@ npm run dev
 }
 ```
 
-#### user update api
+#### 2. user update api
 
 - method: `PATCH` api endpoint: http://localhost:5000/api/v1/user
 
-## Description
+##### Description
 
-_credentials_: true,
-_data type_: form data -> data name
-_profile image_: image data -> file name
+**credentials**: true,
+**data type**: form data -> data name
+**profile image**: image data -> file name
 
 ##### schema design:
 
@@ -232,13 +232,13 @@ _profile image_: image data -> file name
 }
 ```
 
-#### User Update Role
+#### 3. User Update Role
 
 - method: `PATCH` api endpoint: http://localhost:5000/api/v1/user/update-role
 
-## Description
+##### Description
 
-_credentials_: true,
+**credentials**: true,
 
 ##### schema design:
 
@@ -251,7 +251,7 @@ _credentials_: true,
 }
 ```
 
-##### Request:
+#### Request:
 
 ```json
 {
@@ -273,13 +273,13 @@ _credentials_: true,
 }
 ```
 
-#### User Update Status
+#### 4. User Update Status
 
 - method: `PATCH` api endpoint: http://localhost:5000/api/v1/user/update-status/{objectid}
 
-## Description
+##### Description
 
-_credentials_: true,
+**credentials**: true,
 
 ##### schema design:
 
@@ -311,15 +311,15 @@ _credentials_: true,
 }
 ```
 
-#### Get All User
+#### 5. Get All User
 
 - method: `GET` api endpoint: http://localhost:5000/api/v1/user?limit=2&page=1&role=ADMIN&email=contact.mdselim.dev@gmail.com&isVerified=true&search=contact&startDate=2025-12-01&endDate=2025-12-04
 
 ## Description
 
-_credentials_: true,
+**credentials**: true,
 
-_Query_:
+**Query**:
 
 limit, page, role, email, isVerified, search, startDate, endDate;
 
@@ -348,13 +348,13 @@ limit, page, role, email, isVerified, search, startDate, endDate;
 }
 ```
 
-#### Get Single User by id
+#### 6. Get Single User by id
 
 - method: `GET` api endpoint: http://localhost:5000/api/v1/user/{objectid}
 
 ## Description
 
-_credentials_: true,
+**credentials**: true,
 
 #### Response:
 
@@ -379,13 +379,13 @@ _credentials_: true,
 }
 ```
 
-#### Get Me User
+#### 7. Get Me User
 
 - method: `GET` api endpoint: http://localhost:5000/api/v1/user/me
 
 ## Description
 
-_credentials_: true,
+**credentials**: true,
 
 #### Response:
 
@@ -410,13 +410,13 @@ _credentials_: true,
 }
 ```
 
-#### Delete An user
+#### 8. Delete An user
 
 - method: `DELETE` api endpoint: http://localhost:5000/api/v1/user/{objectid}
 
 ## Description
 
-_credentials_: true,
+**credentials**: true,
 
 #### Response:
 
@@ -426,5 +426,52 @@ _credentials_: true,
     "data":null,
     "message": "User deleted successfully",
     "success": true
+}
+```
+
+## Auth Module Api Description:
+
+- Auth login, logout, change password, reset password,verify email, forgot password method.
+
+#### 1. Auth LogIn
+
+- method: `POST` api endpoint: http://localhost:5000/api/v1/auth/login
+
+##### schema design:
+
+```json
+{
+    "email": string,
+    "password":string,
+}
+```
+
+##### Request:
+
+```json
+{
+    "email": "selimakondo58@gmail.com",
+    //Password should be min 8 char length & 1 uppercase & lowercase & special character
+    "password":"Ss@12345",
+}
+```
+
+#### Response:
+
+```json
+{
+    "message": "User Logged In Successfully.",
+    "statusCode": 200,
+    "success": true,
+    "data": {
+        "_id": "69414049960ca41c72e2998d",
+        "email": "ahmedmahabub73@gmail.com",
+        "role": "USER",
+        "isActive": "ACTIVE",
+        "isProfileCompleted": true,
+        "isVerified": true,
+        "accessToken":"eyJhbGciOiJ",
+        "refreshToken":"eyJ"
+    }
 }
 ```
