@@ -1100,3 +1100,59 @@ limit, page, role, email, isVerified, search, startDate, endDate;
     "data": null
 }
 ```
+
+## Subscription Api Description:
+
+- Subscription CRUD.
+
+#### 1. CREATE SUBSCRIPTION
+
+- method: `POST` api endpoint: http://localhost:5000/api/v1/subscription/create
+
+##### Description
+
+**credentials**: true,
+**user role**: ADMIN, SUPER_ADMIN
+
+##### schema design:
+
+```json
+{
+    //MONTHLY OR YEARLY
+    "plan": string,
+    "price": number,
+    //BDT
+    "currency": string,
+    //(Optional)
+    "discount": number;
+}
+```
+
+##### Requested Data:
+
+```json
+{
+    //MONTHLY OR YEARLY
+    "plan": "MONTHLY",
+    "price": 500,
+    //BDT
+    "currency": "BDT",
+    //(Optional)
+    "discount": number;
+}
+```
+
+#### Response:
+
+```json
+{
+    "message": "Subscription plan created successfully",
+    "statusCode": 201,
+    "success": true,
+    "data": {
+        "plan": "MONTHLY",
+        "price": 500,
+        "currency": "BDT",
+    }
+}
+```
