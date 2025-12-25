@@ -119,7 +119,7 @@ npm run dev
 
 --
 
-## Api Documentation & Configuration.
+# Api Documentation & Configuration.
 
 ## User Api Description:
 
@@ -430,7 +430,100 @@ limit, page, role, email, isVerified, search, startDate, endDate;
 }
 ```
 
-## Auth Module Api Description:
+## Profile Api Description:
+
+#### 1. GET MY PROFILE DATA
+
+- method: `GET` api endpoint: http://localhost:5000/api/v1/profile/me
+
+#### Response:
+
+```json
+{
+    "message": "Profile fetched successfully.",
+    "statusCode": 200,
+    "success": true,
+    "data": {
+        "_id": "69414049960ca41c72e2998f",
+        "user": "69414049960ca41c72e2998d",
+        "fullName": "Md. Mahabub",
+        "email": "ahmedmahabub73@gmail.com",
+        "visitedPlaces": [
+            "Dhaka",
+            "Nilphamary",
+            "Mymensingh"
+        ],
+        "isSubscribed": true,
+        "interests": [
+            "6941401e960ca41c72e29982",
+            "693656f396030ba0219fe0ac",
+            "693656e796030ba0219fe0a8"
+        ],
+        "createdAt": "2025-12-16T11:19:37.888Z",
+        "updatedAt": "2025-12-16T11:22:19.244Z",
+        "address": "Gafargaon, Mymensingh",
+        "bio": "I am hello",
+        "contactNumber": "0156654652145",
+        "currentLocation": "Mymensingh",
+        "profileImage": "https://res.cloudinary.com/dsla2viks/image/upload/v1765884066/images/v5snmdy17r_1765884063673_selim-bg-2-jpg.jpg.jpg",
+        "subEndDate": "2026-01-16T11:22:19.244Z",
+        "subStartDate": "2025-12-16T11:22:19.244Z"
+    }
+}
+```
+
+#### 2. GET ALL PROFILE DATA
+
+- method: `GET` api endpoint: http://localhost:5000/api/v1/profile
+
+#### Response:
+
+```json
+{
+    "message": "Profiles fetched successfully",
+    "statusCode": 200,
+    "success": true,
+    "data": [
+        {
+        "_id": "69414049960ca41c72e2998f",
+        "user": "69414049960ca41c72e2998d",
+        "fullName": "Md. Mahabub",
+        "email": "ahmedmahabub73@gmail.com",
+        "visitedPlaces": [
+            "Dhaka",
+            "Nilphamary",
+            "Mymensingh"
+        ],
+        "isSubscribed": true,
+        ....,
+    },
+    ....
+    ]
+}
+```
+
+#### 3. GET PROFILE BY USER ID
+
+- method: `GET` api endpoint: http://localhost:5000/api/v1/profile/{userid}
+
+#### Response:
+
+```json
+{
+    "message": "Profiles fetched successfully",
+    "statusCode": 200,
+    "success": true,
+    "data": {
+        "_id": "69414049960ca41c72e2998f",
+        "user": "69414049960ca41c72e2998d",
+        "fullName": "Md. Mahabub",
+        "email": "ahmedmahabub73@gmail",
+        .....
+    }
+}
+```
+
+## Auth Api Description:
 
 - Auth login, logout, change password, reset password,verify email, forgot password method.
 
