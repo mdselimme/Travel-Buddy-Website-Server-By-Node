@@ -1156,3 +1156,55 @@ limit, page, role, email, isVerified, search, startDate, endDate;
     }
 }
 ```
+
+#### 2. UPDATE SUBSCRIPTION
+
+- method: `PATCH` api endpoint: http://localhost:5000/api/v1/subscription/{objectid}
+
+##### Description
+
+**credentials**: true,
+**user role**: ADMIN, SUPER_ADMIN
+
+##### schema design:
+
+```json
+{
+    //MONTHLY OR YEARLY
+    "plan": string,
+    "price": number,
+    //BDT
+    "currency": string,
+    //(Optional)
+    "discount": number;
+}
+```
+
+##### Requested Data:
+
+```json
+{
+    //MONTHLY OR YEARLY
+    "plan": "MONTHLY",
+    "price": 700,
+    //BDT
+    "currency": "BDT",
+    //(Optional)
+    "discount": number;
+}
+```
+
+#### Response:
+
+```json
+{
+    "message": "Subscription plan updated successfully",
+    "statusCode": 200,
+    "success": true,
+    "data": {
+        "plan": "MONTHLY",
+        "price": 700,
+        "currency": "BDT",
+    }
+}
+```
