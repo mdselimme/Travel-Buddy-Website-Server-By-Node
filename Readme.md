@@ -833,3 +833,123 @@ limit, page, role, email, isVerified, search, startDate, endDate;
     "data": null
 }
 ```
+
+## Travel Plan Api Description:
+
+- Travel Plan CRUD.
+
+#### 1. CREATE TRAVEL PLAN
+
+- method: `POST` api endpoint: http://localhost:5000/api/v1/travel-plan
+
+##### Description
+
+**Data Send By**: Form data
+**credentials**: true,
+**user role**: USER
+
+##### schema design:
+
+```json
+{
+    //who create travel plan id
+    "user": string,
+    "travelTitle": string,
+    "destination": {
+        "city":string,
+        "country":string,
+    },
+    "startDate": Date,
+    "endDate": Date,
+    "budgetRange": {
+        "min":number,
+        "max":number,
+    },
+    //array of travel types objectid
+    "travelTypes": [string],
+    "travelDescription": string,
+    "itinerary": [string],
+    //image upload url
+    "thumbnail": string
+}
+```
+
+#### Response:
+
+```json
+{
+    "message": "Travel Plan created successfully",
+    "statusCode": 201,
+    "success": true,
+    "data": {
+        "user":"69414049960ca41c72e2998d",
+        "travelTitle": "Cox'bazar Summer Tour",
+    "destination": {
+        "city":"Cox's bazar",
+        "country":"Bangladesh",
+    },
+    "startDate": "2025-12-27",
+    "endDate": "2025-12-30",
+    ......
+    }
+}
+```
+
+#### 2. UPDATE TRAVEL PLAN
+
+- method: `PATCH` api endpoint: http://localhost:5000/api/v1/travel-plan/{Objectid}
+
+##### Description
+
+**Data Send By**: Form data
+**credentials**: true,
+**user role**: USER, ADMIN, SUPER_ADMIN
+
+##### schema design:
+
+```json
+{
+    //who create travel plan id
+    "user": string,
+    "travelTitle": string,
+    "destination": {
+        "city":string,
+        "country":string,
+    },
+    "startDate": Date,
+    "endDate": Date,
+    "budgetRange": {
+        "min":number,
+        "max":number,
+    },
+    //array of travel types objectid
+    "travelTypes": [string],
+    "travelDescription": string,
+    "itinerary": [string],
+    //image upload url
+    "thumbnail": string,
+    //travel plan status will be COMPLETED, UPCOMING, CANCELLED
+    "travelPlanStatus": string
+}
+```
+
+#### Response:
+
+```json
+{
+    "message": "Travel Plan updated successfully",
+    "statusCode": 201,
+    "success": true,
+    "data": {
+        "user":"69414049960ca41c72e2998d",
+        "travelTitle": "Cox'bazar Summer Tour",
+    "destination": {
+        "city":"Cox's bazar",
+        "country":"Bangladesh",
+    },
+    "startDate": "2025-12-27",
+    "endDate": "2025-12-30",
+    ......
+    }
+}
+```
