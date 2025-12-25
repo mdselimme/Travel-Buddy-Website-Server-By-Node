@@ -437,6 +437,10 @@ limit, page, role, email, isVerified, search, startDate, endDate;
 
 - method: `POST` api endpoint: http://localhost:5000/api/v1/auth/login
 
+##### Description
+
+**credentials**: true,
+
 ##### schema design:
 
 ```json
@@ -472,6 +476,220 @@ limit, page, role, email, isVerified, search, startDate, endDate;
         "isVerified": true,
         "accessToken":"eyJhbGciOiJ",
         "refreshToken":"eyJ"
+    }
+}
+```
+
+#### 2. Auth LogOut
+
+- method: `POST` api endpoint: http://localhost:5000/api/v1/auth/logout
+
+##### Description
+
+**credentials**: true
+
+#### Response:
+
+```json
+{
+    "message": "User Logged Out Successfully.",
+    "statusCode": 200,
+    "success": true,
+    "data": null
+}
+```
+
+#### 3. Reset Password
+
+- method: `POST` api endpoint: http://localhost:5000/api/v1/auth/reset-password
+
+##### Description
+
+**credentials**: true,
+
+##### schema design:
+
+```json
+{
+    "token": string,
+    "password":string,
+}
+```
+
+##### Request:
+
+```json
+{
+    "token": "eyJhbGciOiJ",
+    //Password should be min 8 char length & 1 uppercase & lowercase & special character
+    "password":"Ss@12345",
+}
+```
+
+#### Response:
+
+```json
+{
+    "message": "Password Reset Successfully.",
+    "statusCode": 200,
+    "success": true,
+    "data":null
+}
+```
+
+#### 4. Change Password
+
+- method: `POST` api endpoint: http://localhost:5000/api/v1/auth/change-password
+
+##### Description
+
+**credentials**: true,
+
+##### schema design:
+
+```json
+{
+    "oldPassword": string,
+    "newPassword":string,
+}
+```
+
+##### Request:
+
+```json
+{
+    "oldPassword": "Ss@12345",
+    //Password should be min 8 char length & 1 uppercase & lowercase & special character
+    "newPassword":"Ss@12348",
+}
+```
+
+#### Response:
+
+```json
+{
+    "message": "Password changed successfully.",
+    "statusCode": 200,
+    "success": true,
+    "data":null
+}
+```
+
+#### 5. Verify Email Send
+
+- method: `POST` api endpoint: http://localhost:5000/api/v1/auth/verify-email-send
+
+##### schema design:
+
+```json
+{
+    "email": string,
+}
+```
+
+##### Request:
+
+```json
+{
+    "email": "example@gmail.com",
+}
+```
+
+#### Response:
+
+```json
+{
+    "message": "Email verification code sent successfully.",
+    "statusCode": 200,
+    "success": true,
+    "data":null
+}
+```
+
+#### 6. Verify Email
+
+- method: `POST` api endpoint: http://localhost:5000/api/v1/auth/verify-email
+
+##### schema design:
+
+```json
+{
+    "email": "example@gmail.com",
+    //6 digit input
+    "otp": "123456",
+}
+```
+
+##### Request:
+
+```json
+{
+
+    "email": string,
+    "otp": string,
+}
+```
+
+#### Response:
+
+```json
+{
+    "message": "Email verified successfully.",
+    "statusCode": 200,
+    "success": true,
+    "data":null
+}
+```
+
+#### 7. Forgot Password
+
+- method: `POST` api endpoint: http://localhost:5000/api/v1/auth/forgot-password
+
+##### schema design:
+
+```json
+{
+    "email": string,
+}
+```
+
+##### Request:
+
+```json
+{
+    "email": "example@gmail.com",
+}
+```
+
+#### Response:
+
+```json
+{
+    "message": "Forgot Password Email Send Successfully.",
+    "statusCode": 200,
+    "success": true,
+    "data":null
+}
+```
+
+#### 8. Forgot Password
+
+- method: `POST` api endpoint: http://localhost:5000/api/v1/auth/refresh-token
+
+##### Description
+
+**credentials**: true,
+
+#### Response:
+
+```json
+{
+    "message": "RefreshToken Undo Successfully.",
+    "statusCode": 200,
+    "success": true,
+    "data":{
+        "accessToken":"eyJhbGciOiJ.....",
+        "refreshToken":"eyJ...."
     }
 }
 ```
