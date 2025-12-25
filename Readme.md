@@ -1189,8 +1189,8 @@ limit, page, role, email, isVerified, search, startDate, endDate;
     "price": 700,
     //BDT
     "currency": "BDT",
-    //(Optional)
-    "discount": number;
+    //(Optional) %
+    "discount": 10;
 }
 ```
 
@@ -1206,5 +1206,69 @@ limit, page, role, email, isVerified, search, startDate, endDate;
         "price": 700,
         "currency": "BDT",
     }
+}
+```
+
+#### 3. GET ALL SUBSCRIPTION
+
+- method: `GET` api endpoint: http://localhost:5000/api/v1/subscription
+
+#### Response:
+
+```json
+{
+    "message": "subscription plans retrieved successfully",
+    "statusCode": 200,
+    "success": true,
+    "data": [
+    {
+        "plan": "MONTHLY",
+        "price": 700,
+        "currency": "BDT",
+        "discount": 10
+     },
+     ...
+    ]
+}
+```
+
+#### 4. GET SINGLE SUBSCRIPTION BY ID
+
+- method: `GET` api endpoint: http://localhost:5000/api/v1/subscription/{objectid}
+
+#### Response:
+
+```json
+{
+    "message": "subscription plan retrieved successfully",
+    "statusCode": 200,
+    "success": true,
+    "data": {
+        "plan": "MONTHLY",
+        "price": 700,
+        "currency": "BDT",
+        "discount": 10
+     }
+}
+```
+
+#### 5. DELETE SINGLE SUBSCRIPTION BY ID
+
+- method: `DELETE` api endpoint: http://localhost:5000/api/v1/subscription/{objectid}
+
+##### Description
+
+**credentials**: true,
+
+**user role**: ADMIN, SUPER_ADMIN
+
+#### Response:
+
+```json
+{
+    "message": "Subscription plan deleted successfully",
+    "statusCode": 200,
+    "success": true,
+    "data": null
 }
 ```
