@@ -239,6 +239,7 @@ npm run dev
 ##### Description
 
 **credentials**: true,
+**Role**: SUPER_ADMIN only
 
 ##### schema design:
 
@@ -691,5 +692,144 @@ limit, page, role, email, isVerified, search, startDate, endDate;
         "accessToken":"eyJhbGciOiJ.....",
         "refreshToken":"eyJ...."
     }
+}
+```
+
+## Travel Type Api Description:
+
+- Travel Type CRUD.
+
+#### 1. CREATE TRAVEL TYPE
+
+- method: `POST` api endpoint: http://localhost:5000/api/v1/travel-type
+
+##### Description
+
+**credentials**: true,
+**user role**: SUPER_ADMIN, ADMIN
+
+##### schema design:
+
+```json
+{
+    //min 3 characters
+    "typeName": string,
+}
+```
+
+##### Request:
+
+```json
+{
+    "typeName": "Hiking",
+}
+```
+
+#### Response:
+
+```json
+{
+    "message": "Travel type created successfully",
+    "statusCode": 201,
+    "success": true,
+    "data": {
+        "_id": "69414049960ca41c72e2998d",
+        "typeName": "Hiking",
+    }
+}
+```
+
+#### 2. UPDATE TRAVEL TYPE
+
+- method: `PATCH` api endpoint: http://localhost:5000/api/v1/travel-type/{travel-type-objectid}
+
+##### Description
+
+**credentials**: true,
+**user role**: SUPER_ADMIN, ADMIN
+
+##### schema design:
+
+```json
+{
+    //min 3 characters
+    "typeName": string,
+}
+```
+
+##### Request:
+
+```json
+{
+    "typeName": "Hiking",
+}
+```
+
+#### Response:
+
+```json
+{
+    "message": "Travel type updated successfully",
+    "statusCode": 201,
+    "success": true,
+    "data": {
+        "_id": "69414049960ca41c72e2998d",
+        "typeName": "Hiking",
+    }
+}
+```
+
+#### 3. GET ALL TRAVEL TYPES
+
+- method: `GET` api endpoint: http://localhost:5000/api/v1/travel-type
+
+##### Description
+
+**pagination** support, query data {limit, page}
+
+#### Response:
+
+```json
+{
+    "message": "Travel types retrieved successfully",
+    "statusCode": 200,
+    "success": true,
+    "data": [{
+        "_id": "69414049960ca41c72e2998d",
+        "typeName": "Hiking",
+    },...]
+}
+```
+
+#### 4. GET SINGLE TRAVEL TYPE BY ID
+
+- method: `GET` api endpoint: http://localhost:5000/api/v1/travel-type/{objectid}
+
+#### Response:
+
+```json
+{
+    "message": "Travel type retrieved successfully",
+    "statusCode": 200,
+    "success": true,
+    "data": {
+        "_id": "69414049960ca41c72e2998d",
+        "typeName": "Hiking",
+    }
+}
+```
+
+#### 5. DELETE SINGLE TRAVEL TYPE BY ID
+
+- method: `DELETE` api endpoint: http://localhost:5000/api/v1/travel-type/{objectid}
+
+#### Response:
+
+```json
+{
+    "message": "Travel type deleted successfully",
+    "statusCode": 200,
+    "success": true,
+    "data": null
 }
 ```
