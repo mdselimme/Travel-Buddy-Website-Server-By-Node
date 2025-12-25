@@ -953,3 +953,150 @@ limit, page, role, email, isVerified, search, startDate, endDate;
     }
 }
 ```
+
+#### 3. GET ALL TRAVEL PLANS
+
+- method: `GET` api endpoint: http://localhost:5000/api/v1/travel-plan
+
+##### Description
+
+**pagination** support, query data {limit, page, search, date range, and travel types}
+
+#### Response:
+
+```json
+{
+    "message": "Travel Plans retrieved successfully",
+    "statusCode": 200,
+    "success": true,
+    "data": [
+    {
+        "user":"69414049960ca41c72e2998d",
+        "travelTitle": "Cox'bazar Summer Tour",
+        "destination": {
+            "city":"Cox's bazar",
+            "country":"Bangladesh",
+        },
+        "startDate": "2025-12-27",
+        "endDate": "2025-12-30",
+    ......
+    },
+    ...]
+}
+```
+
+#### 4. GET SINGLE TRAVEL PLAN BY ID
+
+- method: `GET` api endpoint: http://localhost:5000/api/v1/travel-plan/{objectid}
+
+#### Response:
+
+```json
+{
+    "message": "Travel Plan retrieved successfully",
+    "statusCode": 200,
+    "success": true,
+    "data": {
+        "user":"69414049960ca41c72e2998d",
+        "travelTitle": "Cox'bazar Summer Tour",
+        "destination": {
+            "city":"Cox's bazar",
+            "country":"Bangladesh",
+        },
+        "startDate": "2025-12-27",
+        "endDate": "2025-12-30",
+    ......
+    },
+}
+```
+
+#### 5. GET MY TRAVEL PLANS
+
+- method: `GET` api endpoint: http://localhost:5000/api/v1/travel-plan/my-plans
+
+##### Description
+
+**pagination** support, query data {limit, page, search, date range, and travel types}
+
+#### Response:
+
+```json
+{
+    "message": "My Travel Plans retrieved successfully",
+    "statusCode": 200,
+    "success": true,
+    "data": [
+    {
+        "user":"69414049960ca41c72e2998d",
+        "travelTitle": "Cox'bazar Summer Tour",
+        "destination": {
+            "city":"Cox's bazar",
+            "country":"Bangladesh",
+        },
+        "startDate": "2025-12-27",
+        "endDate": "2025-12-30",
+    ......
+    },
+    ...]
+}
+```
+
+#### 6. GET MY MATCHES TRAVEL PLANS
+
+- method: `GET` api endpoint: http://localhost:5000/api/v1/travel-plan/my-matches
+
+#### Response:
+
+```json
+{
+    "message": "My Matches Travel Plans retrieved successfully",
+    "statusCode": 200,
+    "success": true,
+    "data": [
+    {
+        "user":"69414049960ca41c72e2998d",
+        "travelTitle": "Cox'bazar Summer Tour",
+        "destination": {
+            "city":"Cox's bazar",
+            "country":"Bangladesh",
+        },
+        "startDate": "2025-12-27",
+        "endDate": "2025-12-30",
+    ......
+    },
+    ...]
+}
+```
+
+#### 7. GET ALL CITIES FOR SEARCH HERO
+
+- method: `GET` api endpoint: http://localhost:5000/api/v1/travel-plan/cities
+
+#### Response:
+
+```json
+{
+    "message": "Travel Plans cities retrieved successfully",
+    "statusCode": 200,
+    "success": true,
+    "data": [
+        "Dhaka",
+         "Sylhet",
+     ...]
+}
+```
+
+#### 8. DELETE TRAVEL PLAN BY ID
+
+- method: `DELETE` api endpoint: http://localhost:5000/api/v1/travel-plan/{ojbectid}
+
+#### Response:
+
+```json
+{
+    "message": "Travel Plan deleted successfully",
+    "statusCode": 200,
+    "success": true,
+    "data": null
+}
+```
