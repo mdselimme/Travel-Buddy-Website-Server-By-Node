@@ -1498,9 +1498,56 @@ limit, page, role, email, isVerified, search, startDate, endDate;
             "status": "ACCEPTED",
             "createdAt": "2025-12-17T19:42:59.728Z",
             "updatedAt": "2025-12-17T19:45:14.049Z"
-        }
+        },
+        .....
     ],
     "message": "My matches fetched successfully",
     "success": true
+}
+```
+
+#### 4. GET SINGLE MATCH
+
+- method: `GET` api endpoint: http://localhost:5000/api/v1/matches/{objectid}
+
+##### Description
+
+**credentials**: true,
+
+**user role**: USER
+
+#### Response:
+
+```json
+{
+    "success": true,
+    "message": "Match fetched successfully",
+    "statusCode": 200,
+    "data": {
+            "_id": "694307c3ba8b3afb6bab7450",
+            "travelPlanId": {
+                "_id": "6941513bd06fa0e36871ac45",
+                "user": "69414049960ca41c72e2998d",
+                "travelTitle": "Guliakhali Sea Beach",
+                "travelPlanStatus": "COMPLETED"
+            },
+            "senderId": {
+                "_id": "693816852ff210ec0b6b4b2c",
+                "profile": {
+                    "_id": "693816852ff210ec0b6b4b2e",
+                    "fullName": "MD. SELIM"
+                }
+            },
+            "receiverId": {
+                "_id": "69414049960ca41c72e2998d",
+                "profile": {
+                    "_id": "69414049960ca41c72e2998f",
+                    "fullName": "Md. Mahabub"
+                }
+            },
+            "status": "ACCEPTED",
+            "createdAt": "2025-12-17T19:42:59.728Z",
+            "updatedAt": "2025-12-17T19:45:14.049Z"
+        }
 }
 ```
