@@ -10,21 +10,21 @@ const router = Router();
 
 //CREATE MATCH ROUTE
 router.post("/create",
-    checkAuth(...Object.values(UserRole)),
+    checkAuth((UserRole.USER)),
     validateZodSchema(MatchesValidated.createMatchZodSchema),
     MatchesController.createMatch
 );
 
 //MY MATCHES ROUTE
 router.get("/my-matches",
-    checkAuth(...Object.values(UserRole)),
+    checkAuth(UserRole.USER),
     MatchesController.getMyMatches
 );
 
 
 //SINGLE MATCH ROUTE
 router.get("/:id",
-    checkAuth(...Object.values(UserRole)),
+    checkAuth((UserRole.USER)),
     MatchesController.getSingleMatch
 );
 

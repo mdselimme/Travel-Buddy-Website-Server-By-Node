@@ -1365,3 +1365,54 @@ limit, page, role, email, isVerified, search, startDate, endDate;
     "data": null
 }
 ```
+
+## Matches Api Description:
+
+- Matches CRUD.
+
+#### 1. CREATE A MATCH
+
+- method: `POST` api endpoint: http://localhost:5000/api/v1/matches/create
+
+##### Description
+
+**credentials**: true,
+
+**user role**: USER
+
+##### schema design:
+
+```json
+{
+    "travelPlanId": string,
+    "senderId": string,
+    "receiverId": string,
+}
+```
+
+##### Requested Data:
+
+```json
+{
+    "travelPlanId": "693655b55c1fdea7cf2cc2c4",
+    "senderId": "693655b55c1fdea7cf2cc2c4",
+    "receiverId": "693655b55c1fdea7cf2cc2c4",
+}
+```
+
+#### Response:
+
+```json
+{
+    "message": "Match created successfully",
+    "statusCode": 201,
+    "success": true,
+    "data": {
+        "_id":"693655b55c1fdea7cf2cc2c4",
+        "travelPlanId": "693655b55c1fdea7cf2cc2c4",
+        "senderId": "693655b55c1fdea7cf2cc2c4",
+        "receiverId": "693655b55c1fdea7cf2cc2c4",
+        "status":"REQUESTED"
+    }
+}
+```
