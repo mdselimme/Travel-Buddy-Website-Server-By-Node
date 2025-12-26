@@ -45,7 +45,7 @@ const updateMatch = catchAsync(async (req: Request, res: Response) => {
     ApiResponse(res, {
         success: true,
         statusCode: httpStatus.OK,
-        message: "Update match Successfully.",
+        message: "Update match status successfully.",
         data: result
     });
 });

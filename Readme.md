@@ -1416,3 +1416,43 @@ limit, page, role, email, isVerified, search, startDate, endDate;
     }
 }
 ```
+
+#### 2. UPDATE MATCH STATUS
+
+- method: `PATCH` api endpoint: http://localhost:5000/api/v1/matches/{ojbectid}
+
+##### Description
+
+**credentials**: true,
+
+**user role**: USER
+
+##### schema design:
+
+```json
+{
+    //status value will be (REQUESTED, ACCEPTED, REJECTED)
+    "status": string,
+}
+```
+
+##### Requested Data:
+
+```json
+{
+     "status": "ACCEPTED",
+}
+```
+
+#### Response:
+
+```json
+{
+    "message": "Update match status successfully.",
+    "statusCode": 200,
+    "success": true,
+    "data": {
+        "status": "ACCEPTED"
+    }
+}
+```
