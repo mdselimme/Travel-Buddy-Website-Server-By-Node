@@ -30,7 +30,7 @@ router.get("/:id",
 
 //GET ALL MATCHES ROUTE
 router.get("/",
-    checkAuth(...Object.values(UserRole)),
+    checkAuth(UserRole.ADMIN, UserRole.SUPER_ADMIN),
     MatchesController.getAllMatches
 );
 

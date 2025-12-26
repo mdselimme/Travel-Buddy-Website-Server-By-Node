@@ -1551,3 +1551,43 @@ limit, page, role, email, isVerified, search, startDate, endDate;
         }
 }
 ```
+
+#### 5. GET ALL MATCH
+
+- method: `GET` api endpoint: http://localhost:5000/api/v1/matches
+
+##### Description
+
+**credentials**: true,
+
+**user role**: ADMIN, SUPER_ADMIN
+
+#### Response:
+
+```json
+{
+    "success": true,
+    "message": "Matches fetched successfully",
+    "statusCode": 200,
+    "data": [
+        {
+            "_id": "694307c3ba8b3afb6bab7450",
+            "travelPlanId": {
+                "_id": "6941513bd06fa0e36871ac45",
+                "user": "69414049960ca41c72e2998d",
+                "travelTitle": "Guliakhali Sea Beach",
+                "travelPlanStatus": "COMPLETED"
+            },
+            "senderId": {
+                "_id": "693816852ff210ec0b6b4b2c",
+                "profile": {
+                    "_id": "693816852ff210ec0b6b4b2e",
+                    "fullName": "MD. SELIM"
+                }
+            },
+            .....,
+        },
+        .....
+    ],
+}
+```
