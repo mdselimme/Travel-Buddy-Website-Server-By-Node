@@ -1596,7 +1596,7 @@ limit, page, role, email, isVerified, search, startDate, endDate;
 
 - Payment Init and Payment details find.
 
-#### . CREATE A MATCH
+#### 1. PAYMENT INIT API
 
 - method: `POST` api endpoint: http://localhost:5000/api/v1/payment/init
 
@@ -1646,5 +1646,42 @@ limit, page, role, email, isVerified, search, startDate, endDate;
             "updatedAt": "2025-12-27T16:32:33.228Z"
         }
     }
+}
+```
+
+#### 2. GET MY ALL PAYMENTS
+
+- method: `POST` api endpoint: http://localhost:5000/api/v1/payment/me
+
+##### Description
+
+**credentials**: true,
+
+**user role**: USER
+
+#### Response:
+
+```json
+{
+    "success": true,
+    "message": "User payments fetched successfully",
+    "statusCode": 200,
+    "data": [
+      {
+        "paymentUrl": "https://sandbox.sslcommerz.com/gwprocess/v3/gw.php?Q=PAY&SESSIONKEY=527163B4153223778A53531A105A73DC",
+        "payment": {
+            "user": "69414049960ca41c72e2998d",
+            "subscription": "693319e98550700de6b68c74",
+            "transactionId": "MJOIQXW1-3AJAT4PY",
+            "subscriptionType": "MONTHLY",
+            "status": "PENDING",
+            "amount": 500,
+            "_id": "69500a213d95c216283485dc",
+            "createdAt": "2025-12-27T16:32:33.228Z",
+            "updatedAt": "2025-12-27T16:32:33.228Z"
+        }
+       },
+       ....
+    ]
 }
 ```
