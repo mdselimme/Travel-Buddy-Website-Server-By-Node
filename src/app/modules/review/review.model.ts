@@ -4,8 +4,8 @@ import { IReview } from "./review.interface";
 
 const reviewSchemaModel = new Schema<IReview>({
     travelPlan: { type: Schema.Types.ObjectId, ref: 'TravelPlan', required: true },
-    user: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
-    traveler: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    reviewer: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
+    reviewed: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     description: { type: String, required: true },
     rating: { type: Number, required: true, min: 1, max: 5 },
 }, {

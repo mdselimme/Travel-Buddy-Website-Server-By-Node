@@ -10,7 +10,7 @@ import { createQuery } from '../../utils/querySearch';
 //CREATE A REVIEW
 const createReview = async (reviewData: Partial<IReview>) => {
 
-    if (reviewData.user === reviewData.traveler) {
+    if (reviewData.reviewed === reviewData.reviewer) {
         throw new ApiError(httpStatus.BAD_REQUEST, "You cannot review your own travel plan");
     }
 
@@ -24,9 +24,9 @@ const createReview = async (reviewData: Partial<IReview>) => {
     }
 
     const travelUserExistingReview = await ReviewModel.findOne({
-        user: reviewData.user,
+        reviewer: reviewData.reviewer,
         travelPlan: reviewData.travelPlan,
-        traveler: reviewData.traveler,
+        reviewed: reviewData.reviewed,
     });
 
     if (travelUserExistingReview) {
@@ -56,7 +56,7 @@ const getMyReviews = async (travelerId: string) => {
     }).populate("travelPlan", "travelTitle")
         .populate(
             {
-                path: 'user',
+                path: 'reviewer',
                 select: "profile",
                 populate: {
                     path: 'profile',
@@ -66,7 +66,7 @@ const getMyReviews = async (travelerId: string) => {
         )
         .populate(
             {
-                path: 'traveler',
+                path: 'reviewed',
                 select: "profile",
                 populate: {
                     path: 'profile',
@@ -85,7 +85,7 @@ const getAllReviews = async (query: any) => {
         .populate("travelPlan", "travelTitle")
         .populateDeep([
             {
-                path: 'user',
+                path: 'reviewer',
                 select: "profile",
                 populate: {
                     path: 'profile',
@@ -93,7 +93,7 @@ const getAllReviews = async (query: any) => {
                 },
             },
             {
-                path: 'traveler',
+                path: 'reviewed',
                 select: "profile",
                 populate: {
                     path: 'profile',
@@ -137,7 +137,7 @@ const getTravelPlanReviews = async (travelPlanId: string, arrangerId: string) =>
     }).populate("travelPlan", "travelTitle")
         .populate(
             {
-                path: 'traveler',
+                path: 'reviewed',
                 select: "profile",
                 populate: {
                     path: 'profile',
