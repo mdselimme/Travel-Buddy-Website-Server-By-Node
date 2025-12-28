@@ -1685,3 +1685,11 @@ limit, page, role, email, isVerified, search, startDate, endDate;
     ]
 }
 ```
+
+#### 3. IF PAYMENT FAIL, SUCCESS OR CANCEL FRONTEND LINK
+
+**PAYMENT FAILED LINK**: `${envVars.SSL.SSL_FAIL_FRONTEND_URL}?transactionId=${query.transactionId}&message=${result.message}&amount=${query.amount}&status=${query.status}`
+
+**PAYMENT SUCCESS LINK**: `${envVars.SSL.SSL_SUCCESS_FRONTEND_URL}?transactionId=${query.transactionId}&message=${result.message}&amount=${query.amount}&status=${query.status}`
+
+**PAYMENT CANCEL LINK**: `${envVars.SSL.SSL_CANCEL_FRONTEND_URL}?transactionId=${query.transactionId}&message=${result.message}&amount=${query.amount}&status=${query.status}`
