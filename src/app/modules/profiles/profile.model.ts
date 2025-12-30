@@ -11,6 +11,7 @@ const profileSchemaModel = new Schema<IProfile>({
     address: { type: String },
     bio: { type: String },
     visitedPlaces: [{ type: String, default: [] }],
+    averageRating: { type: Number, default: 0 },
     isSubscribed: { type: Boolean, default: false },
     subStartDate: { type: Date },
     subEndDate: { type: Date },

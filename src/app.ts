@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import express, { Application, Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
@@ -7,13 +8,14 @@ import router from './app/routes';
 import { globalErrorHandler } from './app/middlewares/globalErrorHandlers';
 import cron from 'node-cron';
 import { SubscriptionService } from './app/modules/subscription/subscription.service';
+import { envVars } from './config/envVariable.config';
 
 
 const app: Application = express();
 
 // Middleware
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: [envVars.CLIENT_SITE_URL, 'http://localhost:3000'],
     credentials: true
 }));
 app.use(bodyParser.json());
@@ -35,7 +37,7 @@ cron.schedule("* * * * *", async () => {
 // default router after server is running
 app.get('/', (req: Request, res: Response) => {
     res.send({
-        version: '1.0.5',
+        version: '1.0.6',
         message: 'Welcome to the Travel Buddy Server is Running!',
         timestamp: new Date().toISOString(),
         uptime: process.uptime().toFixed(2) + ' seconds'

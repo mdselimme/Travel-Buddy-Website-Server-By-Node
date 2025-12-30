@@ -7,6 +7,7 @@ import mongoose from "mongoose";
 import { seedSuperAdmin } from "./app/utils/seedSuperAdmin";
 import { connectRedis } from "./config/redis.config";
 
+
 let server: Server;
 
 // Bootstrap function to initialize the server

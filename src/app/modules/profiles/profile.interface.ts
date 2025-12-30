@@ -11,6 +11,7 @@ export interface IProfile {
     address?: string;
     bio?: string;
     visitedPlaces?: string[];
+    averageRating: number;
     isSubscribed: boolean;
     subStartDate?: Date;
     subEndDate?: Date;
