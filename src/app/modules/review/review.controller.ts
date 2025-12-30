@@ -22,8 +22,8 @@ const createReview = catchAsync(async (req: Request, res: Response) => {
 //GET MY REVIEWS
 const getMyReviews = catchAsync(async (req: Request, res: Response) => {
     const decodedToken = req.user;
-    const travelerId = (decodedToken as IJwtTokenPayload).userId;
-    const result = await ReviewService.getMyReviews(travelerId);
+    const reviewerId = (decodedToken as IJwtTokenPayload).userId;
+    const result = await ReviewService.getMyReviews(reviewerId);
     ApiResponse(res, {
         statusCode: httpStatus.OK,
         success: true,

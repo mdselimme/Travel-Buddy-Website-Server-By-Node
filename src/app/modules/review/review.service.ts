@@ -6,6 +6,7 @@ import { ReviewModel } from "./review.model";
 import { TravelPlanModel } from '../travelPlan/travelPlan.model';
 import { TravelPlanStatus } from '../travelPlan/travelPlan.interface';
 import { createQuery } from '../../utils/querySearch';
+import { ProfileModel } from '../profiles/profile.model';
 
 //CREATE A REVIEW
 const createReview = async (reviewData: Partial<IReview>) => {
@@ -33,9 +34,32 @@ const createReview = async (reviewData: Partial<IReview>) => {
         throw new ApiError(httpStatus.BAD_REQUEST, "You have already reviewed this travel plan");
     }
 
-    const createdReview = await ReviewModel.create(reviewData);
+    const session = await ReviewModel.startSession();
+    session.startTransaction();
 
-    return createdReview;
+    try {
+        const createdReview = await ReviewModel.create(reviewData);
+
+        const averageRatingAggregation = await ReviewModel.aggregate([
+            { $match: { reviewed: reviewData.reviewed } },
+            { $group: { _id: "$reviewed", averageRating: { $avg: "$rating" } } }
+        ]);
+
+        const averageRating = averageRatingAggregation[0]?.averageRating || 0;
+
+        await ProfileModel.findOneAndUpdate(
+            { user: reviewData.reviewed },
+            { averageRating: averageRating }, { new: true, runValidators: true, session }
+        );
+
+        await session.commitTransaction();
+        session.endSession();
+        return createdReview;
+    } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
+        throw error;
+    }
 };
 
 //GET A SINGLE REVIEW
@@ -48,10 +72,10 @@ const getSingleReview = async (id: string) => {
 };
 
 //GET MY REVIEWS
-const getMyReviews = async (travelerId: string) => {
+const getMyReviews = async (reviewerId: string) => {
     const reviews = await ReviewModel.find({
         $or: [
-            { traveler: travelerId },
+            { reviewed: reviewerId },
         ]
     }).populate("travelPlan", "travelTitle")
         .populate(
@@ -132,8 +156,8 @@ const deleteReview = async (id: string) => {
 const getTravelPlanReviews = async (travelPlanId: string, arrangerId: string) => {
     const reviews = await ReviewModel.find({
         travelPlan: travelPlanId,
-        traveler: { $ne: arrangerId },
-        user: arrangerId // Exclude reviews made by the requesting traveler
+        reviewed: { $ne: arrangerId },
+        reviewer: arrangerId // Exclude reviews made by the requesting traveler
     }).populate("travelPlan", "travelTitle")
         .populate(
             {
