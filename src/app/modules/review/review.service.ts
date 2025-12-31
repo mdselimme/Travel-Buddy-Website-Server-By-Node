@@ -7,6 +7,7 @@ import { TravelPlanModel } from '../travelPlan/travelPlan.model';
 import { TravelPlanStatus } from '../travelPlan/travelPlan.interface';
 import { createQuery } from '../../utils/querySearch';
 import { ProfileModel } from '../profiles/profile.model';
+import { Types } from 'mongoose';
 
 //CREATE A REVIEW
 const createReview = async (reviewData: Partial<IReview>) => {
@@ -41,8 +42,24 @@ const createReview = async (reviewData: Partial<IReview>) => {
         const createdReview = await ReviewModel.create(reviewData);
 
         const averageRatingAggregation = await ReviewModel.aggregate([
-            { $match: { reviewed: reviewData.reviewed } },
-            { $group: { _id: "$reviewed", averageRating: { $avg: "$rating" } } }
+            {
+                $match: {
+                    reviewed: new Types.ObjectId(reviewData.reviewed),
+                },
+            },
+            {
+                $group: {
+                    _id: "$reviewed",
+                    averageRating: { $avg: "$rating" },
+                    totalReviews: { $sum: 1 },
+                },
+            },
+            {
+                $project: {
+                    _id: 0,
+                    averageRating: { $round: ["$averageRating", 1] },
+                },
+            },
         ]);
 
         const averageRating = averageRatingAggregation[0]?.averageRating || 0;
