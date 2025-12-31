@@ -178,6 +178,16 @@ const getTravelPlanReviews = async (travelPlanId: string, arrangerId: string) =>
     }).populate("travelPlan", "travelTitle")
         .populate(
             {
+                path: 'reviewer',
+                select: "profile",
+                populate: {
+                    path: 'profile',
+                    select: 'fullName'
+                },
+            }
+        )
+        .populate(
+            {
                 path: 'reviewed',
                 select: "profile",
                 populate: {
