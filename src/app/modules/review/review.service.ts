@@ -90,11 +90,8 @@ const getSingleReview = async (id: string) => {
 
 //GET MY REVIEWS
 const getMyReviews = async (reviewerId: string) => {
-    const reviews = await ReviewModel.find({
-        $or: [
-            { reviewed: reviewerId },
-        ]
-    }).populate("travelPlan", "travelTitle")
+    const reviews = await ReviewModel.find({ reviewer: reviewerId })
+        .populate("travelPlan", "travelTitle")
         .populate(
             {
                 path: 'reviewer',
@@ -173,8 +170,7 @@ const deleteReview = async (id: string) => {
 const getTravelPlanReviews = async (travelPlanId: string, arrangerId: string) => {
     const reviews = await ReviewModel.find({
         travelPlan: travelPlanId,
-        reviewed: { $ne: arrangerId },
-        reviewer: arrangerId // Exclude reviews made by the requesting traveler
+        reviewed: arrangerId,
     }).populate("travelPlan", "travelTitle")
         .populate(
             {
