@@ -44,7 +44,7 @@ const getAllProfilesExceptAdmins = async () => {
     const profiles = await ProfileModel.find({
         user: { $in: userIds }
     })
-        .select('fullName profileImage currentLocation interests user')
+        .select('fullName profileImage currentLocation interests user averageRating')
         .populate('interests', 'typeName');
 
     return profiles;

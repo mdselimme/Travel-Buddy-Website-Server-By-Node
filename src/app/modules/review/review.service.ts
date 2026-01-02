@@ -9,6 +9,33 @@ import { createQuery } from '../../utils/querySearch';
 import { ProfileModel } from '../profiles/profile.model';
 import { Types } from 'mongoose';
 
+const getAverageRating = async (reviewedId: Types.ObjectId) => {
+
+    const averageRatingAggregation = await ReviewModel.aggregate([
+        {
+            $match: {
+                reviewed: new Types.ObjectId(reviewedId),
+            },
+        },
+        {
+            $group: {
+                _id: "$reviewed",
+                averageRating: { $avg: "$rating" },
+                totalReviews: { $sum: 1 },
+            },
+        },
+        {
+            $project: {
+                _id: 0,
+                averageRating: { $round: ["$averageRating", 1] },
+            },
+        },
+    ]);
+
+    const averageRating = averageRatingAggregation[0]?.averageRating || 0;
+    return averageRating;
+};
+
 //CREATE A REVIEW
 const createReview = async (reviewData: Partial<IReview>) => {
 
@@ -41,28 +68,7 @@ const createReview = async (reviewData: Partial<IReview>) => {
     try {
         const createdReview = await ReviewModel.create(reviewData);
 
-        const averageRatingAggregation = await ReviewModel.aggregate([
-            {
-                $match: {
-                    reviewed: new Types.ObjectId(reviewData.reviewed),
-                },
-            },
-            {
-                $group: {
-                    _id: "$reviewed",
-                    averageRating: { $avg: "$rating" },
-                    totalReviews: { $sum: 1 },
-                },
-            },
-            {
-                $project: {
-                    _id: 0,
-                    averageRating: { $round: ["$averageRating", 1] },
-                },
-            },
-        ]);
-
-        const averageRating = averageRatingAggregation[0]?.averageRating || 0;
+        const averageRating = await getAverageRating(reviewData.reviewed as Types.ObjectId);
 
         await ProfileModel.findOneAndUpdate(
             { user: reviewData.reviewed },
@@ -151,9 +157,23 @@ const updateReview = async (id: string, reviewData: Partial<IReview>) => {
     if (!review) {
         throw new ApiError(httpStatus.NOT_FOUND, "Review not found");
     }
-    const updatedReview = await ReviewModel.findByIdAndUpdate(id, reviewData, { new: true });
-
-    return updatedReview;
+    const session = await ReviewModel.startSession();
+    session.startTransaction();
+    try {
+        const updatedReview = await ReviewModel.findByIdAndUpdate(id, reviewData, { new: true, runValidators: true, session });
+        const averageRating = await getAverageRating(review.reviewed as Types.ObjectId);
+        await ProfileModel.findOneAndUpdate(
+            { user: review.reviewed },
+            { averageRating: averageRating }, { runValidators: true, session }
+        );
+        await session.commitTransaction();
+        session.endSession();
+        return updatedReview;
+    } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
+        throw error;
+    }
 };
 
 //DELETE A REVIEW
