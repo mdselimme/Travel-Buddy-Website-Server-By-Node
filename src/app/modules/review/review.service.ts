@@ -9,7 +9,7 @@ import { createQuery } from '../../utils/querySearch';
 import { ProfileModel } from '../profiles/profile.model';
 import { Types } from 'mongoose';
 
-const getAverageRating = async (reviewedId: Types.ObjectId) => {
+const getAverageRating = async (reviewedId: Types.ObjectId, session?: any) => {
 
     const averageRatingAggregation = await ReviewModel.aggregate([
         {
@@ -30,7 +30,7 @@ const getAverageRating = async (reviewedId: Types.ObjectId) => {
                 averageRating: { $round: ["$averageRating", 1] },
             },
         },
-    ]);
+    ]).session(session);
 
     const averageRating = averageRatingAggregation[0]?.averageRating || 0;
     return averageRating;
@@ -66,13 +66,18 @@ const createReview = async (reviewData: Partial<IReview>) => {
     session.startTransaction();
 
     try {
-        const createdReview = await ReviewModel.create(reviewData);
-
-        const averageRating = await getAverageRating(reviewData.reviewed as Types.ObjectId);
-
+        // Create the review
+        const createdReview = await ReviewModel.create([reviewData], { session });
+        // Recalculate average rating
+        const averageRating = await getAverageRating(
+            reviewData.reviewed as Types.ObjectId,
+            session
+        );
+        // Update the profile with the new average rating
         await ProfileModel.findOneAndUpdate(
             { user: reviewData.reviewed },
-            { averageRating: averageRating }, { new: true, runValidators: true, session }
+            { averageRating },
+            { new: true, runValidators: true, session }
         );
 
         await session.commitTransaction();
@@ -160,11 +165,22 @@ const updateReview = async (id: string, reviewData: Partial<IReview>) => {
     const session = await ReviewModel.startSession();
     session.startTransaction();
     try {
-        const updatedReview = await ReviewModel.findByIdAndUpdate(id, reviewData, { new: true, runValidators: true, session });
-        const averageRating = await getAverageRating(review.reviewed as Types.ObjectId);
+        // Update the review
+        const updatedReview = await ReviewModel.findByIdAndUpdate(
+            id,
+            reviewData,
+            { new: true, runValidators: true, session }
+        );
+        // Recalculate average rating
+        const averageRating = await getAverageRating(
+            review.reviewed as Types.ObjectId,
+            session
+        );
+        // Update the profile with the new average rating
         await ProfileModel.findOneAndUpdate(
             { user: review.reviewed },
-            { averageRating: averageRating }, { runValidators: true, session }
+            { averageRating },
+            { runValidators: true, session }
         );
         await session.commitTransaction();
         session.endSession();
@@ -182,8 +198,31 @@ const deleteReview = async (id: string) => {
     if (!review) {
         throw new ApiError(httpStatus.NOT_FOUND, "Review not found");
     }
-    await ReviewModel.findByIdAndDelete(id);
-    return null;
+    const session = await ReviewModel.startSession();
+    session.startTransaction();
+
+    try {
+        await ReviewModel.findByIdAndDelete(id, { session });
+
+        const averageRating = await getAverageRating(
+            review.reviewed as Types.ObjectId,
+            session
+        );
+
+        await ProfileModel.findOneAndUpdate(
+            { user: review.reviewed },
+            { averageRating },
+            { session }
+        );
+
+        await session.commitTransaction();
+        session.endSession();
+        return null;
+    } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
+        throw error;
+    }
 };
 
 //Travel Plan Reviews
