@@ -11,16 +11,18 @@ Database Relation ERD : [https://drive.google.com/file/d/19kGheUiKry_k2JYtKVL43e
     * Also user can connect with other travel plan.
     * User have to need subscription to use this website.
     * Admin can manages all the users, travel plan, subscription etc.
+    * Payment by sslCommerz.
 
 ## Tech Stack:
 
     - **Runtime:** Node
     - **Language:** Typescript
     - **Framework:** Express
-    - **Database & ODM:** MongoDB & Mongoose
+    - **Database & ODM:** MongoDB & Mongoose, Redis For Otp.
     - **Authorization & Authentication:** Json Web Token (Jwt)
-    - **Data Validation & Security:** Zod, Bcrypt and Moduler Architecture.
-    - **Payment Gateway:** SSL Commerz
+    - **Data Validation & Security:** Zod, Bcrypt, Rate Limiter.
+    - **Payment Gateway:** SSLCommerz
+    - **Other:** Nodemailer
 
 # Set Up and Installation
 
@@ -106,6 +108,11 @@ REDIS_PORT=
 REDIS_USERNAME=
 REDIS_PASSWORD=
 
+
+#RATE LIMITER
+RATE_LIMITER_WINDOW_MS=60000
+RATE_LIMITER_AUTH_MAX_REQUEST=5
+RATE_LIMITER_API_MAX_REQUEST=100
 
 ```
 
