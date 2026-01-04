@@ -48,6 +48,11 @@ interface IEnvVariables {
         SSL_SUCCESS_BACKEND_URL: string,
         SSL_FAIL_BACKEND_URL: string,
         SSL_CANCEL_BACKEND_URL: string
+    },
+    RATE_LIMITER: {
+        RATE_LIMITER_WINDOW_MS: string,
+        RATE_LIMITER_AUTH_MAX_REQUEST: string,
+        RATE_LIMITER_API_MAX_REQUEST: string,
     }
 };
 
@@ -82,7 +87,10 @@ const loadEnvVariables = (): IEnvVariables => {
         "SSL_CANCEL_FRONTEND_URL",
         "SSL_SUCCESS_BACKEND_URL",
         "SSL_FAIL_BACKEND_URL",
-        "SSL_CANCEL_BACKEND_URL"
+        "SSL_CANCEL_BACKEND_URL",
+        "RATE_LIMITER_WINDOW_MS",
+        "RATE_LIMITER_AUTH_MAX_REQUEST",
+        "RATE_LIMITER_API_MAX_REQUEST"
     ];
 
     requiredEnvVars.forEach((varName) => {
@@ -138,6 +146,11 @@ const loadEnvVariables = (): IEnvVariables => {
             SSL_SUCCESS_BACKEND_URL: process.env.SSL_SUCCESS_BACKEND_URL as string,
             SSL_FAIL_BACKEND_URL: process.env.SSL_FAIL_BACKEND_URL as string,
             SSL_CANCEL_BACKEND_URL: process.env.SSL_CANCEL_BACKEND_URL as string
+        },
+        RATE_LIMITER: {
+            RATE_LIMITER_WINDOW_MS: process.env.RATE_LIMITER_WINDOW_MS as string,
+            RATE_LIMITER_AUTH_MAX_REQUEST: process.env.RATE_LIMITER_AUTH_MAX_REQUEST as string,
+            RATE_LIMITER_API_MAX_REQUEST: process.env.RATE_LIMITER_API_MAX_REQUEST as string,
         }
     };
 };

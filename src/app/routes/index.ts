@@ -9,6 +9,7 @@ import { TravelTypeRouter } from "../modules/travelType/travelType.route";
 import { ProfileRouter } from "../modules/profiles/profile.route";
 import { MatchesRouter } from "../modules/matches/matches.route";
 import { StatsRouter } from "../modules/stats/stats.route";
+import { apiLimiter } from "../middlewares/rateLimiter";
 
 interface IRoute {
     path: string;
@@ -16,6 +17,9 @@ interface IRoute {
 }
 
 const router = Router();
+
+// Apply API rate limiter to all routes
+router.use(apiLimiter);
 
 const allRoutes: IRoute[] = [
     {
