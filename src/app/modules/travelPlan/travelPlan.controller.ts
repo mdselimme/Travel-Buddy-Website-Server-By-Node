@@ -52,6 +52,19 @@ const updateATravelPlan = catchAsync(async (req: Request, res: Response) => {
 });
 
 //GET ALL TRAVEL PLANS CONTROLLER
+const getAllTravelPlansForUsers = catchAsync(async (req: Request, res: Response) => {
+
+    const result = await TravelPlanService.getAllTravelPlansForUsers(req.query);
+
+    ApiResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: "Travel Plans retrieved successfully",
+        data: result
+    });
+});
+
+//GET ALL TRAVEL PLANS CONTROLLER
 const getAllTravelPlans = catchAsync(async (req: Request, res: Response) => {
 
     const result = await TravelPlanService.getAllTravelPlans(req.query);
@@ -131,10 +144,11 @@ const deleteATravelPlan = catchAsync(async (req: Request, res: Response) => {
 export const TravelPlanController = {
     createATravelPlan,
     updateATravelPlan,
-    getAllTravelPlans,
+    getAllTravelPlansForUsers,
     getSingleTravelPlan,
     getMyTravelPlans,
     deleteATravelPlan,
     getMyMatchesTravelPlans,
-    getTravelPlansCities
+    getTravelPlansCities,
+    getAllTravelPlans
 }

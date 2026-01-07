@@ -23,6 +23,11 @@ router.get("/",
     TravelPlanController.getAllTravelPlans
 );
 
+//GET ALL TRAVEL PLANS USERS ROUTE
+router.get("/user-plans",
+    TravelPlanController.getAllTravelPlansForUsers
+);
+
 //GET TRAVEL PLANS CITIES ROUTE
 router.get("/cities",
     TravelPlanController.getTravelPlansCities

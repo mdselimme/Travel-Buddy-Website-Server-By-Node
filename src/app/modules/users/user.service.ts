@@ -218,7 +218,9 @@ const deleteAnUserService = async (userId: string) => {
         await UserModel.findByIdAndDelete(userId, { session });
         //Profile Delete and Image from Cloudinary
         const profile = await ProfileModel.findByIdAndDelete(isUserExist.profile, { session });
-        await deleteImageFromCloudinary(profile?.profileImage as string);
+        if (profile?.profileImage) {
+            await deleteImageFromCloudinary(profile.profileImage);
+        }
         await session.commitTransaction();
         session.endSession();
         return {

@@ -84,6 +84,55 @@ const getAllTravelPlans = async (query: any) => {
 
     }
 
+    filters.status = status
+
+    const result = await createQuery(TravelPlanModel)
+        .filter(filters)
+        .search(['travelTitle', 'destination.city', 'destination.country'], search)
+        .dateRange('startDate', startDate, endDate)
+        .populate('travelTypes', 'typeName')
+        .populate('user', 'name email')
+        .sort(sort || '-createdAt')
+        .select(fields)
+        .paginate(Number(page) || 1, Number(limit) || 10)
+        .exec();
+
+    return result;
+
+};
+//GET ALL TRAVEL PLANS USERS SERVICE
+const getAllTravelPlansForUsers = async (query: any) => {
+
+    const {
+        page,
+        limit,
+        sort,
+        search,
+        destination,
+        travelType,
+        startDate,
+        endDate,
+        status,
+        fields
+    } = query;
+
+    // Build filter object
+    const filters: any = {};
+
+    if (destination) {
+        filters.destination = destination;
+    }
+
+    // Handle travelType by typeName
+    if (travelType) {
+
+        const travelTypeDoc = await TravelTypeModel.findOne({ typeName: new RegExp(travelType, 'i') });
+        if (travelTypeDoc) {
+            filters.travelTypes = travelTypeDoc._id;
+        }
+
+    }
+
     // Filter by travelPlanStatus - default to UPCOMING
     filters.travelPlanStatus = status || 'UPCOMING';
 
@@ -153,7 +202,7 @@ const deleteATravelPlan = async (id: string): Promise<Partial<ITravelPlan> | nul
 
     await TravelPlanModel.findByIdAndDelete(id);
 
-    return null
+    return null;
 
 };
 
@@ -172,11 +221,12 @@ const autoCancelTravelPlans = async (): Promise<void> => {
 export const TravelPlanService = {
     createATravelPlan,
     updateATravelPlan,
-    getAllTravelPlans,
+    getAllTravelPlansForUsers,
     getSingleTravelPlan,
     deleteATravelPlan,
     getMyTravelPlans,
     getMyMatchesTravelPlans,
     getTravelPlansCities,
-    autoCancelTravelPlans
+    autoCancelTravelPlans,
+    getAllTravelPlans
 }

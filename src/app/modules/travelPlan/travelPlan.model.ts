@@ -1,11 +1,6 @@
 import { model, Schema } from "mongoose";
 import { ITravelPlan, TravelPlanStatus } from "./travelPlan.interface";
 
-
-
-
-
-
 const travelPlanSchema = new Schema<ITravelPlan>({
     user: { type: Schema.Types.ObjectId, required: true, ref: "User" },
     travelTitle: { type: String, required: true, minlength: 3 },
