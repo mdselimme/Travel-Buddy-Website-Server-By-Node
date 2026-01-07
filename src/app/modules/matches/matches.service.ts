@@ -158,11 +158,41 @@ const getMyMatches = async (decodedToken: IJwtTokenPayload) => {
     return myMatches;
 };
 
+//GET MATCHES FOR SPECIFIC TRAVEL PLAN SERVICE FUNCTION
+const getMatchesForTravelPlan = async (travelPlanId: string) => {
+
+    const travelPlan = await TravelPlanModel.findById(travelPlanId);
+    if (!travelPlan) {
+        throw new ApiError(httpStatus.NOT_FOUND, "Travel Plan not found.");
+    }
+    const matches = await MatchesModel.find({
+        travelPlanId: travelPlanId,
+    }).populate("travelPlanId", "travelTitle travelPlanStatus user")
+        .populate({
+            path: "senderId",
+            select: "profile",
+            populate: {
+                path: "profile",
+                select: "fullName"
+            }
+        })
+        .populate({
+            path: "receiverId",
+            select: "profile",
+            populate: {
+                path: "profile",
+                select: "fullName"
+            }
+        });
+    return matches;
+};
+
 
 export const MatchesService = {
     createMatch,
     getAllMatches,
     updateMatch,
     getMyMatches,
-    getSingleMatch
+    getSingleMatch,
+    getMatchesForTravelPlan
 };

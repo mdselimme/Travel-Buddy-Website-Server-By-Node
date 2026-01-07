@@ -39,7 +39,7 @@ cron.schedule("0 * * * *", async () => {
 // default router after server is running
 app.get('/', (req: Request, res: Response) => {
     res.send({
-        version: '1.0.6',
+        version: '1.2.0',
         message: 'Welcome to the Travel Buddy Server is Running!',
         timestamp: new Date().toISOString(),
         uptime: process.uptime().toFixed(2) + ' seconds'

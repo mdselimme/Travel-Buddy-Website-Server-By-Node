@@ -15,6 +15,12 @@ router.post("/create",
     MatchesController.createMatch
 );
 
+//GET MATCHES FOR SPECIFIC TRAVEL PLAN ROUTE
+router.get("/matches-plan/:id",
+    checkAuth((UserRole.USER)),
+    MatchesController.getMatchesForTravelPlan
+);
+
 //MY MATCHES ROUTE
 router.get("/my-matches",
     checkAuth(UserRole.USER),

@@ -78,10 +78,23 @@ const getMyMatches = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+//GET MATCHES FOR SPECIFIC TRAVEL PLAN CONTROLLER
+const getMatchesForTravelPlan = catchAsync(async (req: Request, res: Response) => {
+    const travelPlanId = req.params.id;
+    const result = await MatchesService.getMatchesForTravelPlan(travelPlanId);
+    ApiResponse(res, {
+        success: true,
+        message: "Matches for travel plan fetched successfully",
+        statusCode: httpStatus.OK,
+        data: result
+    });
+});
+
 export const MatchesController = {
     createMatch,
     getAllMatches,
     updateMatch,
     getSingleMatch,
-    getMyMatches
+    getMyMatches,
+    getMatchesForTravelPlan
 };
