@@ -12,6 +12,24 @@ import { ProfileModel } from '../profiles/profile.model';
 //CREATE A TRAVEL PLAN SERVICE
 const createATravelPlan = async (payload: Partial<ITravelPlan>): Promise<Partial<ITravelPlan>> => {
 
+    const isNotSubscribedProfile = await ProfileModel.findOne({
+        user: payload.user,
+        isSubscribed: false
+    });
+
+    if (isNotSubscribedProfile) {
+        throw new ApiError(httpStatus.FORBIDDEN, "You need to be a subscribed user to create travel plans.");
+    };
+
+    const existingTravelPlan = await TravelPlanModel.findOne({
+        travelTitle: payload.travelTitle,
+        user: payload.user
+    });
+
+    if (existingTravelPlan) {
+        throw new ApiError(httpStatus.CONFLICT, "Travel Plan with this title already exists for the user.");
+    }
+
     const travelPlan = await TravelPlanModel.create(payload);
     return travelPlan;
 }
@@ -66,9 +84,8 @@ const getAllTravelPlans = async (query: any) => {
 
     }
 
-    if (status) {
-        filters.status = status;
-    }
+    // Filter by travelPlanStatus - default to UPCOMING
+    filters.travelPlanStatus = status || 'UPCOMING';
 
     const result = await createQuery(TravelPlanModel)
         .filter(filters)
@@ -140,6 +157,18 @@ const deleteATravelPlan = async (id: string): Promise<Partial<ITravelPlan> | nul
 
 };
 
+//AUTO CANCEL TRAVEL PLAN SERVICE (To be used in a scheduled job)
+const autoCancelTravelPlans = async (): Promise<void> => {
+    const currentDate = new Date();
+    await TravelPlanModel.updateMany(
+        {
+            endDate: { $lt: currentDate },
+            travelPlanStatus: { $nin: ['CANCELLED', 'COMPLETED'] }
+        },
+        { travelPlanStatus: 'CANCELLED' }
+    );
+};
+
 export const TravelPlanService = {
     createATravelPlan,
     updateATravelPlan,
@@ -148,5 +177,6 @@ export const TravelPlanService = {
     deleteATravelPlan,
     getMyTravelPlans,
     getMyMatchesTravelPlans,
-    getTravelPlansCities
+    getTravelPlansCities,
+    autoCancelTravelPlans
 }

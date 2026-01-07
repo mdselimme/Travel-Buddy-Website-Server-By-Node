@@ -6,6 +6,7 @@ import { MatchesModel } from "./matches.model";
 import { createQuery } from '../../utils/querySearch';
 import { IJwtTokenPayload } from '../../types/token.type';
 import { TravelPlanModel } from '../travelPlan/travelPlan.model';
+import { ProfileModel } from '../profiles/profile.model';
 
 const createMatch = async (matchData: IMatch) => {
 
@@ -18,6 +19,24 @@ const createMatch = async (matchData: IMatch) => {
 
     if (!travelPlan) {
         throw new ApiError(httpStatus.NOT_FOUND, "Travel Plan not found.");
+    }
+
+    const isSenderProfileIsNotSubscribed = await ProfileModel.findOne({
+        user: matchData.senderId,
+        isSubscribed: false
+    });
+
+    if (isSenderProfileIsNotSubscribed) {
+        throw new ApiError(httpStatus.FORBIDDEN, "You need to be a subscribed user to create matches.");
+    }
+
+    const isReceiverProfileIsNotSubscribed = await ProfileModel.findOne({
+        user: matchData.receiverId,
+        isSubscribed: false
+    });
+
+    if (isReceiverProfileIsNotSubscribed) {
+        throw new ApiError(httpStatus.FORBIDDEN, "The receiver needs to be a subscribed user to create matches.");
     }
 
     const checkMatch = await MatchesModel.findOne({

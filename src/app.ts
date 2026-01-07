@@ -9,6 +9,7 @@ import { globalErrorHandler } from './app/middlewares/globalErrorHandlers';
 import cron from 'node-cron';
 import { SubscriptionService } from './app/modules/subscription/subscription.service';
 import { envVars } from './config/envVariable.config';
+import { TravelPlanService } from './app/modules/travelPlan/travelPlan.service';
 
 
 const app: Application = express();
@@ -23,10 +24,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Schedule a cron job to run every day at midnight
-cron.schedule("* * * * *", async () => {
+// Schedule a cron job to run every hour
+cron.schedule("0 * * * *", async () => {
     try {
         await SubscriptionService.checkAndUpdateExpiredSubscriptionsService();
+        await TravelPlanService.autoCancelTravelPlans();
         console.log("node cron called at: " + new Date())
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
