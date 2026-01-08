@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import httpStatus from 'http-status-codes';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { envVars } from "../../../config/envVariable.config";
@@ -54,7 +53,6 @@ const sslPaymentInit = async (payload: ISSLCommerz) => {
 
         return response.data;
     } catch (error: any) {
-        console.log(`Payment error occured: ${error.message}`)
         throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to initiate SSL Commerz payment: ' + error.message);
     }
 };
@@ -73,7 +71,6 @@ const validatePayment = async (payload: any) => {
             { runValidators: true }
         );
     } catch (error: any) {
-        console.log(`Payment validation error occured: ${error.message}`);
         throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to validate SSL Commerz payment: ' + error.message);
     }
 };

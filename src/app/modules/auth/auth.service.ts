@@ -29,12 +29,12 @@ const logInUser = async (payload: Partial<IUser>) => {
         throw new ApiError(httpStatus.UNAUTHORIZED, 'Password is incorrect')
     };
 
-    if (existingUser.isActive !== IActiveStatus.ACTIVE) {
-        throw new ApiError(httpStatus.BAD_REQUEST, 'User is not active. Please contact support.');
-    }
-
     if (!existingUser.isVerified) {
         throw new ApiError(httpStatus.BAD_REQUEST, 'User is not verified. Please verify your email.');
+    }
+
+    if (existingUser.isActive !== IActiveStatus.ACTIVE) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'User is not active. Please contact support.');
     }
 
     const profile = await ProfileModel.findById(existingUser.profile);
