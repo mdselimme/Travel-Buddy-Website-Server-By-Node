@@ -23,6 +23,11 @@ const logInUser = async (payload: Partial<IUser>) => {
         throw new ApiError(httpStatus.NOT_FOUND, 'User does not found')
     };
 
+    const isPasswordMatch = await bcrypt.compare(payload.password as string, existingUser.password);
+
+    if (!isPasswordMatch) {
+        throw new ApiError(httpStatus.UNAUTHORIZED, 'Password is incorrect')
+    };
 
     if (existingUser.isActive !== IActiveStatus.ACTIVE) {
         throw new ApiError(httpStatus.BAD_REQUEST, 'User is not active. Please contact support.');
@@ -32,18 +37,11 @@ const logInUser = async (payload: Partial<IUser>) => {
         throw new ApiError(httpStatus.BAD_REQUEST, 'User is not verified. Please verify your email.');
     }
 
-    const isPasswordMatch = await bcrypt.compare(payload.password as string, existingUser.password);
-
-    if (!isPasswordMatch) {
-        throw new ApiError(httpStatus.UNAUTHORIZED, 'Password is incorrect')
-    };
-
     const profile = await ProfileModel.findById(existingUser.profile);
 
     if (!profile) {
         throw new ApiError(httpStatus.NOT_FOUND, 'User profile does not found')
     }
-
 
     const jwtUserPayload = {
         fullName: profile?.fullName,
