@@ -13,7 +13,7 @@ const createMatch = catchAsync(async (req: Request, res: Response) => {
 
     ApiResponse(res, {
         success: true,
-        message: "Match created successfully",
+        message: "Request to create match sent successfully.",
         statusCode: httpStatus.CREATED,
         data: result
     });

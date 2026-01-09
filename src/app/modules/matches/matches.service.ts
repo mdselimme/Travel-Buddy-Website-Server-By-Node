@@ -10,7 +10,6 @@ import { ProfileModel } from '../profiles/profile.model';
 
 const createMatch = async (matchData: IMatch) => {
 
-
     if (matchData.senderId === matchData.receiverId) {
         throw new ApiError(httpStatus.BAD_REQUEST, "You cannot match with yourself.");
     }
