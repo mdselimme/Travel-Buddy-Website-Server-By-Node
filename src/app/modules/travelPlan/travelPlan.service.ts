@@ -171,6 +171,8 @@ const getMyMatchesTravelPlans = async (userId: string): Promise<Partial<ITravelP
         throw new ApiError(httpStatus.NOT_FOUND, "Profile not found. Please create your profile first.");
     }
     const myMatchesTravelPlans = await TravelPlanModel.find({
+        isVisible: true,
+        travelPlanStatus: 'UPCOMING',
         'travelTypes': { $in: profileExists.interests }
     }).sort({ createdAt: -1 }).populate('travelTypes', "typeName");
 
