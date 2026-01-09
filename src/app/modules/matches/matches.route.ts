@@ -5,7 +5,6 @@ import { MatchesController } from "./matches.controller";
 import validateZodSchema from "../../middlewares/validateZodSchemaRequest";
 import { MatchesValidated } from "./matches.validation";
 
-
 const router = Router();
 
 //CREATE MATCH ROUTE
@@ -26,7 +25,6 @@ router.get("/my-matches",
     checkAuth(UserRole.USER),
     MatchesController.getMyMatches
 );
-
 
 //SINGLE MATCH ROUTE
 router.get("/:id",

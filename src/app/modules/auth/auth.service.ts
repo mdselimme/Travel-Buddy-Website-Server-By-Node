@@ -120,9 +120,7 @@ const emailSendVerification = async (email: string) => {
         }
     });
 
-
-
-    sendEmail({
+    await sendEmail({
         to: existingUser.email,
         subject: 'Email Verification',
         templateName: 'emailVerification',
@@ -213,7 +211,7 @@ const forgotPassword = async (email: string) => {
 
     const redirectUrl = `${envVars.CLIENT_SITE_URL}/reset-password?token=${tokenForForgotPass}&userId=${isUserExist._id}`;
 
-    sendEmail({
+    await sendEmail({
         to: isUserExist.email,
         subject: 'Forgot Password Email',
         templateName: 'forgotPassword',
