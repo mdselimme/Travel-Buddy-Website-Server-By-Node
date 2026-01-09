@@ -2047,7 +2047,7 @@ limit, page, role, email, isVerified, search, startDate, endDate;
 }
 ```
 
-## Development Mode Example Schema
+## Development Mode Error Example Schema
 
 #### Response:
 
@@ -2063,7 +2063,7 @@ limit, page, role, email, isVerified, search, startDate, endDate;
 }
 ```
 
-## Production Mode Example Schema
+## Production Mode Error Example Schema
 
 #### Response:
 
