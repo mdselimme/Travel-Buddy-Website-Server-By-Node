@@ -1700,3 +1700,53 @@ limit, page, role, email, isVerified, search, startDate, endDate;
 **PAYMENT SUCCESS LINK**: `${envVars.SSL.SSL_SUCCESS_FRONTEND_URL}?transactionId=${query.transactionId}&message=${result.message}&amount=${query.amount}&status=${query.status}`
 
 **PAYMENT CANCEL LINK**: `${envVars.SSL.SSL_CANCEL_FRONTEND_URL}?transactionId=${query.transactionId}&message=${result.message}&amount=${query.amount}&status=${query.status}`
+
+## Stats Api Description:
+
+- Get dashboard stats for user and admin
+
+#### 1. PAYMENT INIT API
+
+- method: `GET` api endpoint: http://localhost:5000/api/v1/stats
+
+##### Description
+
+**credentials**: true,
+
+**route access role**: USER, ADMIN, SUPER_ADMIN
+
+### if user is general user
+
+#### Response:
+
+```json
+{
+    "statusCode": 200,
+    "data": {
+        "totalTravelPlans": 1,
+        "upcomingTravelPlans": 0,
+        "completedTravelPlans": 1
+    },
+    "message": "Stats fetched successfully",
+    "success": true
+}
+```
+
+### if user is general admin or super_admin
+
+#### Response:
+
+```json
+{
+    "statusCode": 200,
+    "data": {
+        "totalTravelPlans": 4,
+        "totalUsers": 6,
+        "totalAdmins": 1,
+        "totalRegularUsers": 4,
+        "totalSubscribedUsers": 3
+    },
+    "message": "Stats fetched successfully",
+    "success": true
+}
+```
