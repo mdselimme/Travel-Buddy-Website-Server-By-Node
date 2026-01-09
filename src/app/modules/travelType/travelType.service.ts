@@ -28,6 +28,10 @@ const updateTravelTypeService = async (id: string, travelTypeData: Partial<ITrav
         throw new ApiError(httpStatus.NOT_FOUND, 'Travel type not found');
     }
 
+    if (travelTypeData.typeName === travelType.typeName) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'Please provide a different type name to update because it is the same as the current one');
+    }
+
     const updatedTravelType = await TravelTypeModel.findByIdAndUpdate(id, travelTypeData, { new: true });
 
     return updatedTravelType;
