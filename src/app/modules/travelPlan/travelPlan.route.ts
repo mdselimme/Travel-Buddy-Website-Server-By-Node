@@ -43,13 +43,13 @@ router.patch("/:id",
 
 // GET MY TRAVEL PLANS ROUTE 
 router.get("/my-plans",
-    checkAuth(...Object.values(UserRole)),
+    checkAuth(UserRole.USER),
     TravelPlanController.getMyTravelPlans
 );
 
 //router matches
 router.get("/my-matches",
-    checkAuth(...Object.values(UserRole)),
+    checkAuth(UserRole.USER),
     TravelPlanController.getMyMatchesTravelPlans
 );
 

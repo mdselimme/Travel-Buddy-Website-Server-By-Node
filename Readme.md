@@ -12,6 +12,8 @@ Database Relation ERD : [https://drive.google.com/file/d/19kGheUiKry_k2JYtKVL43e
     * User have to need subscription to use this website.
     * Admin can manages all the users, travel plan, subscription etc.
     * Payment by sslCommerz.
+    * Email send
+    * Otp feature
 
 ## Tech Stack:
 
@@ -110,9 +112,9 @@ REDIS_PASSWORD=
 
 
 #RATE LIMITER
-RATE_LIMITER_WINDOW_MS=60000
-RATE_LIMITER_AUTH_MAX_REQUEST=5
-RATE_LIMITER_API_MAX_REQUEST=100
+RATE_LIMITER_WINDOW_MS=
+RATE_LIMITER_AUTH_MAX_REQUEST=
+RATE_LIMITER_API_MAX_REQUEST=
 
 ```
 
@@ -197,6 +199,7 @@ npm run dev
     "address":string,
     "visitedPlaces":[string],
     "currentLocation":string,
+    //interest value will be travel types object id
     "interests":[string],
     "bio":string,
 }
@@ -206,13 +209,13 @@ npm run dev
 
 ```json
 {
-     "userId": "693655b55c1fdea7cf2cc2c2",
+    "userId": "693655b55c1fdea7cf2cc2c2",
     "fullName": "MD SELIM",
     "contactNumber": "01700000000",
     "address":"DHAKA",
     "visitedPlaces":["DHAKA", "KOLKATA"],
     "currentLocation":"DHAKA",
-    "interests":["FARMING","GARDENING"],
+    "interests":["693656c596030ba0219fe0a0","693656bb96030ba0219fe09c"],
     "bio":"I am tracking lover and a programmer",
 }
 ```
@@ -1701,6 +1704,299 @@ limit, page, role, email, isVerified, search, startDate, endDate;
 
 **PAYMENT CANCEL LINK**: `${envVars.SSL.SSL_CANCEL_FRONTEND_URL}?transactionId=${query.transactionId}&message=${result.message}&amount=${query.amount}&status=${query.status}`
 
+## Review Api Description:
+
+- User can create an account with name, email, password, role (User|Agent) type.
+
+#### 1. Review create api
+
+- method: `POST` api endpoint: http://localhost:5000/api/v1/review/create
+
+##### schema design:
+
+```json
+{
+    //travel plan objectid
+    "travelPlan": string,
+    //reviewer user  objectid
+    "reviewer": string,
+    //reviewed user objectid
+    "reviewed": string,
+    "rating": number,
+    "description": string
+}
+```
+
+##### Request:
+
+```json
+{
+    {
+    "travelPlan": "693c8c517d1ef46dd9d41056",
+    "reviewer": "69382bb9768e05f8ef61619a",
+    "reviewed": "693816852ff210ec0b6b4b2c",
+    "rating": 4,
+    "description": "Very good experience with this arranger."
+}
+}
+```
+
+#### Response:
+
+```json
+{
+    "message": "Review created successfully",
+    "statusCode": 201,
+    "success": true,
+    "data": {
+    "travelPlan": "693c8c517d1ef46dd9d41056",
+    "reviewer": "69382bb9768e05f8ef61619a",
+    "reviewed": "693816852ff210ec0b6b4b2c",
+    "rating": 4,
+    "description": "Very good experience with this arranger."
+    }
+}
+```
+
+#### 2. Review Update api
+
+- method: `PATCH` api endpoint: http://localhost:5000/api/v1/review/{objectid}
+
+##### Request:
+
+```json
+{
+{
+    "rating": 4,
+    "description": "Very good experience with this arranger."
+}
+}
+```
+
+#### Response:
+
+```json
+{
+    "message": "Review updated successfully",
+    "statusCode": 200,
+    "success": true,
+    "data": {
+    "travelPlan": "693c8c517d1ef46dd9d41056",
+    "reviewer": "69382bb9768e05f8ef61619a",
+    "reviewed": "693816852ff210ec0b6b4b2c",
+    "rating": 4,
+    "description": "Very good experience with this arranger."
+    }
+}
+```
+
+#### 3. Get my Reviews
+
+- method: `GET` api endpoint: http://localhost:5000/api/v1/review/my-reviews
+
+#### Response:
+
+```json
+{
+    "message": "My reviews fetched successfully",
+    "statusCode": 200,
+    "success": true,
+    "data": [
+        {
+            "_id": "69594dc0e1492856138a654a",
+            "travelPlan": {
+                "_id": "693c8c517d1ef46dd9d41056",
+                "travelTitle": "Sundarbans Wildlife Adventure Dev One"
+            },
+            "reviewer": {
+                "_id": "693816852ff210ec0b6b4b2c",
+                "profile": {
+                    "_id": "693816852ff210ec0b6b4b2e",
+                    "fullName": "MD. SELIM"
+                }
+            },
+            "reviewed": {
+                "_id": "69382bb9768e05f8ef61619a",
+                "profile": {
+                    "_id": "69382bb9768e05f8ef61619c",
+                    "fullName": "MD. SELIM 67"
+                }
+            },
+            "description": "Very Good Aranger",
+            "rating": 5,
+            "createdAt": "2026-01-03T17:11:28.819Z",
+            "updatedAt": "2026-01-03T17:11:28.819Z"
+        },
+        ...
+    ]
+}
+```
+
+#### 4. Get Specific Travel Plan Reviews by travel id
+
+- method: `GET` api endpoint: http://localhost:5000/api/v1/review/travel-plan/{travelObjectid}
+
+#### Response:
+
+```json
+{
+    "message": "Travel plan reviews fetched successfully",
+    "statusCode": 200,
+    "success": true,
+    "data": [
+        {
+            "_id": "69594dc0e1492856138a654a",
+            "travelPlan": {
+                "_id": "693c8c517d1ef46dd9d41056",
+                "travelTitle": "Sundarbans Wildlife Adventure Dev One"
+            },
+            "reviewer": {
+                "_id": "693816852ff210ec0b6b4b2c",
+                "profile": {
+                    "_id": "693816852ff210ec0b6b4b2e",
+                    "fullName": "MD. SELIM"
+                }
+            },
+            "reviewed": {
+                "_id": "69382bb9768e05f8ef61619a",
+                "profile": {
+                    "_id": "69382bb9768e05f8ef61619c",
+                    "fullName": "MD. SELIM 67"
+                }
+            },
+            "description": "Very Good Aranger",
+            "rating": 5,
+            "createdAt": "2026-01-03T17:11:28.819Z",
+            "updatedAt": "2026-01-03T17:11:28.819Z"
+        },
+        ...
+    ]
+}
+```
+
+#### 5. Get All Reviews
+
+- method: `GET` api endpoint: http://localhost:5000/api/v1/review
+
+#### Response:
+
+```json
+{
+    "message": "Reviews fetched successfully",
+    "statusCode": 200,
+    "success": true,
+    "data": [
+        {
+            "_id": "69594dc0e1492856138a654a",
+            "travelPlan": {
+                "_id": "693c8c517d1ef46dd9d41056",
+                "travelTitle": "Sundarbans Wildlife Adventure Dev One"
+            },
+            "reviewer": {
+                "_id": "693816852ff210ec0b6b4b2c",
+                "profile": {
+                    "_id": "693816852ff210ec0b6b4b2e",
+                    "fullName": "MD. SELIM"
+                }
+            },
+            "reviewed": {
+                "_id": "69382bb9768e05f8ef61619a",
+                "profile": {
+                    "_id": "69382bb9768e05f8ef61619c",
+                    "fullName": "MD. SELIM 67"
+                }
+            },
+            "description": "Very Good Aranger",
+            "rating": 5,
+            "createdAt": "2026-01-03T17:11:28.819Z",
+            "updatedAt": "2026-01-03T17:11:28.819Z"
+        },
+        ...
+    ]
+}
+```
+
+#### 6. Get All Reviews
+
+- method: `GET` api endpoint: http://localhost:5000/api/v1/review
+
+#### Response:
+
+```json
+{
+    "message": "Reviews fetched successfully",
+    "statusCode": 200,
+    "success": true,
+    "data": [
+        {
+            "_id": "69594dc0e1492856138a654a",
+            "travelPlan": {
+                "_id": "693c8c517d1ef46dd9d41056",
+                "travelTitle": "Sundarbans Wildlife Adventure Dev One"
+            },
+            "reviewer": {
+                "_id": "693816852ff210ec0b6b4b2c",
+                "profile": {
+                    "_id": "693816852ff210ec0b6b4b2e",
+                    "fullName": "MD. SELIM"
+                }
+            },
+            "reviewed": {
+                "_id": "69382bb9768e05f8ef61619a",
+                "profile": {
+                    "_id": "69382bb9768e05f8ef61619c",
+                    "fullName": "MD. SELIM 67"
+                }
+            },
+            "description": "Very Good Aranger",
+            "rating": 5,
+            "createdAt": "2026-01-03T17:11:28.819Z",
+            "updatedAt": "2026-01-03T17:11:28.819Z"
+        },
+        ...
+    ]
+}
+```
+
+#### 7. Get Single Review by id
+
+- method: `GET` api endpoint: http://localhost:5000/api/v1/review/{objectid}
+
+#### Response:
+
+```json
+{
+    "message": "Review fetched successfully",
+    "statusCode": 200,
+    "success": true,
+    "data":{
+            "_id": "69594dc0e1492856138a654a",
+            "travelPlan": {
+                "_id": "693c8c517d1ef46dd9d41056",
+                "travelTitle": "Sundarbans Wildlife Adventure Dev One"
+            },
+            "reviewer": {
+                "_id": "693816852ff210ec0b6b4b2c",
+                "profile": {
+                    "_id": "693816852ff210ec0b6b4b2e",
+                    "fullName": "MD. SELIM"
+                }
+            },
+            "reviewed": {
+                "_id": "69382bb9768e05f8ef61619a",
+                "profile": {
+                    "_id": "69382bb9768e05f8ef61619c",
+                    "fullName": "MD. SELIM 67"
+                }
+            },
+            "description": "Very Good Aranger",
+            "rating": 5,
+            "createdAt": "2026-01-03T17:11:28.819Z",
+            "updatedAt": "2026-01-03T17:11:28.819Z"
+        }
+}
+```
+
 ## Stats Api Description:
 
 - Get dashboard stats for user and admin
@@ -1748,5 +2044,35 @@ limit, page, role, email, isVerified, search, startDate, endDate;
     },
     "message": "Stats fetched successfully",
     "success": true
+}
+```
+
+## Development Mode Example Schema
+
+#### Response:
+
+```json
+{
+    "success": false,
+    "message": "Review not found",
+    "errorSources": [],
+    "error": {
+        "statusCode": 404
+    },
+    "stack": "Error: Review not found\n    at F:\\1.Web-Development\\3.Level-2-Course\\16.Final-Project\\travel-buddy-server-site\\src\\app\\modules\\review\\review.service.ts:97:15\n    at Generator.next (<anonymous>)\n    at fulfilled (F:\\1.Web-Development\\3.Level-2-Course\\16.Final-Project\\travel-buddy-server-site\\src\\app\\modules\\review\\review.service.ts:5:58)\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)"
+}
+```
+
+## Production Mode Example Schema
+
+#### Response:
+
+```json
+{
+    "success": false,
+    "message": "Review not found",
+    "errorSources": [],
+    "error": null,
+    "stack": null
 }
 ```

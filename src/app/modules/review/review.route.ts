@@ -11,25 +11,25 @@ const router = Router();
 
 //CREATE A REVIEW
 router.post("/create",
-    checkAuth(...Object.values(UserRole)),
+    checkAuth(UserRole.USER),
     validateZodSchema(ReviewValidated.createReviewZodSchema),
     ReviewController.createReview);
 
 //GET MY REVIEWS
 router.get("/my-reviews",
-    checkAuth(...Object.values(UserRole)),
+    checkAuth(UserRole.USER),
     ReviewController.getMyReviews
 );
 
 //Travel Plan Reviews
 router.get("/travel-plan/:id",
-    checkAuth(...Object.values(UserRole)),
+    checkAuth(UserRole.USER),
     ReviewController.getTravelPlanReviews
 );
 
 //GET A SINGLE REVIEW
 router.get("/:id",
-    checkAuth(...Object.values(UserRole)),
+    checkAuth(UserRole.USER),
     ReviewController.getSingleReview);
 
 //GET ALL REVIEWS
@@ -38,14 +38,12 @@ router.get("/",
 
 //UPDATE A REVIEW
 router.patch("/:id",
-    checkAuth(...Object.values(UserRole)),
+    checkAuth(UserRole.USER),
     ReviewController.updateReview);
-
-
 
 //DELETE A REVIEW
 router.delete("/:id",
-    checkAuth(...Object.values(UserRole)),
+    checkAuth(UserRole.USER),
     ReviewController.deleteReview);
 
 export const ReviewRouter = router;
