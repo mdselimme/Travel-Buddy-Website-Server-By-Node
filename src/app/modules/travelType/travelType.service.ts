@@ -46,8 +46,14 @@ const getAllTravelTypesService = async (query: any) => {
         .sort(sort || '-createdAt')
         .paginate(page || 1, limit || 10)
         .select("typeName")
-        .exec()
-        ;
+        .exec();
+    return travelTypes;
+};
+
+//GET ALL TRAVEL TYPES SERVICE
+const getAllTravelTypesServiceForUsers = async () => {
+
+    const travelTypes = await TravelTypeModel.find().select("typeName").exec();
     return travelTypes;
 };
 
@@ -75,6 +81,7 @@ export const TravelTypeService = {
     updateTravelTypeService,
     getAllTravelTypesService,
     getSingleTravelTypeService,
-    deleteTravelTypeService
+    deleteTravelTypeService,
+    getAllTravelTypesServiceForUsers
 };
 

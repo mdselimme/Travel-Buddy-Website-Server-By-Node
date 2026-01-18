@@ -25,6 +25,10 @@ router.patch('/:id',
 router.get('/',
     TravelTypeController.getAllTravelTypesController
 );
+//GET ALL TRAVEL TYPES FOR USERS ROUTE
+router.get('/users',
+    TravelTypeController.getAllTravelTypesForUsersController
+);
 
 //GET SINGLE TRAVEL TYPE ROUTE
 router.get('/:id',

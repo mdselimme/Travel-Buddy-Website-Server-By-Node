@@ -40,6 +40,18 @@ const getAllTravelTypesController = async (req: Request, res: Response) => {
         data: result
     });
 };
+
+//GET ALL TRAVEL TYPES CONTROLLER
+const getAllTravelTypesForUsersController = async (req: Request, res: Response) => {
+    const result = await TravelTypeService.getAllTravelTypesServiceForUsers();
+    ApiResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Users Travel types retrieved successfully',
+        data: result
+    });
+};
+
 //GET SINGLE TRAVEL TYPE CONTROLLER
 const getSingleTravelTypeController = async (req: Request, res: Response) => {
     const { id } = req.params;
@@ -70,5 +82,6 @@ export const TravelTypeController = {
     updateTravelTypeController,
     getAllTravelTypesController,
     getSingleTravelTypeController,
-    deleteTravelTypeController
+    deleteTravelTypeController,
+    getAllTravelTypesForUsersController
 };
