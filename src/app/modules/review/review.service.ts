@@ -138,7 +138,7 @@ const getAllReviews = async (query: any) => {
                 select: "profile",
                 populate: {
                     path: 'profile',
-                    select: 'fullName'
+                    select: 'fullName profileImage',
                 },
             },
             {
@@ -146,7 +146,7 @@ const getAllReviews = async (query: any) => {
                 select: "profile",
                 populate: {
                     path: 'profile',
-                    select: 'fullName'
+                    select: 'fullName profileImage'
                 },
             }
         ])
