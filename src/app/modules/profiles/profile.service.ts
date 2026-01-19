@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import httpStatus from 'http-status-codes';
 import ApiError from "../../utils/ApiError";
 import { ProfileModel } from "./profile.model";
@@ -29,7 +30,14 @@ const getProfileByUserId = async (userId: string) => {
 };
 
 //GET ALL PROFILES EXCEPT ADMIN AND SUPER ADMIN
-const getAllProfilesExceptAdmins = async () => {
+const getAllProfilesExceptAdmins = async (query: any) => {
+
+    const { page, limit } = query;
+
+    const limitNum = limit ? parseInt(limit) : 10;
+    const pageNum = page ? parseInt(page) : 1;
+    const skip = (pageNum - 1) * limitNum;
+
     // Find all users that are not admin or super_admin, and are active and verified
     const regularUsers = await UserModel.find({
         role: { $nin: [UserRole.ADMIN, UserRole.SUPER_ADMIN] },
@@ -45,9 +53,21 @@ const getAllProfilesExceptAdmins = async () => {
         user: { $in: userIds }
     })
         .select('fullName profileImage currentLocation interests user averageRating')
-        .populate('interests', 'typeName');
+        .populate('interests', 'typeName').limit(limitNum)
+        .skip(skip);
+    const count = await ProfileModel.countDocuments({
+        user: { $in: userIds }
+    });
 
-    return profiles;
+    return {
+        data: profiles,
+        pagination: {
+            total: count,
+            page: pageNum,
+            limit: limitNum,
+            totalPages: Math.ceil(count / limitNum)
+        }
+    };
 };
 
 
