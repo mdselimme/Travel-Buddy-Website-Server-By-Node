@@ -1997,6 +1997,47 @@ limit, page, role, email, isVerified, search, startDate, endDate;
 }
 ```
 
+## Contact Form Api:
+
+- User can send email for support or contact.
+
+#### 1. Send Email Api
+
+- method: `POST` api endpoint: http://localhost:5000/api/v1/contact/send
+
+##### schema design:
+
+```json
+{
+    "name":string,
+    "email":string,
+    "subject": string,
+    "message":string;
+}
+```
+
+##### Request:
+
+```json
+{
+    "name":"Md. Seim",
+    "email":"selimakondo58@gmail.com",
+    "subject": "need some help.",
+    "message":"need some help."
+}
+```
+
+#### Response:
+
+```json
+{
+    "statusCode": 200,
+    "data": null,
+    "message": "Contact Form Submitted Successfully.",
+    "success": true
+}
+```
+
 ## Stats Api Description:
 
 - Get dashboard stats for user and admin
@@ -2019,9 +2060,49 @@ limit, page, role, email, isVerified, search, startDate, endDate;
 {
     "statusCode": 200,
     "data": {
-        "totalTravelPlans": 1,
-        "upcomingTravelPlans": 0,
-        "completedTravelPlans": 1
+        "overview": {
+            "totalTravelPlans": 3,
+            "upcomingTravelPlans": 1,
+            "completedTravelPlans": 1,
+            "cancelledTravelPlans": 1,
+            "totalCountries": 0,
+            "totalCities": 0
+        },
+        "travelPlansByStatus": [],
+        "travelPlansOverTime": [],
+        "destinationsVisited": [],
+        "budgetAnalysis": {
+            "totalBudget": 0,
+            "averageBudgetPerTrip": 0
+        },
+        "budgetByMonth": [],
+        "travelTypeDistribution": [],
+        "socialMetrics": {
+            "matchesSent": 2,
+            "matchesReceived": 2,
+            "matchesAccepted": 4,
+            "matchesRejected": 0,
+            "acceptanceRate": "200.00",
+            "averageRating": 5,
+            "totalReviews": 2
+        },
+        "reviewsReceived": [],
+        "upcomingTrips": [
+            {
+                "_id": "696cc34aef3445b646e1ed8e",
+                "travelTitle": "Panchagar Kanchon Jonga Tour With Family",
+                "destination": {
+                    "city": "Panchagar",
+                    "country": "Bangladesh"
+                },
+                "startDate": "2026-03-24T00:00:00.000Z",
+                "endDate": "2026-03-27T00:00:00.000Z",
+                "thumbnail": "https://res.cloudinary.com/dsla2viks/image/upload/v1768735559/images/u98m0n3at2s_1768735559769_kanchonjonga-jpg.jpg.jpg",
+                "travelPlanStatus": "UPCOMING"
+            }
+        ],
+        "tripDurationDistribution": [],
+        "travelFrequencyByMonth": []
     },
     "message": "Stats fetched successfully",
     "success": true
@@ -2036,11 +2117,204 @@ limit, page, role, email, isVerified, search, startDate, endDate;
 {
     "statusCode": 200,
     "data": {
-        "totalTravelPlans": 4,
-        "totalUsers": 6,
-        "totalAdmins": 1,
-        "totalRegularUsers": 4,
-        "totalSubscribedUsers": 3
+        "overview": {
+            "totalTravelPlans": 9,
+            "totalUsers": 7,
+            "totalAdmins": 1,
+            "totalRegularUsers": 5,
+            "totalSubscribedUsers": 6,
+            "totalMatches": 4,
+            "totalReviews": 5,
+            "totalRevenue": 7100,
+            "pendingPayments": 1500,
+            "pendingPaymentCount": 3
+        },
+        "userGrowth": [
+            {
+                "count": 5,
+                "month": "2025-12"
+            },
+            {
+                "count": 2,
+                "month": "2026-1"
+            }
+        ],
+        "travelPlanGrowth": [
+            {
+                "count": 3,
+                "month": "2025-12"
+            },
+            {
+                "count": 6,
+                "month": "2026-1"
+            }
+        ],
+        "travelPlansByStatus": [
+            {
+                "count": 2,
+                "status": "CANCELLED"
+            },
+            {
+                "count": 3,
+                "status": "COMPLETED"
+            },
+            {
+                "count": 4,
+                "status": "UPCOMING"
+            }
+        ],
+        "matchesByStatus": [
+            {
+                "count": 4,
+                "status": "ACCEPTED"
+            }
+        ],
+        "topDestinations": [
+            {
+                "count": 4,
+                "city": "Sundarbans",
+                "country": "Bangladesh"
+            },
+            {
+                "count": 1,
+                "city": "Sitakunda",
+                "country": "Chittagong"
+            },
+            {
+                "count": 1,
+                "city": "Pangchagar",
+                "country": "Bangladesh"
+            },
+            {
+                "count": 1,
+                "city": "Saint Martin",
+                "country": "Bangladesh"
+            },
+            {
+                "count": 1,
+                "city": "Panchagar",
+                "country": "Bangladesh"
+            },
+            {
+                "count": 1,
+                "city": "Cox Bazar",
+                "country": "Bangladesh"
+            }
+        ],
+        "topTravelTypes": [
+            {
+                "count": 25,
+                "name": null
+            }
+        ],
+        "revenueByPlan": [
+            {
+                "count": 1,
+                "plan": "YEARLY",
+                "revenue": 3000
+            },
+            {
+                "count": 8,
+                "plan": "MONTHLY",
+                "revenue": 4100
+            }
+        ],
+        "revenueGrowth": [
+            {
+                "amount": 3000,
+                "count": 6,
+                "month": "2025-12"
+            },
+            {
+                "amount": 4100,
+                "count": 3,
+                "month": "2026-1"
+            }
+        ],
+        "paymentsByStatus": [
+            {
+                "count": 9,
+                "totalAmount": 7100,
+                "status": "PAID"
+            },
+            {
+                "count": 1,
+                "totalAmount": 500,
+                "status": "CANCELLED"
+            },
+            {
+                "count": 1,
+                "totalAmount": 500,
+                "status": "FAILED"
+            },
+            {
+                "count": 3,
+                "totalAmount": 1500,
+                "status": "PENDING"
+            }
+        ],
+        "topRatedUsers": [
+            {
+                "fullName": "MD. SELIM",
+                "profileImage": "https://res.cloudinary.com/dsla2viks/image/upload/v1767460351/images/rvdogb2ckvp_1767460350108_ronaldo-png.png.png",
+                "userId": "693816852ff210ec0b6b4b2c",
+                "rating": 5,
+                "reviewCount": 2
+            },
+            {
+                "fullName": "Md. Mahabub 73",
+                "profileImage": "https://res.cloudinary.com/dsla2viks/image/upload/v1765884066/images/v5snmdy17r_1765884063673_selim-bg-2-jpg.jpg.jpg",
+                "userId": "69414049960ca41c72e2998d",
+                "rating": 5,
+                "reviewCount": 1
+            },
+            {
+                "fullName": "mdselim",
+                "profileImage": "https://res.cloudinary.com/dsla2viks/image/upload/v1767985867/images/t1mtcg3hlom_1767985866914_selim-bg-2-jpg.jpg.jpg",
+                "userId": "69614fd6af707391e907724c",
+                "rating": 5,
+                "reviewCount": 1
+            },
+            {
+                "fullName": "MD. SELIM 67",
+                "profileImage": "https://res.cloudinary.com/dsla2viks/image/upload/v1765460526/images/44acs1hb5yd_1765460525169_gentelman-png.png.png",
+                "userId": "69382bb9768e05f8ef61619a",
+                "rating": 4,
+                "reviewCount": 1
+            }
+        ],
+        "mostActiveUsers": [
+            {
+                "travelPlanCount": 3,
+                "userId": "693816852ff210ec0b6b4b2c",
+                "fullName": "MD. SELIM",
+                "profileImage": "https://res.cloudinary.com/dsla2viks/image/upload/v1767460351/images/rvdogb2ckvp_1767460350108_ronaldo-png.png.png"
+            },
+            {
+                "travelPlanCount": 2,
+                "userId": "69414049960ca41c72e2998d",
+                "fullName": "Md. Mahabub 73",
+                "profileImage": "https://res.cloudinary.com/dsla2viks/image/upload/v1765884066/images/v5snmdy17r_1765884063673_selim-bg-2-jpg.jpg.jpg"
+            },
+            {
+                "travelPlanCount": 2,
+                "userId": "69614fd6af707391e907724c",
+                "fullName": "mdselim",
+                "profileImage": "https://res.cloudinary.com/dsla2viks/image/upload/v1767985867/images/t1mtcg3hlom_1767985866914_selim-bg-2-jpg.jpg.jpg"
+            },
+            {
+                "travelPlanCount": 1,
+                "userId": "693655b55c1fdea7cf2cc2c2",
+                "fullName": "Super Admin",
+                "profileImage": "https://res.cloudinary.com/dsla2viks/image/upload/v1767982811/images/pu4tj4ncvbk_1767982810987_selim-bg-2-png.png.png"
+            },
+            {
+                "travelPlanCount": 1,
+                "userId": "69624518a74818cefb4a2fcf",
+                "fullName": "md selim",
+                "profileImage": "https://res.cloudinary.com/dsla2viks/image/upload/v1768642332/images/pd8b06iaz9i_1768642329712_gen-1767301655118-png.png.jpg"
+            }
+        ]
     },
     "message": "Stats fetched successfully",
     "success": true
