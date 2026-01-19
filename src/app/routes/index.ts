@@ -10,6 +10,7 @@ import { ProfileRouter } from "../modules/profiles/profile.route";
 import { MatchesRouter } from "../modules/matches/matches.route";
 import { StatsRouter } from "../modules/stats/stats.route";
 import { apiLimiter } from "../middlewares/rateLimiter";
+import { ContactRouter } from "../modules/contact/contact.route";
 
 interface IRoute {
     path: string;
@@ -41,6 +42,10 @@ const allRoutes: IRoute[] = [
     {
         path: "/subscription",
         route: SubscriptionRouter
+    },
+    {
+        path: "/contact",
+        route: ContactRouter
     },
     {
         path: "/payment",
