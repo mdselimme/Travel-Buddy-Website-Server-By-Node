@@ -6,25 +6,33 @@ Database Relation ERD : [https://drive.google.com/file/d/19kGheUiKry_k2JYtKVL43e
 
 ## Features of this website:
 
-    * User register/login
-    * User can create travel plan with details and managed it.
-    * Also user can connect with other travel plan.
-    * User have to need subscription to use this website.
-    * Admin can manages all the users, travel plan, subscription etc.
-    * Payment by sslCommerz.
-    * Email send
-    * Otp feature
+- Create and publish travel plans with destination, budget, and schedule.
+- Discover travel plans posted by other users.
+- Send and manage join requests for travel plans.
+- Subscription-based access (Monthly & Yearly plans).
+- Secure online payment integration using SSLCommerz.
+- Role-based protected routes for subscribed users.
+- Authentication with JWT.
+- Email notifications for important user actions.
+- OTP verification system using Redis.
+- Rate limiting for enhanced API security.
+- Node cron for deleting data.
 
 ## Tech Stack:
 
-    - **Runtime:** Node
-    - **Language:** Typescript
-    - **Framework:** Express
-    - **Database & ODM:** MongoDB & Mongoose, Redis For Otp.
-    - **Authorization & Authentication:** Json Web Token (Jwt)
-    - **Data Validation & Security:** Zod, Bcrypt, Rate Limiter.
-    - **Payment Gateway:** SSLCommerz
-    - **Other:** Nodemailer
+- Node.js (Runtime).
+- Express.js – RESTful API development.
+- TypeScript – Strongly typed backend architecture.
+- MongoDB & Mongoose – Schema-based NoSQL database design.
+- Redis – OTP storage and verification.
+- JWT Authentication – Secure user authorization.
+- Bcrypt – Password hashing and encryption.
+- Zod – Data validation and schema enforcement.
+- Rate Limiter – API abuse prevention.
+- Cloudinary - Upload File and Image.
+- Nodemailer – Email notification system.
+- SSLCommerz Payment Gateway – Secure subscription payments.
+- Node Cron - Deleting data by date wise and activity.
 
 # Set Up and Installation
 
